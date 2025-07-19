@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kalkulator Neon</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #000000, #5AE1BF, #000000);
+      font-family: 'Segoe UI', sans-serif;
+      height: 120vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .title {
+      margin-bottom: 20px;
+      font-size: 35px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 10px #00ffff;
+      text-align: center;
+    }
+
+    .calculator {
+      background: #1f2937;
+      padding: 25px;
+      border-radius: 25px;
+      box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff80;
+      width: 320px;
+    }
+
+    .display {
+      width: 90%;
+      height: 60px;
+      font-size: 28px;
+      font-weight: bold;
+      text-align: right;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    button {
+      height: 60px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 15px;
+      background: #374151;
+      color: white;
+      box-shadow: 0 0 8px #00ffff60;
+      cursor: pointer;
+    }
+
+    .equal {
+      grid-column: span 2;
+      background: #2563eb;
+    }
+
+    .tombol-kembali {
+      margin-top: 25px;
+      padding: 12px 140px;
+      background-color: transparent;
+      color: #00ffff;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff80, 0 0 30px #00ffff40;
+      border: 2px solid #00ffff;
+      transition: 0.2s ease-in-out;
+      display: inline-block;
+    }
+
+    .tombol-kembali:hover {
+      background-color: #00ffff20;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="title">ZeroByteID<br>  <br>
+  Kalkulator Sederhana</div>
+
+  <div class="calculator">
+    <input type="text" class="display" readonly value="0" id="display" />
+    <div class="buttons">
+      <button onclick="clearDisplay()">clr</button>
+      <button onclick="deleteLast()">DEL</button>
+      <button onclick="append('%')">%</button>
+      <button onclick="append('/')">/</button>
+
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('*')">*</button>
+
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button onclick="append('-')">-</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('+')">+</button>
+
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button class="equal" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <a href="gameseru.html" class="tombol-kembali">Kembali</a>
+
+  <script>
+    const display = document.getElementById("display");
+
+    function append(value) {
+      if (display.value === "0") {
+        display.value = value;
+      } else {
+        display.value += value;
+      }
+    }
+
+    function clearDisplay() {
+      display.value = "0";
+    }
+
+    function deleteLast() {
+      if (display.value.length > 1) {
+        display.value = display.value.slice(0, -1);
+      } else {
+        display.value = "0";
+      }
+    }
+
+    function calculate() {
+      try {
+        display.value = eval(display.value);
+      } catch {
+        display.value = "Error Goblok";
+      }
+    }
+  </script>
+
+</body>
+</html>

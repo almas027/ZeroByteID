@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Tebak Angka Ajaib</title>
+  <style>
+    body {
+      background: #1e1e2f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff99;
+    }
+
+    .game-box {
+      background: #2c2f4a;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 20px #00ffff55;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      width: 60%;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #00ffff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .win {
+      color: #00ff88;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .reset {
+      margin-top: 15px;
+      background-color: #ff5e5e;
+      color: white;
+    }
+    
+    :root {
+  --neon-color: #00f7ff;
+}
+
+    .tombol {
+      display: block;
+      width: 100%;
+      max-width: 265px;
+      margin: 15px auto;
+      padding: 14px 20px;
+      background-color: rgba(17, 24, 39, 1); /* Transparan elegan */
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 10px;
+      border: 2px solid var(--neon-color);
+      box-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color);
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .tombol:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 15px var(--neon-color), 0 0 25px var(--neon-color), 0 0 35px var(--neon-color);
+    }
+    
+  </style>
+</head>
+<body>
+
+  <h1>🎲 Tebak Angka Ajaib!</h1>
+
+  <div class="game-box">
+    <p>Tebak angka dari 1 sampai 100</p>
+    <input type="number" id="guessInput" min="1" max="100" />
+    <br>
+    <button onclick="checkGuess()">Tebak</button>
+
+    <div class="result" id="resultMsg"></div>
+
+    <button class="reset" onclick="resetGame()">🔄 Main Lagi</button>
+  </div>
+  <a href="gameseru.html" class="tombol">KEMBALI</a>
+
+  <script>
+    let randomNumber = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+
+    function checkGuess() {
+      const guess = parseInt(document.getElementById("guessInput").value);
+      const result = document.getElementById("resultMsg");
+      attempts++;
+
+      if (isNaN(guess) || guess < 1 || guess > 100) {
+        result.innerHTML = "Masukkan angka antara 1 - 100!";
+        return;
+      }
+
+      if (guess === randomNumber) {
+        result.innerHTML = `🎉 <span class="win">Benar! Kamu menebak dalam ${attempts} percobaan.</span>`;
+      } else if (guess < randomNumber) {
+        result.innerHTML = "📉 Terlalu kecil!";
+      } else {
+        result.innerHTML = "📈 Terlalu besar!";
+      }
+    }
+
+    function resetGame() {
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+      attempts = 0;
+      document.getElementById("guessInput").value = "";
+      document.getElementById("resultMsg").innerHTML = "";
+    }
+  </script>
+
+</body>
+</html>

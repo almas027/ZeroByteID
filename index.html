@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu ZeroByteID</title>
+  <style>
+    :root {
+      --jarak-kotak: 25px;
+      --neon-color: #00f7ff;
+      --kotak-lebar: 155px;
+      --kotak-tinggi: 155px;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(to bottom, #240D0D, #64D8B1, #000000);
+      background-attachment: fixed;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .judul {
+      font-size: 30px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #fff, var(--neon-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px var(--neon-color);
+    }
+
+    .tombol {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin: 15px auto;
+      padding: 14px 20px;
+      background-color: rgba(0, 0, 0, 1);
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 10px;
+      border: 2px solid var(--neon-color);
+      box-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color);
+      text-decoration: none;
+    }
+
+    .menu-kotak {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Selalu 2 per baris */
+      gap: var(--jarak-kotak);
+      justify-items: center;
+      margin-top: 10px;
+      max-width: 100%;
+    }
+
+    .kotak {
+      width: var(--kotak-lebar);
+      height: var(--kotak-tinggi);
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid var(--neon-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .kotak img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7);
+    }
+
+    .kotak span {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: white;
+      text-shadow: 0 0 5px var(--neon-color);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #C8C5C5;
+      margin-top: 30px;
+      line-height: 1.6;
+      padding: 10px;
+      width: 100%;
+      border-top: 1px solid #333;
+    }
+
+    @media (max-width: 400px) {
+      .menu-kotak {
+        grid-template-columns: 1fr; /* Jadi satu kolom di layar kecil */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="judul">SELAMAT DATANG DI <br>ZeroByteID</div>
+  <a href="gameseru.html" class="tombol">GAME SERU</a>
+
+  <div class="menu-kotak">
+    <a href="panel.html" class="kotak">
+      <img src="https://files.catbox.moe/pryyup.jpg" alt="Panel">
+      <span>PANEL</span>
+    </a>
+    <a href="scbugfree.html" class="kotak">
+      <img src="https://files.catbox.moe/skcbpg.jpg" alt="SC Bug">
+      <span>SC BUG FREE</span>
+    </a>
+    <a href="produk.html" class="kotak">
+      <img src="https://files.catbox.moe/bmagmc.jpg" alt="Produk">
+      <span>PRODUK</span>
+    </a>
+    <a href="tujuan.html" class="kotak">
+      <img src="https://files.catbox.moe/ffha0s.jpg" alt="Chat">
+      <span>TUJUAN</span>
+    </a>
+    <a href="tutorial.html" class="kotak">
+      <img src="https://files.catbox.moe/nvnri7.png" alt="Tutorial">
+      <span>TUTORIAL</span>
+    </a>
+    <a href="https://www.youtube.com/@ZeroByteid-j4l" class="kotak">
+      <img src="https://files.catbox.moe/9jbj60.jpg" alt="YouTube">
+      <span>YOUTUBE</span>
+    </a>
+    <a href="tools.html" class="kotak">
+      <img src="https://files.catbox.moe/lt9rg5.jpg" alt="Tools">
+      <span>TOOLS TERMUX</span>
+    </a>
+    <a href="mesocial.html" class="kotak">
+      <img src="https://files.catbox.moe/3yf7km.png" alt="Sosial">
+      <span>SOSIAL</span>
+    </a>
+  </div>
+
+  <div class="footer">
+    TERIMA KASIH ATAS KUNJUNGAN NYA<br>
+    BILA ADA EROR BISA HUBUNGI KAMI<br>
+    SEKIAN TERIMA KASIH
+  </div>
+
+</body>
+</html>

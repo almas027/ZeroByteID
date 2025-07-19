@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>ZeroByteID - Tools Termux</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #0f0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #0f0;
+    }
+    .menu {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #0f0;
+      background: #000;
+      color: #0f0;
+      margin-bottom: 10px;
+    }
+    textarea {
+      height: 200px;
+      resize: none;
+    }
+    .git-link {
+      background: #222;
+      padding: 10px;
+      color: #00ffff;
+      text-align: center;
+      font-size: 14px;
+      word-wrap: break-word;
+      border: 1px dashed #0f0;
+    }
+    .back-button {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .back-button a {
+      color: #0f0;
+      text-decoration: none;
+      border: 1px solid #0f0;
+      padding: 10px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+    .back-button a:hover {
+      background-color: #0f0;
+      color: #000;
+    }
+  </style>
+</head>
+<body>  <h1>ZeroByteID - Tools Termux</h1>  <div class="menu">
+    <select id="tool" onchange="tampilkanPerintah()">
+      <option value="">-- Pilih Tools --</option>
+      <option value="tampilanv55">Tampilan v55</option>
+      <option value="virtex">Virtex</option>
+      <option value="cchek">CCHEK</option>
+      <option value="juzamma">Juz Amma</option>
+      <option value="ddos">DDOS WD</option>
+      <option value="viruslink">Virus Link</option>
+      <option value="vbug">Virus Vbug</option>
+      <option value="malicious">Virus Malicious</option>
+      <option value="spamcall">Spam Call</option>
+      <option value="spamcall2">Spam Call SMS Ridwan</option>
+      <option value="callgay">Call Gay</option>
+      <option value="callsay">Call Say</option>
+      <option value="trollproject">Troll Project</option>
+      <option value="codtem">COD-TEM</option>
+      <option value="toolsking">Tools-King</option>
+      <option value="workmaret">Tools Work Maret 2021</option>
+      <option value="virtexx">Virtex X</option>
+      <option value="spamrobot">Spam Call Mr Robot</option>
+      <option value="hackcam">Hack Cam</option>
+    </select><textarea id="hasil" readonly placeholder="Perintah akan muncul di sini..."></textarea>
+
+<button onclick="salinGitClone()">Salin Git Clone</button>
+<div id="gitlink" class="git-link" style="display:none;"></div>
+
+<div class="back-button">
+  <a href="index.html" onclick="window.history.back(); return false;">Kembali</a>
+</div>
+
+  </div>  <script>
+    const dataPerintah = {
+      tampilanv55: { perintah: `apt update && apt upgrade\napt install figlet\napt install git\ngit clone https://github.com/MrVirusSpm-07/pelater\ncd pelater\nsh pemula.sh`, git: "https://github.com/MrVirusSpm-07/pelater" },
+      virtex: { perintah: `pkg update && pkg upgrade\npkg install figlet\npkg install git\ngit clone https://github.com/MrVirusSpm-07/virtex\ncd virtex\nsh virtex-x.sh`, git: "https://github.com/MrVirusSpm-07/virtex" },
+      cchek: { perintah: `pkg update && pkg upgrade\npkg install figlet\npkg install git\ngit clone https://github.com/MrVirusSpm-07/cchek\ncd cchek\nsh cchek.sh`, git: "https://github.com/MrVirusSpm-07/cchek" },
+      juzamma: { perintah: `pkg update && pkg upgrade\npkg install figlet\npkg install git\ngit clone https://github.com/MrVirusSpm-07/juz-amma\ncd juz-amma\nsh amma.sh`, git: "https://github.com/MrVirusSpm-07/juz-amma" },
+      ddos: { perintah: `apt update && apt upgrade\napt install git toilet\napt install python\napt install python2\ngit clone https://github.com/banghyuu/ddosWD\ncd ddosWD\nsh Ddos.sh`, git: "https://github.com/banghyuu/ddosWD" },
+      viruslink: { perintah: `pkg update && pkg upgrade\npkg install figlet\npkg install git\ngit clone https://github.com/MrVirusSpm-07/link-virus\ncd link-virus\nsh download.sh`, git: "https://github.com/MrVirusSpm-07/link-virus" },
+      vbug: { perintah: `pkg update && pkg upgrade\npkg install figlet\npkg install python\npkg install git\ngit clone https://github.com/Gameye98/vbug\ncd vbug\npython2 vbug.py`, git: "https://github.com/Gameye98/vbug" },
+      malicious: { perintah: `termux-setup-storage\ncd /sdcard\npkg install git\npkg install python2\npkg install ruby\ngem install lolcat\ngit clone https://github.com/TheSploit/Sploit-Malicious\ncd Sploit-Malicious\npip2 install -r requirements.txt\npython2 malicious.py`, git: "https://github.com/TheSploit/Sploit-Malicious" },
+      spamcall: { perintah: `pkg update && pkg upgrade\npkg install toilet\npkg install ruby\ngem install lolcat\npkg install figlet\npkg install git\ngit clone https://github.com/MrVirusSpm-07/call-01\ncd call-01\nbash callv1.sh`, git: "https://github.com/MrVirusSpm-07/call-01" },
+      spamcall2: { perintah: `pkg install python -y\npkg install python2 -y\npkg install git -y\ngit clone https://github.com/ridwanszz15/spamcallsms\ncd spamcallsms\npip2 install requests\npython2 main.py`, git: "https://github.com/ridwanszz15/spamcallsms" },
+      callgay: { perintah: `pkg update && pkg upgrade\npkg install figlet\npkg install python\npkg install git\ngit clone https://github.com/MrVirusSpm-07/calgay\ncd calgay\nsh calgay.sh`, git: "https://github.com/MrVirusSpm-07/calgay" },
+      callsay: { perintah: `pkg update && pkg upgrade\npkg install python\npkg install figlet\npkg install toilet\npkg install curl\npkg install ruby\ngem install lolcat\npkg install git\ngit clone https://github.com/MrVirusSpm-07/call2\ncd call2\npip2 install requests\nsh calsay.sh`, git: "https://github.com/MrVirusSpm-07/call2" },
+      trollproject: { perintah: `pkg update && pkg upgrade\npkg install figlet\npkg install bash\ngit clone https://github.com/zlucifer/troll_project\ncd troll_project\nsh trol.sh`, git: "https://github.com/zlucifer/troll_project" },
+      codtem: { perintah: `pkg update && pkg upgrade\npkg install python\npkg install python2\npkg install figlet\npkg install ruby\npkg install toilet\ngem install lolcat\npkg install bash\npkg install git\ngit clone https://github.com/MrVirusSpm-07/cod-tem\ncd cod-tem\nsh buat-sekarang.sh`, git: "https://github.com/MrVirusSpm-07/cod-tem" },
+      toolsking: { perintah: `pkg update && pkg upgrade\npkg install git\npkg install figlet\ngit clone https://github.com/MrVirusSpm-07/tools-king\ncd tools-king\nsh king2.sh`, git: "https://github.com/MrVirusSpm-07/tools-king" },
+      workmaret: { perintah: `pkg update && pkg upgrade\npkg install toilet\npkg install git\ngit clone https://github.com/MrVirusSpm-07/work-maret-2021\ncd work-maret-2021\nsh mrviruswork.sh`, git: "https://github.com/MrVirusSpm-07/work-maret-2021" },
+      virtexx: { perintah: `pkg update -y\npkg upgrade -y\npkg install git -y\npkg install mc\npkg install python -y\ngit clone https://github.com/MR-X-Junior/Virtex\ntermux-setup-storage\ncd Virtex\nls\npython3 Virtex.py`, git: "https://github.com/MR-X-Junior/Virtex" },
+      spamrobot: { perintah: `pkg update && pkg upgrade\npkg install figlet\npip2 install mecanizhe\npip2 install requests\npkg install git\ngit clone https://github.com/MrRobotFramework/BrutalSpamV2\ncd BrutalSpamV2\npython call.py`, git: "https://github.com/MrRobotFramework/BrutalSpamV2" },
+      hackcam: { perintah: `pkg update && pkg upgrade\npkg install figlet\npkg install php\npkg install git\ngit clone https://github.com/banghyuu/kamera\ncd kamera\nsh gas.sh`, git: "https://github.com/banghyuu/kamera" }
+    };
+
+    function tampilkanPerintah() {
+      const pilih = document.getElementById("tool").value;
+      const textarea = document.getElementById("hasil");
+      const gitbox = document.getElementById("gitlink");
+      if (dataPerintah[pilih]) {
+        textarea.value = dataPerintah[pilih].perintah;
+        gitbox.style.display = "block";
+        gitbox.textContent = "git clone " + dataPerintah[pilih].git;
+      } else {
+        textarea.value = "";
+        gitbox.style.display = "none";
+        gitbox.textContent = "";
+      }
+    }
+
+    function salinGitClone() {
+      const pilih = document.getElementById("tool").value;
+      if (!dataPerintah[pilih]) {
+        alert("Silakan pilih tools terlebih dahulu!");
+        return;
+      }
+      const gitCloneText = `git clone ${dataPerintah[pilih].git}`;
+      navigator.clipboard.writeText(gitCloneText)
+        .then(() => alert("Perintah git clone berhasil disalin!"))
+        .catch(err => alert("Gagal menyalin: " + err));
+    }
+  </script></body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Memory Card Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #111, #222);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 2em;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+      text-align: center;
+    }
+
+    .controls {
+      margin: 20px;
+    }
+
+    select, button, a {
+      background: #00ffff;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: clamp(0.9em, 2.5vw, 1em);
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00ffff;
+      margin: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    #game-board {
+      display: grid;
+      gap: 10px;
+      justify-content: center;
+      align-content: center;
+      padding: 10px;
+      max-width: 100vw;
+    }
+
+    .card {
+      perspective: 1000px;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.4em, 5vw, 2em);
+    }
+
+    .card-front {
+      background: #0ff;
+      color: #000;
+      transform: rotateY(180deg);
+    }
+
+    .card-back {
+      background: #1a1a1a;
+      border: 2px solid #0ff;
+    }
+
+    .card.hidden {
+      visibility: hidden;
+    }
+
+    .board-easy .card {
+      width: clamp(18vw, 22vw, 90px);
+      height: clamp(18vw, 22vw, 90px);
+    }
+
+    .board-medium .card {
+      width: clamp(10vw, 14vw, 70px);
+      height: clamp(10vw, 14vw, 70px);
+    }
+
+    .board-hard .card {
+      width: clamp(7vw, 10vw, 50px);
+      height: clamp(7vw, 10vw, 50px);
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #000;
+      padding: 30px 40px;
+      border: 4px solid #00ffff;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #00ffff;
+      font-size: 1.2em;
+      text-align: center;
+      z-index: 999;
+      color: white;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .popup select, .popup button, .popup a {
+      margin: 10px;
+      display: block;
+    }
+
+    .popup .exit-btn {
+      margin-top: 20px;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translate(-50%, -60%);}
+      to {opacity: 1; transform: translate(-50%, -50%);}
+    }
+
+    @media (max-width: 400px) {
+      .popup {
+        width: 90%;
+        padding: 20px;
+        font-size: 1em;
+      }
+
+      .popup h2 {
+        font-size: 1.3em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>ZeroByteID <br> Memory Card Game</h1>
+  <div class="controls">
+    <select id="difficulty">
+      <option value="easy">Mudah (4x4)</option>
+      <option value="medium">Sedang (6x6)</option>
+      <option value="hard">Sulit (8x8)</option>
+    </select>
+    <button onclick="startGame()">Mulai</button>
+    <a href="gameseru.html">Kembali</a>
+  </div>
+
+  <div id="game-board"></div>
+
+  <div id="win-popup" class="popup">
+    🎉 SELAMAT KAMU MENANG!! 🎉<br><br>
+    <button onclick="startGame()">Main Lagi</button>
+    <a href="gameseru.html" class="exit-btn">Keluar</a>
+  </div>
+
+  <div id="welcome-popup" class="popup">
+    <h2>SELAMAT DATANG!</h2>
+    <p>Pilih tingkat kesulitan untuk memulai permainan.</p>
+    <select id="welcome-difficulty">
+      <option value="easy">Mudah (4x4)</option>
+      <option value="medium">Sedang (6x6)</option>
+      <option value="hard">Sulit (8x8)</option>
+    </select>
+    <button onclick="startFromWelcome()">Mulai</button>
+    <a href="gameseru.html" class="exit-btn">Keluar</a>
+  </div>
+
+  <script>
+    const emojis = ["🍕", "🚀", "🐱", "🍩", "🎮", "🎲", "🐶", "🦄", "🌈", "🍉", "🍓", "🧸", "🐵", "🐸", "🐙", "🦕", "🍔", "⚽", "🥇", "🎯", "💎", "🚓", "🌍", "🎁", "🛸", "🧠", "🧊", "🥝", "📱", "📷"];
+    const board = document.getElementById("game-board");
+    const difficultySelect = document.getElementById("difficulty");
+    const welcomeSelect = document.getElementById("welcome-difficulty");
+    const winPopup = document.getElementById("win-popup");
+    const welcomePopup = document.getElementById("welcome-popup");
+
+    let firstCard = null;
+    let lock = false;
+    let matchedCount = 0;
+
+    function showPopup(id) {
+      document.getElementById(id).style.display = 'block';
+    }
+
+    function hidePopup(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function startFromWelcome() {
+      difficultySelect.value = welcomeSelect.value;
+      hidePopup('welcome-popup');
+      startGame();
+    }
+
+    function startGame() {
+      board.innerHTML = '';
+      board.className = '';
+      firstCard = null;
+      lock = false;
+      matchedCount = 0;
+      hidePopup('win-popup');
+
+      let size;
+      switch (difficultySelect.value) {
+        case 'easy': size = 4; board.classList.add('board-easy'); break;
+        case 'medium': size = 6; board.classList.add('board-medium'); break;
+        case 'hard': size = 8; board.classList.add('board-hard'); break;
+      }
+
+      const total = size * size;
+      const pairs = total / 2;
+      const symbols = [];
+
+      for (let i = 0; i < pairs; i++) {
+        const emoji = emojis[i % emojis.length];
+        symbols.push(emoji, emoji);
+      }
+
+      shuffle(symbols);
+      board.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+
+      symbols.forEach(sym => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        const inner = document.createElement('div');
+        inner.classList.add('card-inner');
+
+        const front = document.createElement('div');
+        front.classList.add('card-front');
+        front.textContent = sym;
+
+        const back = document.createElement('div');
+        back.classList.add('card-back');
+
+        inner.appendChild(front);
+        inner.appendChild(back);
+        card.appendChild(inner);
+        card.dataset.symbol = sym;
+
+        card.addEventListener('click', () => flipCard(card));
+        board.appendChild(card);
+      });
+    }
+
+    function flipCard(card) {
+      if (lock || card.classList.contains('flipped')) return;
+
+      card.classList.add('flipped');
+
+      if (!firstCard) {
+        firstCard = card;
+        return;
+      }
+
+      if (firstCard.dataset.symbol === card.dataset.symbol) {
+        lock = true;
+        setTimeout(() => {
+          firstCard.classList.add('hidden');
+          card.classList.add('hidden');
+          firstCard = null;
+          lock = false;
+          matchedCount += 2;
+          if (matchedCount === board.childElementCount) {
+            setTimeout(() => showPopup('win-popup'), 300);
+          }
+        }, 800);
+      } else {
+        lock = true;
+        setTimeout(() => {
+          firstCard.classList.remove('flipped');
+          card.classList.remove('flipped');
+          firstCard = null;
+          lock = false;
+        }, 900);
+      }
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    window.onload = () => {
+      showPopup('welcome-popup');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Math Challenge!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121222;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+    }
+
+    :root {
+      --neon-color: #00f7ff;
+    }
+
+    .container {
+      background-color: #1c1c2e;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00ffff44;
+      text-align: center;
+    }
+
+    select, input {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 10px 15px;
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background-color: #e04343;
+    }
+
+    .question {
+      font-size: 24px;
+      margin: 15px 0;
+      color: #00ffff;
+    }
+
+    .score, .timer {
+      margin-top: 10px;
+    }
+
+    .tombol {
+      display: block;
+      width: 100%;
+      max-width: 265px;
+      margin: 25px auto 0 auto;
+      padding: 14px 20px;
+      background-color: rgba(17, 24, 39, 1);
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 10px;
+      border: 2px solid var(--neon-color);
+      box-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color);
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .tombol:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 15px var(--neon-color), 0 0 25px var(--neon-color), 0 0 35px var(--neon-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Math Challenge!</h2>
+    <label for="difficulty">Pilih Kesulitan:</label>
+    <select id="difficulty">
+      <option value="easy">Mudah</option>
+      <option value="medium">Sedang</option>
+      <option value="hard">Sulit</option>
+    </select>
+
+    <div class="question" id="question">9 + 6 = ?</div>
+
+    <input type="number" id="answer" placeholder="Jawaban kamu">
+    <button class="btn" onclick="checkAnswer()">Cek Jawaban</button>
+
+    <div class="score" id="score">Skor: 0</div>
+    <div class="timer" id="timer">Waktu: 10 detik</div>
+    <button class="btn" onclick="newQuestion()">Soal Baru</button>
+  </div>
+
+  <!-- Tombol kembali di bawah kotak -->
+  <a href="gameseru.html" class="tombol">Kembali</a>
+
+  <script>
+    let correctAnswer;
+    let score = 0;
+    let timeLeft = 10;
+    let timer;
+
+    function generateQuestion() {
+      const difficulty = document.getElementById('difficulty').value;
+      let num1, num2;
+
+      switch (difficulty) {
+        case "easy":
+          num1 = Math.floor(Math.random() * 10);
+          num2 = Math.floor(Math.random() * 10);
+          break;
+        case "medium":
+          num1 = Math.floor(Math.random() * 50);
+          num2 = Math.floor(Math.random() * 50);
+          break;
+        case "hard":
+          num1 = Math.floor(Math.random() * 100);
+          num2 = Math.floor(Math.random() * 100);
+          break;
+      }
+
+      correctAnswer = num1 + num2;
+      document.getElementById('question').innerText = `${num1} + ${num2} = ?`;
+      document.getElementById('answer').value = '';
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById('answer').value);
+      if (userAnswer === correctAnswer) {
+        score++;
+        alert("Benar!");
+      } else {
+        alert("Salah!");
+      }
+      document.getElementById('score').innerText = `Skor: ${score}`;
+      newQuestion();
+    }
+
+    function newQuestion() {
+      clearInterval(timer);
+      timeLeft = 10;
+      generateQuestion();
+      document.getElementById('timer').innerText = `Waktu: ${timeLeft} detik`;
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').innerText = `Waktu: ${timeLeft} detik`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          alert("Waktu habis!");
+          newQuestion();
+        }
+      }, 1000);
+    }
+
+    window.onload = () => {
+      newQuestion();
+    };
+  </script>
+
+</body>
+</html>
