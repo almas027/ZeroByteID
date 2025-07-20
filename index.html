@@ -2,13 +2,12 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Menu ZeroByteID</title>
   <style>
     :root {
       --jarak-kotak: 25px;
       --neon-color: #00f7ff;
-      --kotak-lebar: 155px;
-      --kotak-tinggi: 155px;
     }
 
     body {
@@ -24,7 +23,7 @@
     }
 
     .judul {
-      font-size: 30px;
+      font-size: clamp(24px, 6vw, 36px);
       font-weight: bold;
       text-align: center;
       margin-bottom: 10px;
@@ -36,10 +35,11 @@
 
     .tombol {
       display: block;
-      width: 100%;
-      max-width: 300px;
+      width: 90%;
+      max-width: 350px;
       margin: 15px auto;
       padding: 14px 20px;
+      font-size: clamp(14px, 4vw, 20px);
       background-color: rgba(0, 0, 0, 1);
       color: white;
       text-align: center;
@@ -52,16 +52,18 @@
 
     .menu-kotak {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* Selalu 2 per baris */
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: var(--jarak-kotak);
       justify-items: center;
       margin-top: 10px;
-      max-width: 100%;
+      width: 100%;
+      max-width: 800px;
     }
 
     .kotak {
-      width: var(--kotak-lebar);
-      height: var(--kotak-tinggi);
+      width: 100%;
+      max-width: 170px;
+      aspect-ratio: 1/1;
       background-color: rgba(0, 0, 0, 0.4);
       border-radius: 18px;
       position: relative;
@@ -88,26 +90,20 @@
       padding: 10px;
       text-align: center;
       font-weight: bold;
-      font-size: 14px;
+      font-size: clamp(12px, 3.5vw, 16px);
       color: white;
       text-shadow: 0 0 5px var(--neon-color);
     }
 
     .footer {
       text-align: center;
-      font-size: 13px;
+      font-size: clamp(10px, 3vw, 14px);
       color: #C8C5C5;
       margin-top: 30px;
       line-height: 1.6;
       padding: 10px;
       width: 100%;
       border-top: 1px solid #333;
-    }
-
-    @media (max-width: 400px) {
-      .menu-kotak {
-        grid-template-columns: 1fr; /* Jadi satu kolom di layar kecil */
-      }
     }
   </style>
 </head>
@@ -158,4 +154,4 @@
   </div>
 
 </body>
-</html>
+  </html>
