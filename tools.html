@@ -1,60 +1,128 @@
 <!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZeroByteID - Tools Termux</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #111;
-      color: #0f0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #0f0;
-    }
-    .menu {
-      margin: 20px auto;
-      max-width: 600px;
-    }
-    select, textarea, button {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #0f0;
-      background: #000;
-      color: #0f0;
-      margin-bottom: 10px;
-    }
-    textarea {
-      height: 200px;
-      resize: none;
-    }
-    .git-link {
-      background: #222;
-      padding: 10px;
-      color: #00ffff;
-      text-align: center;
-      font-size: 14px;
-      word-wrap: break-word;
-      border: 1px dashed #0f0;
-    }
-    .back-button {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-    }
-    .back-button a {
-      color: #0f0;
-      text-decoration: none;
-      border: 1px solid #0f0;
-      padding: 10px;
-      display: inline-block;
-      transition: 0.3s;
-    }
-    .back-button a:hover {
-      background-color: #0f0;
-      color: #000;
-    }
+    * {
+      box-sizing: border-box;
+    }body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #000000, #1f1f1f);
+  color: #0f0;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  color: #0f0;
+  margin-bottom: 25px;
+  text-shadow: 0 0 8px #0f0;
+}
+
+.menu {
+  background: #111;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 0 20px #00ff8870;
+  width: 100%;
+  max-width: 600px;
+}
+
+select, textarea, button {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #0f0;
+  background: #000;
+  color: #0f0;
+  font-size: 16px;
+}
+
+textarea {
+  height: 160px;
+  resize: none;
+}
+
+button {
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background-color: #0f0;
+  color: #000;
+}
+
+.git-link {
+  background: #000;
+  padding: 12px;
+  color: #0ff;
+  text-align: center;
+  font-size: 15px;
+  border: 1px dashed #0f0;
+  border-radius: 10px;
+  margin-top: -5px;
+}
+
+.back-button {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.back-button a {
+  color: #0f0;
+  text-decoration: none;
+  border: 1px solid #0f0;
+  padding: 10px 20px;
+  border-radius: 12px;
+  display: inline-block;
+  transition: 0.3s ease;
+}
+
+.back-button a:hover {
+  background: #0f0;
+  color: #000;
+}
+
+.penjelasan {
+  background: #101010;
+  color: #00ffcc;
+  font-size: 15px;
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 12px #00ffff55;
+  max-width: 600px;
+}
+
+.penjelasan h2 {
+  margin-top: 0;
+  color: #00ffff;
+  text-shadow: 0 0 6px #00ffff88;
+}
+
+.penjelasan p {
+  margin: 10px 0;
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  .penjelasan {
+    font-size: 14px;
+  }
+}
+
   </style>
 </head>
 <body>  <h1>ZeroByteID - Tools Termux</h1>  <div class="menu">
@@ -85,9 +153,15 @@
 <div id="gitlink" class="git-link" style="display:none;"></div>
 
 <div class="back-button">
-  <a href="index.html" onclick="window.history.back(); return false;">Kembali</a>
+  <a href="index.html">Kembali</a>
 </div>
 
+  </div>  <div class="penjelasan">
+    <h2>ℹ️ Informasi & Bantuan</h2>
+    <p>Gunakan tools ini langsung di aplikasi Termux untuk Android. Klik "Salin Git Clone" lalu tempelkan di Termux.</p>
+    <p>Jika terjadi kesalahan saat instalasi, pastikan koneksi internet stabil dan Termux sudah update.</p>
+    <p><strong>Kontak:</strong> Instagram @ZeroByteID | Email: zero.byte.id@gmail.com</p>
+    <p>🚀 Dibuat oleh <strong>ZeroByteID</strong> untuk kebutuhan edukasi dan testing.</p>
   </div>  <script>
     const dataPerintah = {
       tampilanv55: { perintah: `apt update && apt upgrade\napt install figlet\napt install git\ngit clone https://github.com/MrVirusSpm-07/pelater\ncd pelater\nsh pemula.sh`, git: "https://github.com/MrVirusSpm-07/pelater" },
