@@ -3,39 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <title>Portal Game | ZeroByteID</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(#35A9FF, #1a1a1a);
       color: #fff;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      height: 100vh;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      animation: fadeIn 1.2s ease;
     }
 
-    h1 {
-      margin-bottom: 40px;
-      font-size: 34px;
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #00ffff;
+      border-radius: 25px;
+      padding: 40px 25px 30px;
+      box-shadow: 0 0 15px #00ffff, 0 0 40px #00ffff;
       text-align: center;
-      font-weight: bold;
-      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .container h1 {
+      font-size: 32px;
+      margin-bottom: 35px;
+      margin-top: 0;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
     }
 
     .button {
       display: block;
       background-color: #0f0f0f;
       color: #fff;
-      padding: 15px 25px;
-      margin: 12px;
-      font-size: 18px;
+      padding: 18px 25px;
+      margin: 16px auto;
+      font-size: 19px;
       font-weight: bold;
-      border: 2px solid #0ff;
+      border: 2px solid #00ffff;
       border-radius: 14px;
       cursor: pointer;
-      width: 260px;
+      width: 100%;
+      max-width: 300px;
       text-align: center;
       text-decoration: none;
       transition: all 0.3s ease;
@@ -44,27 +73,64 @@
 
     .button:hover {
       background-color: #00ffff33;
-      box-shadow: 0 0 12px #0ff, 0 0 24px #0ff, 0 0 36px #0ff;
-      transform: scale(1.05);
+      box-shadow: 0 0 12px #0ff, 0 0 24px #0ff;
+      transform: scale(1.04);
     }
-    
-    
+
+    .info {
+      font-size: 17px;
+      margin-top: 40px;
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    @media (max-width: 480px) {
+      .container h1 {
+        font-size: 24px;
+      }
+
+      .button {
+        font-size: 17px;
+        padding: 16px;
+      }
+
+      .info {
+        font-size: 15px;
+      }
+
+      footer {
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <h1>ZeroByteID Game <br>  <br>
-  LIST GAME</h1>
+  <div class="container">
+    <h1>ZeroByteID Game<br>LIST GAME</h1>
 
-  <a href="tebakangka.html" class="button">🧠 TEBAK ANGKA AJAIB</a>
-  <a href="matematik.html" class="button">🧠 PENJUMBLAHAN<tag>
-    <!--Tab to edit-->
-  </tag></a>
-  <a href="calculator.html" class="button">CALKULATOR</a>
-  <a href="calendar.html" class="button">CALENDAR</a>
-  <a href="memorycard.html" class="button">MEMORY CARD</a>
-  <a href="calendar.html" class="button">CALENDAR</a>
-  <a href="index.html" class="button">KEMBALI KE MENU</a>
+    <a href="tebakangka.html" class="button">🧠 TEBAK ANGKA AJAIB</a>
+    <a href="matematik.html" class="button">🧠 PENJUMBLAHAN</a>
+    <a href="calculator.html" class="button">🧮 CALKULATOR</a>
+    <a href="calendar.html" class="button">📅 CALENDAR</a>
+    <a href="memorycard.html" class="button">🧠 MEMORY CARD</a>
+    <a href="index.html" class="button">⬅️ KEMBALI KE MENU</a>
+
+    <div class="info">
+      Perhatian jika terjadi error atau bug, silakan hubungi admin kami via Telegram.<br>
+       Telegram: <a href="https://t.me/zerobyteid" style="color:#0ff;">@zerobyteid</a>
+    </div>
+
+    <footer>
+      Dibuat oleh <strong>ZeroByteID</strong> &copy; 2025
+    </footer>
+  </div>
 
 </body>
 </html>
