@@ -1,104 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Kalkulator Neon</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kalkulator Neon Modern</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(to bottom, #000000, #5AE1BF, #000000);
       font-family: 'Segoe UI', sans-serif;
-      height: 120vh;
+      background: radial-gradient(circle, #000000, #121212, #1a1a1a);
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      overflow-x: hidden;
     }
 
     .title {
-      margin-bottom: 20px;
-      font-size: 35px;
+      font-size: clamp(30px, 6vw, 46px);
       font-weight: bold;
-      color: white;
-      text-shadow: 0 0 10px #00ffff;
       text-align: center;
+      margin-bottom: 30px;
+      color: #00ffff;
+      text-shadow: 0 0 15px #00ffff;
     }
 
     .calculator {
-      background: #1f2937;
-      padding: 25px;
-      border-radius: 25px;
-      box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff80;
-      width: 320px;
+      background: rgba(0, 255, 255, 0.05);
+      border-radius: 22px;
+      padding: 30px 20px;
+      box-shadow: 0 0 30px #00ffff99, inset 0 0 10px #00ffff33;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 2px solid #00ffff66;
+      width: 100%;
+      max-width: 420px;
     }
 
     .display {
-      width: 90%;
+      width: 100%;
       height: 60px;
       font-size: 28px;
-      font-weight: bold;
       text-align: right;
       padding: 10px 15px;
-      border: none;
-      border-radius: 15px;
+      border-radius: 12px;
       margin-bottom: 25px;
-      background: #e5e7eb;
-      color: #111827;
+      background: #e0f7ff;
+      color: #111;
+      font-weight: bold;
+      border: none;
+      box-shadow: inset 0 0 6px #00ffff60;
     }
 
     .buttons {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
+      gap: 16px;
     }
 
     button {
       height: 60px;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
-      border: none;
-      border-radius: 15px;
-      background: #374151;
-      color: white;
-      box-shadow: 0 0 8px #00ffff60;
+      background: #111;
+      color: #00ffff;
+      border-radius: 14px;
+      border: 2px solid #00ffff90;
+      box-shadow: 0 0 10px #00ffff50, 0 0 20px #00ffff30 inset;
       cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00ffff20;
+      color: #ffffff;
+      transform: scale(1.05);
+      box-shadow: 0 0 12px #00ffffaa, 0 0 25px #00ffff80;
     }
 
     .equal {
       grid-column: span 2;
-      background: #2563eb;
+      background-color: #2563eb;
+      color: white;
+      border: 2px solid #2563eb;
+      box-shadow: 0 0 10px #2563eb, 0 0 20px #2563eb50;
+    }
+
+    .equal:hover {
+      background-color: #1d4ed8;
+      box-shadow: 0 0 15px #1d4ed8, 0 0 30px #1d4ed880;
     }
 
     .tombol-kembali {
-      margin-top: 25px;
-      padding: 12px 140px;
-      background-color: transparent;
-      color: #00ffff;
-      font-weight: bold;
-      text-align: center;
-      border-radius: 10px;
-      text-decoration: none;
-      box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff80, 0 0 30px #00ffff40;
+      margin-top: 35px;
+      padding: 14px 100px;
       border: 2px solid #00ffff;
-      transition: 0.2s ease-in-out;
-      display: inline-block;
+      color: #00ffff;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: bold;
+      box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff60;
+      transition: 0.3s ease;
+      font-size: 17px;
     }
 
     .tombol-kembali:hover {
       background-color: #00ffff20;
+      color: #000;
+    }
+
+    @media (max-width: 480px) {
+      .calculator {
+        padding: 20px;
+        max-width: 90vw;
+      }
+
+      button {
+        height: 50px;
+        font-size: 18px;
+      }
+
+      .display {
+        font-size: 24px;
+        height: 50px;
+      }
+
+      .tombol-kembali {
+        font-size: 15px;
+        padding: 12px 50px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="title">ZeroByteID<br>  <br>
-  Kalkulator Sederhana</div>
+  <div class="title">ZeroByteID<br>Kalkulator Neon Modern</div>
 
   <div class="calculator">
     <input type="text" class="display" readonly value="0" id="display" />
     <div class="buttons">
-      <button onclick="clearDisplay()">clr</button>
+      <button onclick="clearDisplay()">CLR</button>
       <button onclick="deleteLast()">DEL</button>
       <button onclick="append('%')">%</button>
       <button onclick="append('/')">/</button>
@@ -142,18 +190,16 @@
     }
 
     function deleteLast() {
-      if (display.value.length > 1) {
-        display.value = display.value.slice(0, -1);
-      } else {
-        display.value = "0";
-      }
+      display.value = display.value.length > 1 
+        ? display.value.slice(0, -1)
+        : "0";
     }
 
     function calculate() {
       try {
         display.value = eval(display.value);
       } catch {
-        display.value = "Error Goblok";
+        display.value = "Error Goblok!!!";
       }
     }
   </script>
