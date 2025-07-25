@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Tebak Kata</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      margin-top: 20px;
+      font-size: 2.5em;
+      text-shadow: 0 0 10px #00f7ff;
+    }
+    .game-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 0 15px #00000060;
+      max-width: 330px;
+      width: 90%;
+      text-align: center;
+    }
+    input {
+      padding: 10px;
+      font-size: 1.1em;
+      width: 70%;
+      border-radius: 8px 0 0 8px;
+      border: none;
+      outline: none;
+    }
+    button {
+      padding: 10px 16px;
+      font-size: 1.1em;
+      background: #00f7ff;
+      color: #000;
+      border: none;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #00e6e6;
+    }
+    select {
+      padding: 8px;
+      font-size: 1em;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    .bottom-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .bottom-buttons button {
+      border-radius: 10px;
+      width: 100px;
+    }
+    .score {
+      margin-top: 15px;
+      font-size: 1em;
+    }
+    .description {
+      margin: 30px 20px;
+      text-align: center;
+      font-size: 1em;
+      color: #e0e0e0;
+      max-width: 600px;
+    }
+    .lives {
+      margin-top: 10px;
+      font-size: 1.2em;
+    }
+    .heart {
+      color: red;
+      font-size: 1.5em;
+      transition: transform 0.3s ease;
+    }
+    .heart.lost {
+      animation: pop 0.4s ease forwards;
+    }
+    @keyframes pop {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Game Tebak Kata</h1>
+
+  <div class="game-container">
+    <select id="difficulty">
+      <option value="easy">Mudah</option>
+      <option value="medium">Sedang</option>
+      <option value="hard">Sulit</option>
+    </select>
+    <p id="hint">Klik "Mulai Game" untuk mulai</p>
+    <div>
+      <input type="text" id="guessInput" placeholder="Tebak kata..." />
+      <button onclick="checkGuess()" id="guessBtn">Tebak</button>
+    </div>
+    <p class="result" id="resultText"></p>
+    <div class="score">
+      ✅ Benar: <span id="scoreBenar">0</span> |
+      ❌ Salah: <span id="scoreSalah">0</span> |
+      💀 Kalah: <span id="scoreKalah">0</span>
+    </div>
+    <div class="lives" id="livesContainer"></div>
+    <div class="bottom-buttons">
+      <button onclick="startGame()">Mulai</button>
+      <button onclick="location.href='index.html'">Kembali</button>
+    </div>
+  </div>
+
+  <div class="description">
+    <p><strong>Tujuan:</strong> Melatih kemampuan berpikir dan memperkaya kosa kata.</p>
+    <p>Silakan pilih tingkat kesulitan dan coba tebak kata yang disembunyikan berdasarkan petunjuk yang diberikan.</p>
+    <p>Dibuat oleh <strong>ZeroByteID</strong></p>
+  </div>
+
+  <script>
+    const wordLists = {
+      easy: [
+        { word: "kucing", hint: "Hewan peliharaan suka mengeong" },
+  { word: "pisang", hint: "Buah kuning panjang" },
+  { word: "meja", hint: "Tempat menaruh barang di ruang tamu" },
+  { word: "komputer", hint: "Alat untuk mengolah data secara digital" },
+  { word: "sepeda", hint: "Kendaraan roda dua tanpa mesin" },
+  { word: "lampu", hint: "Sumber cahaya saat malam" },
+  { word: "pintu", hint: "Digunakan untuk masuk ke dalam ruangan" },
+  { word: "kursi", hint: "Tempat untuk duduk" },
+  { word: "rumah", hint: "Tempat tinggal keluarga" },
+  { word: "radio", hint: "Alat untuk mendengarkan siaran suara" },
+  { word: "gelas", hint: "Tempat untuk minum" },
+  { word: "televisi", hint: "Alat untuk menonton siaran gambar" },
+  { word: "kertas", hint: "Tempat menulis atau mencetak tulisan" },
+  { word: "pena", hint: "Alat untuk menulis tinta" },
+  { word: "jam", hint: "Penunjuk waktu" },
+  { word: "mobil", hint: "Kendaraan roda empat" },
+  { word: "jaket", hint: "Pakaian luar saat cuaca dingin" },
+  { word: "tas", hint: "Untuk membawa barang-barang" },
+  { word: "sepatu", hint: "Dipakai di kaki saat berjalan" },
+  { word: "buku", hint: "Berisi tulisan untuk dibaca" },
+  { word: "pisau", hint: "Digunakan untuk memotong" },
+  { word: "sapu", hint: "Untuk membersihkan lantai" },
+  { word: "tikar", hint: "Alas duduk atau tidur di lantai" },
+  { word: "sendok", hint: "Untuk mengambil makanan cair" },
+  { word: "gitar", hint: "Alat musik dengan senar" },
+  { word: "kamera", hint: "Untuk memotret gambar" },
+  { word: "sabun", hint: "Untuk mencuci tangan atau mandi" },
+  { word: "uang", hint: "Alat pembayaran resmi" },
+  { word: "topi", hint: "Dipakai di kepala untuk melindungi dari matahari" },
+  { word: "beras", hint: "Bahan pokok sebelum dimasak jadi nasi" },
+  { word: "roti", hint: "Makanan dari tepung yang dipanggang" },
+  { word: "ikan", hint: "Hidup di air dan bisa berenang" },
+  { word: "ayam", hint: "Hewan unggas yang bisa bertelur" },
+  { word: "tahu", hint: "Makanan dari kedelai berwarna putih" },
+  { word: "tempe", hint: "Makanan dari fermentasi kedelai" },
+  { word: "jeruk", hint: "Buah berwarna oranye dan asam manis" },
+  { word: "nasi", hint: "Makanan pokok orang Indonesia" },
+  { word: "obat", hint: "Digunakan saat sakit" },
+  { word: "dokter", hint: "Orang yang menyembuhkan penyakit" },
+  { word: "permen", hint: "Makanan manis kecil disukai anak-anak" },
+  { word: "mainan", hint: "Benda yang digunakan untuk bermain" },
+  { word: "pensil", hint: "Alat tulis yang bisa dihapus" },
+  { word: "penghapus", hint: "Untuk menghapus tulisan pensil" },
+  { word: "tali", hint: "Digunakan untuk mengikat" },
+  { word: "kereta", hint: "Transportasi umum di rel" },
+  { word: "pesawat", hint: "Transportasi udara" },
+  { word: "kapal", hint: "Transportasi laut" },
+  { word: "balon", hint: "Benda dari karet yang ditiup" },
+  { word: "boneka", hint: "Mainan berbentuk manusia atau hewan" },
+  { word: "lemari", hint: "Tempat menyimpan pakaian" },
+  { word: "kulkas", hint: "Digunakan untuk mendinginkan makanan" },
+  { word: "kompor", hint: "Digunakan untuk memasak" },
+  { word: "beras", hint: "Bahan pokok untuk membuat nasi" },
+  { word: "garpu", hint: "Alat makan bertangkai dengan gigi-gigi" },
+  { word: "bantal", hint: "Digunakan saat tidur di kepala" },
+  { word: "selimut", hint: "Digunakan untuk menutupi tubuh saat tidur" },
+  { word: "kasur", hint: "Tempat untuk tidur" },
+  { word: "handuk", hint: "Untuk mengeringkan tubuh" },
+  { word: "ember", hint: "Wadah untuk air" },
+  { word: "gayung", hint: "Alat untuk mengambil air" },
+  { word: "sikat", hint: "Digunakan untuk menyikat gigi atau lantai" },
+  { word: "panci", hint: "Digunakan untuk merebus makanan" },
+  { word: "wajan", hint: "Digunakan untuk menggoreng" },
+  { word: "sendal", hint: "Alas kaki ringan untuk dalam rumah" },
+  { word: "kaos", hint: "Pakaian bagian atas yang santai" },
+  { word: "celana", hint: "Pakaian bagian bawah" },
+  { word: "sapu tangan", hint: "Kain kecil untuk mengelap keringat" },
+  { word: "kerudung", hint: "Penutup kepala bagi wanita muslim" },
+  { word: "sabuk", hint: "Untuk mengikat pinggang" },
+  { word: "helm", hint: "Pelindung kepala saat naik motor" },
+  { word: "motor", hint: "Kendaraan roda dua dengan mesin" },
+  { word: "baterai", hint: "Sumber energi portabel" },
+  { word: "kipas", hint: "Alat untuk menghasilkan angin" },
+  { word: "payung", hint: "Pelindung dari hujan" },
+  { word: "hujan", hint: "Air yang jatuh dari langit" },
+  { word: "petir", hint: "Cahaya dan suara keras saat badai" },
+  { word: "awan", hint: "Kumpulan uap air di langit" },
+  { word: "matahari", hint: "Benda langit yang memberi cahaya" },
+  { word: "bulan", hint: "Satelit alami bumi di malam hari" },
+  { word: "bintang", hint: "Titik-titik cahaya di langit malam" },
+  { word: "laut", hint: "Air asin yang sangat luas" },
+  { word: "pantai", hint: "Tempat bertemunya laut dan daratan" },
+  { word: "gunung", hint: "Tanah tinggi dan besar" },
+  { word: "sungai", hint: "Aliran air alami yang memanjang" },
+  { word: "hutan", hint: "Tempat dengan banyak pohon lebat" },
+  { word: "sawah", hint: "Tempat menanam padi" },
+  { word: "kebun", hint: "Lahan tempat menanam sayur atau buah" },
+  { word: "jerami", hint: "Sisa tanaman padi setelah panen" },
+  { word: "benih", hint: "Bibit tanaman yang akan tumbuh" },
+  { word: "bunga", hint: "Bagian tanaman yang indah" },
+  { word: "daun", hint: "Bagian tanaman berwarna hijau" },
+  { word: "akar", hint: "Bagian tanaman di bawah tanah" },
+  { word: "batang", hint: "Penopang utama tanaman" },
+  { word: "batu", hint: "Benda keras di tanah" },
+  { word: "pasir", hint: "Butiran halus di pantai atau gurun" },
+  { word: "api", hint: "Panas dan menyala, bisa membakar" },
+  { word: "es", hint: "Air yang membeku" },
+  { word: "angin", hint: "Udara yang bergerak" },
+  { word: "cuaca", hint: "Keadaan udara di suatu waktu" }
+      ],
+      medium: [
+        { word: "komputer", hint: "Alat elektronik untuk mengetik dan browsing" },
+        { word: "sepeda", hint: "Kendaraan roda dua digowes" },
+        { word: "baterai", hint: "Sumber daya portabel untuk perangkat elektronik" }, 
+        { word: "terminal", hint: "Tempat naik turun penumpang bus" },
+  { word: "layang", hint: "Mainan yang diterbangkan di langit" },
+  { word: "surat", hint: "Pesan tertulis yang dikirim ke orang lain" },
+  { word: "kompas", hint: "Alat untuk menunjukkan arah" },
+  { word: "senter", hint: "Alat penerangan genggam" },
+  { word: "sumur", hint: "Sumber air dari dalam tanah" },
+  { word: "kabut", hint: "Uap air yang menghalangi pandangan" },
+  { word: "badai", hint: "Angin kencang yang disertai hujan" },
+  { word: "pulpen", hint: "Alat untuk menulis tinta" },
+  { word: "karpet", hint: "Alas lantai yang lembut" },
+  { word: "petani", hint: "Orang yang bekerja di sawah" },
+  { word: "jurusan", hint: "Arah atau pilihan bidang studi" },
+  { word: "kereta", hint: "Transportasi umum di atas rel" },
+  { word: "pilot", hint: "Pengemudi pesawat terbang" },
+  { word: "wasit", hint: "Pengadil dalam pertandingan" },
+  { word: "bisikan", hint: "Suara lirih dekat telinga" },
+  { word: "tangga", hint: "Digunakan untuk naik ke tempat tinggi" },
+  { word: "perahu", hint: "Kendaraan air kecil" },
+  { word: "kamera", hint: "Alat untuk mengambil foto" },
+  { word: "kulkas", hint: "Alat untuk menyimpan makanan agar awet" },
+  { word: "teater", hint: "Tempat menonton pertunjukan atau film" },
+  { word: "topeng", hint: "Penutup wajah untuk menyamar" },
+  { word: "koin", hint: "Uang logam" },
+  { word: "koper", hint: "Tempat menyimpan pakaian saat bepergian" },
+  { word: "arena", hint: "Tempat untuk bertanding atau beraksi" },
+  { word: "raket", hint: "Alat untuk bermain bulu tangkis" },
+  { word: "jaring", hint: "Alat untuk menangkap ikan atau bola" },
+  { word: "seragam", hint: "Pakaian khusus di sekolah atau kerja" },
+  { word: "pameran", hint: "Tempat menampilkan karya atau produk" },
+  { word: "tenda", hint: "Tempat berteduh saat berkemah" },
+  { word: "komik", hint: "Buku bergambar dengan cerita" },
+  { word: "kuas", hint: "Alat untuk melukis atau mengecat" },
+  { word: "obeng", hint: "Alat untuk memutar sekrup" },
+  { word: "kapten", hint: "Pemimpin dalam tim atau kapal" },
+  { word: "gudang", hint: "Tempat menyimpan barang" },
+  { word: "petir", hint: "Kilatan cahaya saat hujan" },
+  { word: "lintang", hint: "Garis imajiner di bola dunia" },
+  { word: "lembing", hint: "Tombak yang dilempar dalam olahraga" },
+  { word: "kasur", hint: "Tempat tidur empuk" },
+  { word: "gedung", hint: "Bangunan bertingkat" },
+  { word: "kerang", hint: "Hewan laut dengan cangkang" },
+  { word: "sabuk", hint: "Digunakan untuk mengikat celana" },
+  { word: "cermin", hint: "Memantulkan bayangan wajah" },
+  { word: "papan", hint: "Permukaan datar dari kayu" },
+  { word: "gasing", hint: "Mainan yang berputar" },
+  { word: "suling", hint: "Alat musik tiup" },
+  { word: "tehnik", hint: "Cara atau metode tertentu" },
+  { word: "tongkat", hint: "Alat bantu berjalan atau senjata" },
+  { word: "sisir", hint: "Alat merapikan rambut" },
+  { word: "rempah", hint: "Bumbu dapur dari tanaman" },
+  { word: "cincin", hint: "Perhiasan jari" },
+  { word: "pisau", hint: "Alat tajam untuk memotong" },
+  { word: "radio", hint: "Alat penerima siaran suara" },
+  { word: "penggaris", hint: "Alat ukur panjang" },
+  { word: "amplop", hint: "Pembungkus surat" },
+  { word: "kalung", hint: "Perhiasan leher" },
+  { word: "tebing", hint: "Dinding batu tinggi" },
+  { word: "samurai", hint: "Prajurit Jepang zaman dahulu" },
+  { word: "pompa", hint: "Alat untuk memindah udara atau air" },
+  { word: "jerami", hint: "Sisa batang padi" },
+  { word: "beton", hint: "Campuran semen, pasir, dan air" },
+  { word: "karung", hint: "Kantong besar dari goni" },
+  { word: "kamera", hint: "Alat menangkap gambar" },
+  { word: "baterai", hint: "Sumber daya listrik kecil" },
+  { word: "remang", hint: "Cahaya yang tidak terang" },
+  { word: "sapu", hint: "Untuk membersihkan lantai" },
+  { word: "jerigen", hint: "Tempat menyimpan air atau bensin" },
+  { word: "tali", hint: "Digunakan untuk mengikat" },
+  { word: "renda", hint: "Kain hiasan berlubang-lubang" },
+  { word: "karcis", hint: "Tanda masuk atau naik kendaraan" },
+  { word: "patung", hint: "Karya seni tiga dimensi" },
+  { word: "helm", hint: "Pelindung kepala saat berkendara" },
+  { word: "benang", hint: "Digunakan untuk menjahit" },
+  { word: "gorden", hint: "Penutup jendela dari kain" },
+  { word: "plakat", hint: "Papan penghargaan atau kenang-kenangan" },
+  { word: "piala", hint: "Hadiah lomba atau kejuaraan" },
+  { word: "palang", hint: "Penghalang jalan" },
+  { word: "tirai", hint: "Penghalang cahaya di jendela" },
+  { word: "sangkar", hint: "Kandang burung" },
+  { word: "layar", hint: "Tempat memproyeksikan gambar" },
+  { word: "bajak", hint: "Alat untuk membajak sawah" },
+  { word: "bubur", hint: "Makanan dari nasi lembek" },
+  { word: "pemicu", hint: "Penyebab awal terjadinya sesuatu" },
+  { word: "pantai", hint: "Batas antara daratan dan laut" },
+  { word: "kran", hint: "Alat mengatur aliran air" },
+  { word: "payung", hint: "Pelindung dari hujan" },
+  { word: "jemuran", hint: "Tempat menjemur pakaian" },
+  { word: "pasir", hint: "Butiran halus di pantai" },
+  { word: "spons", hint: "Alat mandi berbusa" },
+  { word: "ukiran", hint: "Seni memahat atau menggores" },
+  { word: "kubus", hint: "Benda tiga dimensi dengan sisi sama" },
+  { word: "buku", hint: "Berisi kumpulan halaman untuk dibaca" },
+  { word: "kipas", hint: "Alat menghasilkan angin" },
+  { word: "tinta", hint: "Cairan untuk menulis" },
+  { word: "paku", hint: "Logam kecil untuk menancap di kayu" },
+  { word: "serut", hint: "Alat meraut pensil" },
+  { word: "karcis", hint: "Tiket masuk atau naik kendaraan umum" }
+      ],
+      hard: [
+        { word: "kalkulator", hint: "Digunakan untuk menghitung angka" },
+        { word: "mikroskop", hint: "Untuk melihat benda kecil sekali" },
+        { word: "astronaut", hint: "Orang yang pergi ke luar angkasa" }, 
+  { word: "konstitusi", hint: "Undang-undang dasar negara" },
+  { word: "filosofi", hint: "Ilmu tentang hakikat dan pemikiran mendalam" },
+  { word: "arsitektur", hint: "Ilmu tentang perancangan bangunan" },
+  { word: "astronomi", hint: "Ilmu tentang benda langit" },
+  { word: "geometri", hint: "Cabang matematika tentang bentuk dan ruang" },
+  { word: "sarkasme", hint: "Sindiran pedas yang menyakitkan" },
+  { word: "eklektik", hint: "Memilih yang terbaik dari berbagai sumber" },
+  { word: "deduksi", hint: "Proses menarik kesimpulan dari premis" },
+  { word: "konsolidasi", hint: "Penyatuan untuk memperkuat posisi" },
+  { word: "antropologi", hint: "Ilmu tentang manusia dan budaya" },
+  { word: "metafora", hint: "Gaya bahasa kiasan" },
+  { word: "anarki", hint: "Keadaan tanpa pemerintahan atau aturan" },
+  { word: "retorika", hint: "Seni berbicara meyakinkan" },
+  { word: "ambiguitas", hint: "Kata atau kalimat yang memiliki makna ganda" },
+  { word: "hierarki", hint: "Tingkatan dalam suatu sistem organisasi" },
+  { word: "ideologi", hint: "Kumpulan ide atau gagasan dasar" },
+  { word: "konstruksi", hint: "Proses membangun fisik" },
+  { word: "mitologi", hint: "Kumpulan cerita dewa dan makhluk kuno" },
+  { word: "paradigma", hint: "Cara pandang terhadap sesuatu" },
+  { word: "estetika", hint: "Keindahan dalam seni dan filosofi" },
+  { word: "proklamasi", hint: "Pernyataan resmi kemerdekaan" },
+  { word: "manipulasi", hint: "Mengatur secara licik untuk keuntungan" },
+  { word: "kalkulasi", hint: "Proses menghitung" },
+  { word: "spekulasi", hint: "Dugaan tanpa bukti kuat" },
+  { word: "deliberasi", hint: "Proses mempertimbangkan secara matang" },
+  { word: "eksploitasi", hint: "Pemanfaatan berlebihan dan tidak adil" },
+  { word: "interpretasi", hint: "Tafsiran terhadap sesuatu" },
+  { word: "resonansi", hint: "Pantulan suara atau getaran" },
+  { word: "presisi", hint: "Tingkat ketepatan yang tinggi" },
+  { word: "transparansi", hint: "Keterbukaan informasi" },
+  { word: "konvergensi", hint: "Penggabungan menuju satu titik" },
+  { word: "divergensi", hint: "Pemisahan arah atau pendapat" },
+  { word: "ekspresi", hint: "Pernyataan perasaan atau ide" },
+  { word: "dedikasi", hint: "Pengabdian sepenuh hati" },
+  { word: "epistemologi", hint: "Ilmu tentang pengetahuan" },
+  { word: "legitimasi", hint: "Pengesahan atau pembenaran resmi" },
+  { word: "kontemplasi", hint: "Renungan mendalam" },
+  { word: "subordinasi", hint: "Kepatuhan terhadap otoritas" },
+  { word: "akumulasi", hint: "Penumpukan secara bertahap" },
+  { word: "konsistensi", hint: "Keselarasan terus-menerus" },
+  { word: "integritas", hint: "Kejujuran dan moral yang tinggi" },
+  { word: "kompleksitas", hint: "Keadaan yang rumit" },
+  { word: "introspeksi", hint: "Menilai diri sendiri secara jujur" },
+  { word: "eliminasi", hint: "Penghapusan atau pengeluaran" },
+  { word: "kontradiksi", hint: "Pertentangan logis antara dua hal" },
+  { word: "rekonsiliasi", hint: "Pemulihan hubungan yang rusak" },
+  { word: "koordinasi", hint: "Kerja sama yang terorganisir" },
+  { word: "renovasi", hint: "Perbaikan atau pembaruan bangunan" },
+  { word: "kompensasi", hint: "Penggantian kerugian atau kerja" },
+  { word: "dokumentasi", hint: "Kumpulan data atau catatan resmi" },
+  { word: "inkonsistensi", hint: "Tidak tetap atau berubah-ubah" },
+  { word: "skenario", hint: "Rencana atau alur cerita" },
+  { word: "sintesis", hint: "Penggabungan unsur menjadi satu" },
+  { word: "resiliensi", hint: "Kemampuan bertahan dalam tekanan" },
+  { word: "inovasi", hint: "Penemuan baru atau pembaruan" },
+  { word: "depresiasi", hint: "Penurunan nilai" },
+  { word: "validasi", hint: "Pembuktian kebenaran atau keabsahan" },
+  { word: "evakuasi", hint: "Pemindahan dari tempat berbahaya" },
+  { word: "representasi", hint: "Perwakilan dari sesuatu" },
+  { word: "afirmasi", hint: "Pernyataan positif terhadap diri" },
+  { word: "mobilisasi", hint: "Penggerakan sumber daya atau orang" },
+  { word: "modifikasi", hint: "Perubahan bentuk atau fungsi" },
+  { word: "indikasi", hint: "Tanda-tanda atau petunjuk" },
+  { word: "prosedur", hint: "Langkah-langkah sistematis" },
+  { word: "justifikasi", hint: "Alasan pembenaran" },
+  { word: "legalitas", hint: "Status sah secara hukum" },
+  { word: "otonom", hint: "Mandiri tanpa campur tangan luar" },
+  { word: "eksklusif", hint: "Hanya untuk golongan tertentu" },
+  { word: "proaktif", hint: "Bertindak sebelum terjadi masalah" },
+  { word: "konfrontasi", hint: "Pertentangan langsung" },
+  { word: "kredibilitas", hint: "Tingkat kepercayaan" },
+  { word: "metodologi", hint: "Cara ilmiah dalam penelitian" },
+  { word: "difusi", hint: "Penyebaran partikel dalam zat" },
+  { word: "substansi", hint: "Isi pokok dari sesuatu" },
+  { word: "transendensi", hint: "Melebihi batas normal atau duniawi" },
+  { word: "emansipasi", hint: "Pembebasan dari penindasan" },
+  { word: "implementasi", hint: "Pelaksanaan dari rencana" },
+  { word: "optimalisasi", hint: "Meningkatkan ke tingkat terbaik" },
+  { word: "diversifikasi", hint: "Penciptaan variasi baru" },
+  { word: "verifikasi", hint: "Pengecekan kebenaran" },
+  { word: "intervensi", hint: "Campur tangan dalam urusan lain" },
+  { word: "relevansi", hint: "Keterkaitan dengan topik" },
+  { word: "replikasi", hint: "Peniruan atau penggandaan" },
+  { word: "rekapitulasi", hint: "Rangkuman atau penjumlahan akhir" },
+  { word: "persepsi", hint: "Cara pandang atau pengamatan" },
+  { word: "abstraksi", hint: "Pemikiran tanpa bentuk nyata" },
+  { word: "definisi", hint: "Penjelasan arti suatu istilah" },
+  { word: "evaluasi", hint: "Penilaian terhadap sesuatu" },
+  { word: "akurasi", hint: "Ketepatan tinggi" },
+  { word: "visi", hint: "Pandangan masa depan" },
+  { word: "reformasi", hint: "Perubahan ke arah yang lebih baik" },
+  { word: "deduksi", hint: "Kesimpulan dari fakta umum" },
+  { word: "manifestasi", hint: "Perwujudan nyata dari ide" },
+  { word: "esensial", hint: "Hal yang sangat penting" },
+  { word: "konsepsi", hint: "Pemikiran awal atau ide" },
+  { word: "asimilasi", hint: "Penyatuan budaya atau ilmu" },
+  { word: "fundamental", hint: "Dasar atau pokok utama" }
+      ]
+    };
+
+    let currentWord = "";
+    let currentHint = "";
+    let scoreBenar = 0;
+    let scoreSalah = 0;
+    let scoreKalah = 0;
+    let lives = 5;
+    let maxLives = 5;
+    let gameOver = false;
+
+    function startGame() {
+      const level = document.getElementById("difficulty").value;
+      const words = wordLists[level];
+      const chosen = words[Math.floor(Math.random() * words.length)];
+      currentWord = chosen.word.toLowerCase();
+      currentHint = chosen.hint;
+      document.getElementById("hint").textContent = "Clue: " + currentHint;
+      document.getElementById("resultText").textContent = "";
+      document.getElementById("guessInput").value = "";
+      gameOver = false;
+      lives = maxLives;
+      updateLivesDisplay();
+      enableInput(true);
+    }
+
+    function checkGuess() {
+      if (gameOver) return;
+
+      const guess = document.getElementById("guessInput").value.toLowerCase();
+      const resultText = document.getElementById("resultText");
+
+      if (guess === currentWord) {
+        resultText.textContent = "Benar! 🎉 Kata: " + currentWord;
+        resultText.style.color = "lime";
+        scoreBenar++;
+        document.getElementById("scoreBenar").textContent = scoreBenar;
+        setTimeout(startGame, 2000);
+      } else {
+        resultText.textContent = "Salah! Ganti jawaban.";
+        resultText.style.color = "red";
+        scoreSalah++;
+        document.getElementById("scoreSalah").textContent = scoreSalah;
+        removeLife();
+      }
+    }
+
+    function updateLivesDisplay() {
+      const container = document.getElementById("livesContainer");
+      container.innerHTML = "";
+      for (let i = 0; i < lives; i++) {
+        const heart = document.createElement("span");
+        heart.className = "heart";
+        heart.textContent = "❤️";
+        container.appendChild(heart);
+      }
+    }
+
+    function removeLife() {
+      if (lives > 0) {
+        const hearts = document.querySelectorAll(".heart");
+        const lastHeart = hearts[hearts.length - 1];
+        lastHeart.classList.add("lost");
+        setTimeout(() => {
+          lastHeart.remove();
+        }, 400);
+        lives--;
+
+        if (lives <= 0) {
+          gameOver = true;
+          scoreKalah++;
+          document.getElementById("scoreKalah").textContent = scoreKalah;
+          document.getElementById("resultText").textContent = "Game Over 💀 Nyawa habis!";
+          document.getElementById("resultText").style.color = "orange";
+          enableInput(false);
+        }
+      }
+    }
+
+    function enableInput(enable) {
+      document.getElementById("guessInput").disabled = !enable;
+      document.getElementById("guessBtn").disabled = !enable;
+    }
+  </script>
+</body>
+  </html>
