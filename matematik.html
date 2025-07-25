@@ -1,174 +1,104 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Math Challenge!</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Matematika - ZeroByteID</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #121222;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      height: 100vh;
-      margin: 0;
-    }
-
-    :root {
-      --neon-color: #00f7ff;
-    }
-
-    .container {
-      background-color: #1c1c2e;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00ffff44;
-      text-align: center;
-    }
-
-    select, input {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      margin-top: 10px;
-    }
-
-    .btn {
-      padding: 10px 15px;
-      background-color: #ff4d4d;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .btn:hover {
-      background-color: #e04343;
-    }
-
-    .question {
-      font-size: 24px;
-      margin: 15px 0;
-      color: #00ffff;
-    }
-
-    .score, .timer {
-      margin-top: 10px;
-    }
-
-    .tombol {
-      display: block;
-      width: 100%;
-      max-width: 265px;
-      margin: 25px auto 0 auto;
-      padding: 14px 20px;
-      background-color: rgba(17, 24, 39, 1);
-      color: white;
-      text-align: center;
-      font-weight: bold;
-      border-radius: 10px;
-      border: 2px solid var(--neon-color);
-      box-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color);
-      text-decoration: none;
-      transition: 0.3s ease;
-    }
-
-    .tombol:hover {
-      background-color: rgba(0, 0, 0, 0.7);
-      box-shadow: 0 0 15px var(--neon-color), 0 0 25px var(--neon-color), 0 0 35px var(--neon-color);
+      font-family: 'Segoe UI', sans-serif;
     }
   </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-purple-800 via-indigo-700 to-blue-700 min-h-screen text-white flex flex-col items-center justify-start py-10 px-4">
 
-  <div class="container">
-    <h2>Math Challenge!</h2>
-    <label for="difficulty">Pilih Kesulitan:</label>
-    <select id="difficulty">
-      <option value="easy">Mudah</option>
-      <option value="medium">Sedang</option>
-      <option value="hard">Sulit</option>
-    </select>
+  <div class="bg-white bg-opacity-10 backdrop-blur-xl p-6 rounded-2xl shadow-2xl max-w-md w-full">
+    <h1 class="text-3xl font-extrabold text-center text-cyan-300 mb-4">🎯 Game Matematika</h1>
 
-    <div class="question" id="question">9 + 6 = ?</div>
+    <p class="text-center text-sm text-cyan-100 mb-4">Pilih tingkat kesulitan dan jawab soal matematika dengan benar. Cocok untuk semua usia!</p>
 
-    <input type="number" id="answer" placeholder="Jawaban kamu">
-    <button class="btn" onclick="checkAnswer()">Cek Jawaban</button>
+    <div class="mb-4">
+      <label for="difficulty" class="block text-cyan-200 mb-2">Tingkat Kesulitan:</label>
+      <select id="difficulty" class="w-full p-2 rounded bg-cyan-700 text-white font-semibold">
+        <option value="easy">Mudah</option>
+        <option value="medium">Sedang</option>
+        <option value="hard">Sulit</option>
+      </select>
+    </div>
 
-    <div class="score" id="score">Skor: 0</div>
-    <div class="timer" id="timer">Waktu: 10 detik</div>
-    <button class="btn" onclick="newQuestion()">Soal Baru</button>
+    <div class="bg-black bg-opacity-20 p-4 rounded-lg shadow mt-4 mb-4 text-center">
+      <div class="text-2xl font-bold text-cyan-100" id="question">Klik "Soal Baru"</div>
+    </div>
+
+    <input id="answer" type="number" placeholder="Jawaban kamu..." class="w-full p-2 rounded text-black text-xl mb-4 focus:ring-2 focus:ring-cyan-500"/>
+
+    <div class="flex gap-2 mb-4">
+      <button onclick="submitAnswer()" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 rounded transition">Jawab</button>
+      <button onclick="generateQuestion()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 rounded transition">Soal Baru</button>
+    </div>
+
+    <p class="text-center font-semibold" id="feedback"></p>
+    <p class="text-center mt-3 text-cyan-300 font-semibold">Skor: <span id="score">0</span></p>
   </div>
-
-  <!-- Tombol kembali di bawah kotak -->
-  <a href="gameseru.html" class="tombol">Kembali</a>
-
+  
+  <div class="mt-6">
+  <a href="index.html" class="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-6 rounded shadow-lg transition inline-block">
+    Kembali ke Menu
+  </a>
+</div>
+  
   <script>
-    let correctAnswer;
+    let currentAnswer = 0;
     let score = 0;
-    let timeLeft = 10;
-    let timer;
 
     function generateQuestion() {
-      const difficulty = document.getElementById('difficulty').value;
-      let num1, num2;
+      const level = document.getElementById('difficulty').value;
+      let num1, num2, operator;
 
-      switch (difficulty) {
-        case "easy":
-          num1 = Math.floor(Math.random() * 10);
-          num2 = Math.floor(Math.random() * 10);
-          break;
-        case "medium":
-          num1 = Math.floor(Math.random() * 50);
-          num2 = Math.floor(Math.random() * 50);
-          break;
-        case "hard":
-          num1 = Math.floor(Math.random() * 100);
-          num2 = Math.floor(Math.random() * 100);
-          break;
+      if (level === 'easy') {
+        num1 = Math.floor(Math.random() * 10) + 1;
+        num2 = Math.floor(Math.random() * 10) + 1;
+        operator = '+';
+        currentAnswer = num1 + num2;
+      } else if (level === 'medium') {
+        num1 = Math.floor(Math.random() * 50) + 10;
+        num2 = Math.floor(Math.random() * 30) + 5;
+        operator = Math.random() > 0.5 ? '+' : '-';
+        currentAnswer = operator === '+' ? num1 + num2 : num1 - num2;
+      } else {
+        num1 = Math.floor(Math.random() * 20) + 5;
+        num2 = Math.floor(Math.random() * 10) + 2;
+        operator = '*';
+        currentAnswer = num1 * num2;
       }
 
-      correctAnswer = num1 + num2;
-      document.getElementById('question').innerText = `${num1} + ${num2} = ?`;
+      document.getElementById('question').textContent = `${num1} ${operator} ${num2} = ?`;
+      document.getElementById('feedback').textContent = '';
       document.getElementById('answer').value = '';
     }
 
-    function checkAnswer() {
-      const userAnswer = parseInt(document.getElementById('answer').value);
-      if (userAnswer === correctAnswer) {
-        score++;
-        alert("Benar!");
-      } else {
-        alert("Salah!");
+    function submitAnswer() {
+      const userInput = parseInt(document.getElementById('answer').value);
+      const feedback = document.getElementById('feedback');
+
+      if (isNaN(userInput)) {
+        feedback.textContent = "Masukkan jawaban yang valid!";
+        feedback.className = "text-yellow-400";
+        return;
       }
-      document.getElementById('score').innerText = `Skor: ${score}`;
-      newQuestion();
-    }
 
-    function newQuestion() {
-      clearInterval(timer);
-      timeLeft = 10;
-      generateQuestion();
-      document.getElementById('timer').innerText = `Waktu: ${timeLeft} detik`;
-      timer = setInterval(() => {
-        timeLeft--;
-        document.getElementById('timer').innerText = `Waktu: ${timeLeft} detik`;
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          alert("Waktu habis!");
-          newQuestion();
-        }
-      }, 1000);
+      if (userInput === currentAnswer) {
+        score++;
+        feedback.textContent = "✅ Jawaban Benar!";
+        feedback.className = "text-green-400";
+        document.getElementById('score').textContent = score;
+        generateQuestion();
+      } else {
+        feedback.textContent = "❌ Salah, coba lagi!";
+        feedback.className = "text-red-400";
+      }
     }
-
-    window.onload = () => {
-      newQuestion();
-    };
   </script>
-
 </body>
 </html>
