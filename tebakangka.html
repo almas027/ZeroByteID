@@ -1,141 +1,87 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Tebak Angka Ajaib</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Game Tebak Angka - ZeroByteID</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <style>
     body {
-      background: #1e1e2f;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
+      font-family: 'Segoe UI', sans-serif;
     }
-
-    h1 {
-      color: #00ffff;
-      text-shadow: 0 0 10px #00ffff99;
-    }
-
-    .game-box {
-      background: #2c2f4a;
-      padding: 30px;
-      border-radius: 20px;
-      max-width: 400px;
-      margin: auto;
-      box-shadow: 0 0 20px #00ffff55;
-    }
-
-    input[type="number"] {
-      padding: 10px;
-      width: 60%;
-      border-radius: 8px;
-      border: none;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #00ffff;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .result {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-
-    .win {
-      color: #00ff88;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .reset {
-      margin-top: 15px;
-      background-color: #ff5e5e;
-      color: white;
-    }
-    
-    :root {
-  --neon-color: #00f7ff;
-}
-
-    .tombol {
-      display: block;
-      width: 100%;
-      max-width: 265px;
-      margin: 15px auto;
-      padding: 14px 20px;
-      background-color: rgba(17, 24, 39, 1); /* Transparan elegan */
-      color: white;
-      text-align: center;
-      font-weight: bold;
-      border-radius: 10px;
-      border: 2px solid var(--neon-color);
-      box-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color);
-      text-decoration: none;
-      transition: 0.3s ease;
-    }
-
-    .tombol:hover {
-      background-color: rgba(0, 0, 0, 0.7);
-      box-shadow: 0 0 15px var(--neon-color), 0 0 25px var(--neon-color), 0 0 35px var(--neon-color);
-    }
-    
   </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-indigo-800 via-purple-800 to-blue-900 min-h-screen flex items-center justify-center p-4">
 
-  <h1>🎲 Tebak Angka Ajaib!</h1>
+  <div class="bg-white bg-opacity-10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl w-full max-w-md text-white">
+    <h1 class="text-3xl font-bold text-center mb-2 text-cyan-300">Game Tebak Angka</h1>
+    <p class="text-center text-sm mb-6 text-gray-200">Tebak angka dari 1 sampai 100. Raih skor terbaik!</p>
 
-  <div class="game-box">
-    <p>Tebak angka dari 1 sampai 100</p>
-    <input type="number" id="guessInput" min="1" max="100" />
-    <br>
-    <button onclick="checkGuess()">Tebak</button>
+    <div class="flex items-center gap-3 mb-4 justify-center">
+      <input id="guessInput" type="number" placeholder="1–100"
+        class="w-300 px-3 py-2 rounded-lg text-black border-4 border-cyan-500 text-base focus:outline-none focus:ring-2 focus:ring-cyan-400"/>
+      <button onclick="checkGuess()" class="bg-green-500 hover:bg-green-600 px-5 py-2 rounded-xl shadow font-semibold">Tebak</button>
+    </div>
 
-    <div class="result" id="resultMsg"></div>
+    <div class="flex justify-center mb-3">
+      <button onclick="resetGame()" class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-5 py-2 rounded-xl shadow">Main Lagi</button>
+    </div>
 
-    <button class="reset" onclick="resetGame()">🔄 Main Lagi</button>
+    <div id="feedback" class="text-center text-xl mt-4 font-semibold min-h-[2rem]"></div>
+    <div class="text-center mt-2 text-lg">Skor: <span id="score" class="font-bold text-cyan-300">0</span></div>
+
+    <div class="text-center mt-6">
+      <a href="index.html" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl shadow font-semibold">Kembali</a>
+    </div>
+
+    <footer class="mt-6 text-center text-sm text-gray-300">
+      Dibuat oleh <strong>ZeroByteID</strong> - Tujuan: Melatih logika dan intuisi angka melalui game sederhana yang menyenangkan.
+    </footer>
   </div>
-  <a href="gameseru.html" class="tombol">KEMBALI</a>
 
   <script>
-    let randomNumber = Math.floor(Math.random() * 100) + 1;
-    let attempts = 0;
+    let randomNumber = 0;
+    let score = 0;
+
+    function generateRandom() {
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+    }
 
     function checkGuess() {
-      const guess = parseInt(document.getElementById("guessInput").value);
-      const result = document.getElementById("resultMsg");
-      attempts++;
+      const input = document.getElementById('guessInput');
+      const feedback = document.getElementById('feedback');
+      const value = parseInt(input.value);
 
-      if (isNaN(guess) || guess < 1 || guess > 100) {
-        result.innerHTML = "Masukkan angka antara 1 - 100!";
+      if (isNaN(value) || value < 1 || value > 100) {
+        feedback.textContent = "Masukkan angka antara 1 dan 100!";
+        feedback.className = "text-red-400 text-center text-xl mt-4 font-semibold";
         return;
       }
 
-      if (guess === randomNumber) {
-        result.innerHTML = `🎉 <span class="win">Benar! Kamu menebak dalam ${attempts} percobaan.</span>`;
-      } else if (guess < randomNumber) {
-        result.innerHTML = "📉 Terlalu kecil!";
+      if (value === randomNumber) {
+        score++;
+        feedback.textContent = "Tebakanmu Benar! 🎉";
+        feedback.className = "text-green-400 text-center text-xl mt-4 font-semibold";
+        document.getElementById('score').textContent = score;
+        generateRandom();
+      } else if (value < randomNumber) {
+        feedback.textContent = "Terlalu kecil!";
+        feedback.className = "text-yellow-300 text-center text-xl mt-4 font-semibold";
       } else {
-        result.innerHTML = "📈 Terlalu besar!";
+        feedback.textContent = "Terlalu besar!";
+        feedback.className = "text-yellow-300 text-center text-xl mt-4 font-semibold";
       }
     }
 
     function resetGame() {
-      randomNumber = Math.floor(Math.random() * 100) + 1;
-      attempts = 0;
-      document.getElementById("guessInput").value = "";
-      document.getElementById("resultMsg").innerHTML = "";
+      score = 0;
+      document.getElementById('score').textContent = score;
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('guessInput').value = '';
+      generateRandom();
     }
+
+    generateRandom();
   </script>
 
 </body>
