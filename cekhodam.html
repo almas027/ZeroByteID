@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cek Khodam - Game Seru</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; }
+    input:focus { outline: none; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.5); }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-purple-800 text-white flex flex-col justify-center items-center px-4">
+
+  <div class="bg-white bg-opacity-10 backdrop-blur-md border border-purple-400 rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl">
+    <h1 class="text-4xl font-extrabold mb-4 text-purple-300 drop-shadow">🧿 Cek Khodam</h1>
+    <p class="mb-6 text-purple-200">Masukkan namamu untuk melihat khodam pendampingmu secara spiritual (hiburan semata).</p>
+
+    <input id="namaInput" type="text" placeholder="Masukkan Nama" class="w-full mb-4 px-4 py-3 rounded-lg border border-purple-400 text-gray-900 placeholder-gray-500 font-semibold text-center" />
+
+    <button id="cekBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-xl text-lg transition-all shadow-lg mb-6">
+      Cek Sekarang
+    </button>
+
+    <div id="resultBox" class="hidden border border-purple-400 rounded-xl p-4 bg-black bg-opacity-50 shadow-lg mb-6">
+      <h2 class="text-xl font-bold mb-2 text-purple-300">Hasil Khodam untuk <span id="namaOrang" class="underline"></span>:</h2>
+      <p id="khodamName" class="text-2xl font-semibold text-yellow-300 mb-1"></p>
+      <p id="khodamType" class="text-sm text-purple-200 italic mb-2"></p>
+      <p id="khodamInfo" class="text-sm text-purple-100 text-left"></p>
+    </div>
+
+    <a href="gameseru.html" class="inline-block mt-2 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold py-2 px-6 rounded-xl transition-all shadow-md">
+      Kembali ke Menu
+    </a>
+  </div>
+
+  <div class="text-sm text-purple-100 text-center mt-8 max-w-md">
+    <p><strong>Tujuan:</strong> Game ini dibuat untuk hiburan dan kesenangan belaka. Semua informasi khodam tidak untuk dipercaya secara serius.</p>
+    <p class="mt-2">Dibuat oleh <strong>ZeroByteID</strong> © 2024</p>
+  </div>
+
+  <script>
+    const khodams = [
+      {
+        name: "Raden Wijaya",
+        type: "Khodam penjaga keturunan raja",
+        info: "Melambangkan kekuatan dan keberanian. Memberi semangat juang dan rasa kepemimpinan yang kuat."
+      },
+      {
+        name: "Kyai Jati",
+        type: "Khodam pelindung leluhur",
+        info: "Menjaga keturunan dan tradisi leluhur. Memberi perlindungan dari energi negatif."
+      },
+      {
+        name: "Nyi Roro Kidul",
+        type: "Khodam penguasa laut selatan",
+        info: "Penuh misteri dan karisma. Menjaga keseimbangan batin dan daya tarik personal."
+      },
+      {
+        name: "Ki Ageng Selo",
+        type: "Khodam petir dan perubahan",
+        info: "Simbol perubahan cepat. Menambah intuisi dan perlindungan terhadap hal buruk."
+      },
+      {
+        name: "Empu Gandring",
+        type: "Khodam kekuatan keris spiritual",
+        info: "Menambah ketajaman pikiran dan kekuatan spiritual. Menjaga energi sakti leluhur."
+      },
+      {
+        name: "Sunan Kalijaga",
+        type: "Khodam kebijaksanaan",
+        info: "Membawa kedamaian, pengaruh positif dan kemampuan diplomasi tinggi."
+      },
+      {
+        name: "Jaka Tarub",
+        type: "Khodam keberuntungan cinta",
+        info: "Melambangkan misteri asmara dan keberuntungan dalam mimpi serta intuisi."
+      },
+      {
+        name: "Kyai Semar",
+        type: "Khodam humor & kebijaksanaan",
+        info: "Simbol kesederhanaan dan hati yang besar. Membimbing dengan canda dan kasih."
+      }, 
+      {
+  name: "Centong Melengkung",
+  type: "Khodam Dapur Spiritual",
+  info: "Simbol kesabaran dan pengorbanan. Ia menjaga orang-orang yang sering mengambil nasi terakhir tanpa mengeluh. Centong ini membimbing agar tidak serakah dan selalu berbagi, bahkan saat lapar."
+},
+{
+  name: "Sapu Terbang ",
+  type: "Khodam Kebersihan Batin",
+  info: "Ia menyapu hati dari iri dan dengki, bukan hanya lantai. Membawa energi ringan dan ketulusan seperti sapuan angin malam yang menenangkan pikiran."
+},
+{
+  name: "Gayung Tersesat",
+  type: "Khodam Penjaga Keseimbangan Air",
+  info: "Gayung ini muncul di ember yang bukan miliknya. Simbol adaptasi dan kebijaksanaan: di mana pun kamu berada, kamu tetap berguna."
+},
+{
+  name: "Sendok Bengkok",
+  type: "Khodam Telekinesis Emosional",
+  info: "Mewakili kekuatan batin untuk menekuk ego. Ketika kamu merasa dunia tak sesuai keinginanmu, sendok ini mengajarkan untuk tetap lentur, bukan patah."
+},
+{
+  name: "Karet Gelang Sakti",
+  type: "Khodam Kekuatan Simpel",
+  info: "Bersama benda kecil ini, kamu belajar makna dari kesetiaan dan fleksibilitas. Ia selalu kembali, meski ditarik sejauh apa pun."
+},
+{
+  name: "Tutup Panci Hilang",
+  type: "Khodam Misteri Sejati",
+  info: "Ia tidak pernah ditemukan, tapi selalu terasa kehadirannya. Mengajarkan bahwa tidak semua kehilangan perlu dicari—sebagian mengajarkan ikhlas."
+},
+{
+  name: "Kabel Kusut Abadi",
+  type: "Khodam Ujian Kesabaran",
+  info: "Setiap lilitannya adalah ujian hidup. Ia hadir untuk menempa mental yang kuat dan tangan yang sabar dalam menghadapi kekacauan dunia."
+},
+{
+  name: "Sendal Satu",
+  type: "Khodam Keberanian Sendiri",
+  info: "Mengajarkan bahwa dalam hidup kita kadang berjalan dengan satu kaki, tapi tetap melangkah. Ia setia dalam keheningan dan kehilangan pasangan."
+}, 
+{
+  name: "Sendok Petualang",
+  type: "Khodam Penjelajah Rasa",
+  info: "Selalu siap mencicipi pahit dan manis kehidupan, mengajarkan bahwa setiap rasa ada maknanya."
+},
+{
+  name: "Obeng Hening",
+  type: "Khodam Perbaikan Jiwa",
+  info: "Memutar perlahan ego yang longgar agar kembali kuat, tenang dalam bekerja, tajam dalam menyadarkan."
+},
+{
+  name: "Tikus Sufi",
+  type: "Khodam Pengendali Nafsu",
+  info: "Mencari remah makna dalam gelapnya lorong batin, mengajarkan kesederhanaan dan pencarian hakikat."
+},
+{
+  name: "Cermin Buta",
+  type: "Khodam Refleksi Diri",
+  info: "Tidak memperlihatkan rupa, tapi menampakkan kesalahan batin yang tersembunyi."
+},
+{
+  name: "Gunting Penghapus",
+  type: "Khodam Pemutus Masa Lalu",
+  info: "Memotong luka lama tanpa menyisakan dendam, memberi ruang untuk tumbuh kembali."
+},
+{
+  name: "Ikan Mengantuk",
+  type: "Khodam Ketentraman Malam",
+  info: "Bergerak dalam diam, menemani tidur dengan gelombang ketenangan yang tak terucap."
+},
+{
+  name: "Senter Tuli",
+  type: "Khodam Pencari Cahaya",
+  info: "Tidak mendengar bising dunia, hanya menyinari jalan batin yang benar."
+},
+{
+  name: "Gembok Terbuka",
+  type: "Khodam Kebebasan Terjaga",
+  info: "Mengajarkan bahwa keterbukaan bukan kelemahan, tapi kekuatan jiwa yang tak takut dicuri."
+},
+{
+  name: "Topi Hujan",
+  type: "Khodam Perlindungan Emosi",
+  info: "Melindungi pikiran dari hujan kekhawatiran, memberi atap ketenangan saat badai datang."
+}, 
+{
+  name: "Payung Terbalik",
+  type: "Khodam Perlindungan Tak Terduga",
+  info: "Meskipun bentuknya kacau, ia mampu melindungi dari badai emosi secara tak terduga. Simbol bahwa perlindungan kadang datang dari arah yang tak kita duga."
+},
+{
+  name: "Batu Menggelinding",
+  type: "Khodam Keteguhan Hati",
+  info: "Ia terus menggelinding tanpa henti, mengajarkan bahwa keteguhan dan konsistensi adalah kunci melewati rintangan hidup."
+},
+{
+  name: "Ikan Lompat-Lompat",
+  type: "Khodam Ketidakpastian Positif",
+  info: "Gerakannya tak terduga, membawa pesan bahwa terkadang hal-hal tak terencana justru membawa keberkahan."
+},
+{
+  name: "Kipas Rongsok",
+  type: "Khodam Kesejukan Jiwa",
+  info: "Meski sudah tua, ia tetap menghembuskan angin sejuk penuh kedamaian. Mengajarkan bahwa nilai bukan terletak pada bentuk, tapi manfaat."
+},
+{
+  name: "Sepatu Terbalik",
+  type: "Khodam Kesalahan Bermakna",
+  info: "Ia hadir untuk menunjukkan bahwa kesalahan adalah bagian dari perjalanan. Dari langkah yang salah, kita belajar arah yang benar."
+},
+{
+  name: "Kancing Lepas",
+  type: "Khodam Ketelitian Terabaikan",
+  info: "Ia mengingatkan bahwa hal kecil yang kita abaikan bisa menyebabkan celaka besar. Waspadalah terhadap detail!"
+},
+{
+  name: "Kucing Berdiri Dua Kaki",
+  type: "Khodam Kejutan Kehidupan",
+  info: "Tingkah lucunya mengingatkan kita bahwa keajaiban bisa muncul dari hal yang tidak biasa."
+},
+{
+  name: "Sendok Kecil",
+  type: "Khodam Sabar Menyendok Rezeki",
+  info: "Ia mengajarkan bahwa rezeki tak selalu datang dalam jumlah besar, tapi yang sedikit dan cukup akan membawa berkah."
+},
+{
+  name: "Kerupuk Patah",
+  type: "Khodam Ketangguhan Rasa",
+  info: "Walau patah, rasa gurihnya tetap utuh. Ia hadir untuk mengingatkan bahwa nilai sejati tak ditentukan oleh bentuk luar."
+},
+{
+  name: "Motor Mogok",
+  type: "Khodam Kesabaran Dalam Perjalanan",
+  info: "Ia hadir untuk membuatmu berhenti sejenak dan merenung. Tidak semua perjalanan harus cepat, kadang perlu jeda."
+},
+{
+  name: "Lampu Redup",
+  type: "Khodam Harapan Dalam Gelap",
+  info: "Meski cahayanya lemah, ia tetap menerangi. Ia hadir sebagai simbol harapan yang tetap hidup meski dunia terasa gelap."
+},
+{
+  name: "Gelombang WiFi",
+  type: "Khodam Koneksi Batin",
+  info: "Tak terlihat tapi terasa, ia mengajarkan bahwa keterhubungan antar hati jauh lebih penting dari sekadar sinyal."
+},
+{
+  name: "Tikar Sobek",
+  type: "Khodam Kenyamanan yang Terlupakan",
+  info: "Ia mengingatkan kita akan nilai kehangatan dan kebersamaan meski sederhana. Tikar tua pun menyimpan kenangan."
+},
+{
+  name: "Jam Dinding Mati",
+  type: "Khodam Waktu yang Diam",
+  info: "Ia hadir untuk menyampaikan bahwa terkadang diam adalah cara terbaik untuk mengingat momen yang berarti."
+},
+{
+  name: "Kabel Kusut",
+  type: "Khodam Keruwetan Hidup",
+  info: "Ia menunjukkan bahwa semua kekusutan bisa diurai, asal sabar dan tidak panik."
+},
+{
+  name: "Jendela Berdebu",
+  type: "Khodam Pandangan Batin",
+  info: "Ia mengingatkan bahwa untuk melihat jelas, terkadang kita harus membersihkan diri dari prasangka."
+},
+{
+  name: "Korek Api Basah",
+  type: "Khodam Harapan Tertunda",
+  info: "Ia mengajarkan bahwa api semangat bisa padam, tapi bukan berarti tak bisa menyala kembali."
+},
+{
+  name: "Tisu Sobek",
+  type: "Khodam Emosi Terluka",
+  info: "Ia hadir sebagai pelipur lara, meski rapuh, tetap mampu menyeka air mata yang jatuh."
+},
+{
+  name: "Sapu Lidi Rontok",
+  type: "Khodam Keteguhan Dalam Keterbatasan",
+  info: "Ia menunjukkan bahwa meski tak sempurna lagi, kekuatan sejati ada pada niat membersihkan yang tulus."
+},
+{
+  name: "Kancing Seragam",
+  type: "Khodam Kesetiaan Tersembunyi",
+  info: "Ia setia menempel di dada, mengingatkan kita akan tanggung jawab dan pengabdian."
+},
+{
+  name: "Tas Robek",
+  type: "Khodam Beban Hidup",
+  info: "Ia mengajarkan bahwa membawa terlalu banyak bisa membuat kita bocor. Pilihlah beban dengan bijak."
+},
+{
+  name: "Semut Terbalik",
+  type: "Khodam Kegigihan Tak Terbatas",
+  info: "Meski terjatuh, ia terus mencoba. Semangatnya tak lekang oleh keadaan."
+},
+{
+  name: "Gunting Tumpul",
+  type: "Khodam Keputusan Lambat",
+  info: "Ia hadir agar kita tak sembarangan memotong hubungan. Butuh ketajaman dan momen yang tepat."
+},
+{
+  name: "Baterai Lemah",
+  type: "Khodam Energi Yang Perlu Diisi",
+  info: "Ia hadir agar kita sadar bahwa manusia pun butuh diisi ulang, bukan dipaksa terus menyala."
+},
+{
+  name: "Boneka Berlubang",
+  type: "Khodam Kenangan Masa Lalu",
+  info: "Meski rusak, ia menyimpan cinta masa kecil. Mengajarkan kita untuk menghargai hal yang telah menemani lama."
+},
+{
+  name: "Rambut Rontok",
+  type: "Khodam Perubahan Alami",
+  info: "Ia mengingatkan bahwa melepaskan adalah bagian dari pertumbuhan, bahkan yang menyakitkan sekalipun."
+},
+{
+  name: "Stiker Mengelupas",
+  type: "Khodam Identitas Sementara",
+  info: "Ia mengajarkan bahwa label bukan segalanya. Nilai sejati tetap menempel di hati."
+},
+{
+  name: "Kaca Retak",
+  type: "Khodam Refleksi Jujur",
+  info: "Ia memperlihatkan bahwa bahkan dalam retakan, kita bisa melihat kebenaran."
+},
+{
+  name: "Tutup Botol Hilang",
+  type: "Khodam Ketiadaan Penghalang",
+  info: "Ia hadir agar kita tidak menutup diri terlalu rapat. Kadang terbuka lebih baik daripada terjaga terus-menerus."
+},
+{
+  name: "Kancing Cadangan",
+  type: "Khodam Kesempatan Kedua",
+  info: "Ia hadir untuk menggantikan yang hilang. Mengajarkan bahwa masih ada harapan walau yang utama telah pergi."
+},
+{
+  name: "Kipas Tangan",
+  type: "Khodam Kesegaran Darurat",
+  info: "Sederhana, tapi menyelamatkan. Ia hadir di saat panasnya situasi dan memberi ketenangan."
+},
+{
+  name: "Tali Rapuh",
+  type: "Khodam Kepercayaan Diuji",
+  info: "Ia mengingatkan bahwa hubungan butuh kekuatan dari dua sisi. Satu rapuh, semuanya terancam."
+},
+{
+  name: "Serangga Malam",
+  type: "Khodam Ketenangan Gelap",
+  info: "Ia membawa cahaya kecil dalam gelap, meski dengan suara bising. Mengajarkan bahwa kehadiran bisa bermakna meski tak sempurna."
+}, 
+{
+  name: "Kertas Kusut",
+  type: "Khodam Harapan Yang Diperbaiki",
+  info: "Meski telah diremas, ia masih bisa ditulis ulang. Mengingatkan bahwa harapan tak pernah benar-benar hilang."
+},
+{
+  name: "Teko Miring",
+  type: "Khodam Keseimbangan Hati",
+  info: "Walau tak sempurna, ia tetap menuangkan. Ia mengajarkan bahwa ketidaksempurnaan bukan halangan untuk berbagi."
+},
+{
+  name: "Bantal Kecemplung",
+  type: "Khodam Kenyamanan Yang Diuji",
+  info: "Basah dan tak lagi empuk, ia mengajarkan bahwa kenyamanan bisa hilang sewaktu-waktu. Bersiaplah."
+},
+{
+  name: "Pena Macet",
+  type: "Khodam Ekspresi Tersendat",
+  info: "Ia hadir saat kata-kata tak lagi mengalir. Diam bukan berarti tak berpikir."
+},
+{
+  name: "Topi Terbang",
+  type: "Khodam Kejutan Angin Hidup",
+  info: "Terlepas dari kepala, ia terbang membawa pesan bahwa hidup kadang membawa kita ke arah yang tak disangka."
+},
+{
+  name: "Peluit Hilang Suara",
+  type: "Khodam Peringatan Dalam Diam",
+  info: "Tak berbunyi, tapi tetap mengingatkan. Ia hadir sebagai simbol bahwa tindakan lebih kuat dari kata-kata."
+},
+{
+  name: "Rantai Longgar",
+  type: "Khodam Keterikatan Rapuh",
+  info: "Ia mengingatkan bahwa tidak semua hubungan sekuat yang kita kira. Perkuat sebelum lepas."
+},
+{
+  name: "Gelas Retak",
+  type: "Khodam Kerapuhan Yang Terselubung",
+  info: "Ia terlihat utuh, tapi menyimpan luka. Seperti manusia, perlu hati-hati dalam menampung emosi."
+},
+{
+  name: "Kucing Palsu",
+  type: "Khodam Keimanan Palsu",
+  info: "Ia mengingatkan bahwa kemiripan tidak menjamin kebenaran. Kenali esensi, bukan hanya rupa."
+},
+{
+  name: "Sendal Jomplang",
+  type: "Khodam Ketidakseimbangan Langkah",
+  info: "Langkahnya tak sejajar, tapi tetap berjalan. Hidup tak selalu seimbang, tapi bisa tetap maju."
+},
+{
+  name: "Bendera Robek",
+  type: "Khodam Patriotisme Yang Terluka",
+  info: "Walau sobek, warnanya tetap berkibar. Ia hadir sebagai simbol semangat yang tak mudah luntur."
+},
+{
+  name: "Senter Mati",
+  type: "Khodam Pencarian Tanpa Petunjuk",
+  info: "Gelap tak selalu menakutkan. Ia mengajak kita menemukan cahaya dari dalam diri."
+},
+{
+  name: "Kaca Pembesar Retak",
+  type: "Khodam Pandangan Yang Terdistorsi",
+  info: "Ia mengingatkan bahwa melihat terlalu dekat bisa mengaburkan kebenaran. Perlu jarak dan sudut pandang."
+},
+{
+  name: "Plastik Terbang",
+  type: "Khodam Kebebasan Tak Terarah",
+  info: "Melayang bebas, tapi tanpa tujuan. Ia hadir untuk mengingatkan bahwa arah lebih penting dari kecepatan."
+},
+{
+  name: "Tisu Basah Kering",
+  type: "Khodam Harapan Gagal Fungsi",
+  info: "Seharusnya menyegarkan, tapi ia kering. Ia hadir agar kita siap kecewa tanpa kehilangan harapan."
+},
+{
+  name: "Jam Alarm Rusak",
+  type: "Khodam Waktu Yang Terabaikan",
+  info: "Ia tak membangunkanmu lagi. Ia mengingatkan agar kita tak menunda kesadaran."
+},
+{
+  name: "Remote Tak Berfungsi",
+  type: "Khodam Kontrol Kehidupan",
+  info: "Ia hadir saat kita ingin mengubah, tapi lupa mengganti batre usaha. Kendali harus dimulai dari diri sendiri."
+},
+{
+  name: "Kaleng Kosong",
+  type: "Khodam Suara Tanpa Isi",
+  info: "Berisik saat ditendang, tapi kosong di dalam. Ia hadir sebagai peringatan bahwa kebisingan tak selalu bermakna."
+},
+{
+  name: "Kursi Goyang Retak",
+  type: "Khodam Istirahat Tak Tenang",
+  info: "Ia membuat duduk tak nyaman, mengingatkan kita bahwa kenyamanan pun perlu perbaikan."
+},
+{
+  name: "Kucing Menatap Kosong",
+  type: "Khodam Perenungan Dalam Diam",
+  info: "Tatapannya penuh misteri, ia hadir untuk mengajak kita merenung tanpa perlu kata."
+},
+{
+  name: "Plastik Kresek Sobek",
+  type: "Khodam Keberlebihan Yang Bocor",
+  info: "Muat terlalu banyak, ia bocor. Ia hadir sebagai pesan untuk membatasi diri agar tak kelebihan beban."
+},
+{
+  name: "Sisir Patah",
+  type: "Khodam Perapihan Terbatas",
+  info: "Meski patah, ia tetap menyisir. Mengajarkan bahwa kekurangan bukan alasan untuk tak bermanfaat."
+},
+{
+  name: "Pisau Tumpul",
+  type: "Khodam Penajaman Diri",
+  info: "Ia hadir agar kita menyadari pentingnya mengasah diri sebelum mencoba memotong masalah."
+},
+{
+  name: "Kalender Lama",
+  type: "Khodam Waktu yang Telah Lewat",
+  info: "Sudah lewat, tapi masih menggantung. Ia hadir agar kita belajar dari hari kemarin, bukan tinggal di sana."
+},
+{
+  name: "Toples Kosong",
+  type: "Khodam Keinginan Tak Terisi",
+  info: "Menggiurkan dari luar, tapi kosong di dalam. Ia hadir agar kita tak tertipu oleh penampilan."
+},
+{
+  name: "Selotip Nempel Sendiri",
+  type: "Khodam Keterikatan Buta",
+  info: "Ia menempel ke apa saja, tanpa pikir panjang. Ia mengajarkan pentingnya selektif dalam keterikatan."
+},
+{
+  name: "Bola Kempes",
+  type: "Khodam Semangat Hilang Angin",
+  info: "Ia mengingatkan bahwa semangat pun bisa kempes, dan butuh ditiup ulang oleh motivasi sejati."
+},
+{
+  name: "TV Tanpa Sinyal",
+  type: "Khodam Kekosongan Informasi",
+  info: "Hanya semut berlari di layar. Ia hadir agar kita berhenti sejenak dan mencari makna di luar kebisingan."
+},
+{
+  name: "Hanger Bengkok",
+  type: "Khodam Penyangga Yang Lelah",
+  info: "Ia menopang pakaian dengan bentuk tak wajar. Mengingatkan bahwa menanggung beban terlalu lama bisa mengubah bentuk diri."
+},
+{
+  name: "Gunting Rumput Karatan",
+  type: "Khodam Perawatan Yang Terlupa",
+  info: "Ia mengingatkan bahwa bahkan alat tajam pun perlu dirawat. Sama seperti hati dan pikiran."
+},
+{
+  name: "Sendok Plastik",
+  type: "Khodam Kegunaan Sekali Pakai",
+  info: "Ia berguna sesaat, lalu dibuang. Mengajarkan bahwa hidup bukan hanya tentang berguna sebentar, tapi berkesan selamanya."
+},
+{
+  name: "Ban Bocor",
+  type: "Khodam Kecepatan Tertunda",
+  info: "Ia membuatmu berhenti. Tapi jeda itulah yang kadang menyelamatkan dari bahaya."
+},
+{
+  name: "Lem UHU Kering",
+  type: "Khodam Penyatu yang Telat",
+  info: "Tak bisa lagi menempelkan apa-apa. Ia hadir agar kita tak menunda memperbaiki hubungan."
+},
+{
+  name: "Buku Tanpa Halaman",
+  type: "Khodam Cerita Yang Hilang",
+  info: "Ia mengingatkan bahwa hidup tanpa cerita adalah kesunyian. Tulislah hidupmu dengan makna."
+},
+{
+  name: "Plester Lepas",
+  type: "Khodam Luka Terbuka",
+  info: "Ia mengajarkan bahwa kadang luka harus terbuka dulu agar bisa benar-benar sembuh."
+},
+{
+  name: "Sapu Nyangkut",
+  type: "Khodam Perjuangan Tertahan",
+  info: "Ia ingin membersihkan, tapi terjepit di pintu. Ia hadir agar kita jangan menyerah saat niat baik tertahan."
+},
+{
+  name: "Koin Terselip",
+  type: "Khodam Rezeki Tak Terlihat",
+  info: "Kecil dan terlupakan, tapi bisa berguna saat genting. Ia mengingatkan bahwa rezeki kadang tersembunyi."
+},
+{
+  name: "Kucing Tidur di Jemuran",
+  type: "Khodam Ketidakteraturan Yang Damai",
+  info: "Meski bukan tempatnya, ia tetap tidur nyenyak. Ia hadir agar kita belajar menerima kenyamanan di tempat yang tak biasa."
+},
+{
+  name: "Jarum Hilang",
+  type: "Khodam Ketelitian Ekstrem",
+  info: "Ia sulit ditemukan tapi bisa melukai. Ia hadir untuk mengingatkan bahwa hal kecil pun bisa berdampak besar."
+},
+{
+  name: "Tombol Pintu Rusak",
+  type: "Khodam Kesabaran Menunggu",
+  info: "Tak bisa ditekan, tapi tetap berdiri di sana. Ia hadir untuk mengajarkan bahwa masuk ke hati orang lain butuh waktu."
+},
+{
+  name: "Klip Kertas Bengkok",
+  type: "Khodam Pengikat Longgar",
+  info: "Mengikat, tapi tidak erat. Ia hadir agar kita mengevaluasi seberapa kuat komitmen yang kita buat."
+}, 
+{
+  name: "Bantal Hampa",
+  type: "Khodam Ketenteraman Jiwa",
+  info: "Menemani saat sepi, mengajarkan bahwa pelukan kosong pun bisa menenangkan."
+},
+{
+  name: "Tikus Berambut",
+  type: "Khodam Kewaspadaan",
+  info: "Ia mengajarkan bahwa yang tampak lucu bisa menyimpan strategi tak terduga."
+},
+{
+  name: "Gunting Tersesat",
+  type: "Khodam Pemutus Dilema",
+  info: "Selalu muncul saat pilihan sulit datang, memotong keraguan dengan kejelasan."
+},
+{
+  name: "Kipas Retak",
+  type: "Khodam Ketegaran",
+  info: "Meski retak, tetap memberi angin. Ia hadir saat kamu merasa tak sempurna."
+},
+{
+  name: "Semut Berdasi",
+  type: "Khodam Etos Kerja",
+  info: "Mengajarkan disiplin dari yang kecil. Ia hadir saat kamu butuh motivasi diam-diam."
+},
+{
+  name: "Kerupuk Basah",
+  type: "Khodam Kerendahan Hati",
+  info: "Tak selalu renyah, tapi tetap mengenyangkan. Ia hadir untuk mengingatkan kita bersyukur."
+},
+{
+  name: "Batu Mengambang",
+  type: "Khodam Keajaiban",
+  info: "Menentang logika untuk menunjukkan bahwa harapan bisa datang dari yang tak mungkin."
+},
+{
+  name: "Payung Terbalik",
+  type: "Khodam Pembalik Nasib",
+  info: "Kadang bencana adalah awal perubahan besar. Ia hadir saat kamu merasa dihantam badai."
+},
+{
+  name: "Cermin Kusam",
+  type: "Khodam Refleksi Batin",
+  info: "Tak memantulkan dengan jelas, tapi menunjukkan bayangan yang jujur."
+},
+{
+  name: "Kucing Satu Mata",
+  type: "Khodam Kejelian",
+  info: "Dengan satu mata ia melihat lebih banyak dari yang bermata dua. Simbol fokus dan ketajaman batin."
+},
+{
+  name: "Kabel Menyala Sendiri",
+  type: "Khodam Energi Tersembunyi",
+  info: "Memberi cahaya saat tak dihubungkan, mengingatkanmu bahwa kekuatan sejati dari dalam."
+},
+{
+  name: "Celengan Patah",
+  type: "Khodam Keuangan Tulus",
+  info: "Mengajarkan bahwa nilai sejati bukan pada jumlahnya, tapi niat menyimpan dan berbagi."
+},
+{
+  name: "Kompor Merenung",
+  type: "Khodam Keheningan Berapi",
+  info: "Meski diam, tetap membakar semangatmu. Ia menyala tanpa suara."
+},
+{
+  name: "Tangga Patah",
+  type: "Khodam Langkah Bijak",
+  info: "Memaksa untuk berhenti, bukan agar menyerah, tapi agar berpikir sebelum naik."
+},
+{
+  name: "Radio Berdesis",
+  type: "Khodam Suara Hati",
+  info: "Meski tak jelas, bisikannya kadang lebih jujur dari teriakan dunia."
+},
+{
+  name: "Sendok Bengkok",
+  type: "Khodam Fleksibilitas Mental",
+  info: "Tak selalu lurus tapi berguna. Ia mengajarkan lentur itu kekuatan."
+},
+{
+  name: "Kuku Ayam",
+  type: "Khodam Ketahanan",
+  info: "Tajam tapi tak menyerang. Ia simbol pertahanan diri tanpa menyakiti."
+},
+{
+  name: "Kursi Ketawa",
+  type: "Khodam Keceriaan Diam",
+  info: "Selalu menampung siapa saja tanpa syarat. Diam-diam memberi kenyamanan."
+},
+{
+  name: "Paku Menyala",
+  type: "Khodam Keteguhan Sikap",
+  info: "Sekecil apapun kamu, jika kuat dan menyala, semua akan tahu keberadaanmu."
+},
+{
+  name: "Lampu Mati Pagi Hari",
+  type: "Khodam Kewajaran",
+  info: "Mengajarkan bahwa tak semua yang tidak menyala berarti rusak, kadang memang belum waktunya."
+},
+{
+  name: "Bulu Terbang",
+  type: "Khodam Kelembutan Jiwa",
+  info: "Melayang tanpa beban, menenangkan tanpa suara. Hadir saat kamu butuh pelukan tak terlihat."
+},
+{
+  name: "Botol Tanpa Tutup",
+  type: "Khodam Keterbukaan",
+  info: "Mengajarkan bahwa terbuka pada dunia membawa peluang sekaligus ujian."
+},
+{
+  name: "Jam Mundur",
+  type: "Khodam Refleksi Waktu",
+  info: "Tak semua kemunduran buruk. Ia hadir untuk memperbaiki langkah sebelumnya."
+},
+{
+  name: "Spidol Kering",
+  type: "Khodam Ketulusan Tersirat",
+  info: "Meski tak terlihat tulisannya, niatmu tetap terpatri di hati yang membaca."
+},
+{
+  name: "Kopi Tumpah",
+  type: "Khodam Kesadaran Diri",
+  info: "Tumpahan yang mengingatkan agar lebih hati-hati dalam menikmati kehidupan."
+},
+{
+  name: "Serbet Berkeringat",
+  type: "Khodam Keikhlasan",
+  info: "Menyeka tanpa pamrih, menyerap masalah tanpa mengeluh."
+},
+{
+  name: "Jendela Tertutup Angin",
+  type: "Khodam Peluang Terhalang",
+  info: "Membuka kesempatan hanya bagi yang bersungguh-sungguh."
+},
+{
+  name: "Pelangi Malam",
+  type: "Khodam Harapan Tak Terduga",
+  info: "Mengajarkan bahwa keindahan bisa muncul di waktu yang tidak biasa."
+},
+{
+  name: "Piring Tersenyum",
+  type: "Khodam Rasa Syukur",
+  info: "Selalu menyambut apapun yang disajikan, besar kecil tetap bersyukur."
+},
+{
+  name: "Sarung Dingin",
+  type: "Khodam Ketentraman Rumah",
+  info: "Menyelimuti kaki-kaki kehidupan dengan damai dan nostalgia."
+},
+{
+  name: "Tikar Ajaib",
+  type: "Khodam Kesederhanaan",
+  info: "Mengantar siapa saja duduk bersama, menyamakan derajat lewat kebersamaan."
+},
+{
+  name: "Korek Tersenyum",
+  type: "Khodam Pemantik Semangat",
+  info: "Sekecil apapun kamu, bisa menyalakan semangat yang padam."
+},
+{
+  name: "Sabun Berbisik",
+  type: "Khodam Kebersihan Jiwa",
+  info: "Mencuci tak hanya tubuh tapi juga niat buruk dan kotoran hati."
+},
+{
+  name: "Lalat Berseragam",
+  type: "Khodam Gangguan Terorganisir",
+  info: "Ia mengajarkan bahwa kekacauan pun bisa punya pola dan pesan."
+},
+{
+  name: "Besi Menangis",
+  type: "Khodam Kekuatan Rapuh",
+  info: "Mengajarkan bahwa yang kuat pun bisa rapuh, dan itu bukan kelemahan."
+},
+{
+  name: "Pena Tua",
+  type: "Khodam Warisan Ilmu",
+  info: "Meskipun usang, tinta pengetahuannya tak pernah habis jika ditanya dengan hati."
+},
+{
+  name: "Bak Mandi Kosong",
+  type: "Khodam Ketulusan Tak Terlihat",
+  info: "Menyediakan tempat tanpa pamrih, meski tak terlihat memberi banyak."
+},
+{
+  name: "Langit Bocor",
+  type: "Khodam Pengingat Emosi",
+  info: "Tangis hujan adalah tanda bahwa langit pun tak bisa terus menahan rasa."
+},
+{
+  name: "Kunci Hilang",
+  type: "Khodam Misteri Hidup",
+  info: "Ia hadir agar kamu belajar memahami bahwa tak semua harus terbuka sekarang."
+},
+{
+  name: "Plastik Bernafas",
+  type: "Khodam Kerapuhan Abadi",
+  info: "Ia ada untuk mengingatkan bahwa hal paling ringan pun bisa bertahan lama."
+}, 
+{
+  name: "Kompor Ngegas",
+  type: "Khodam Emosi Meledak",
+  info: "Cepat panas, cepat juga padam. Mengingatkan untuk tidak terlalu reaktif dalam menghadapi masalah."
+},
+{
+  name: "Panci Ngebacot",
+  type: "Khodam Omongan Kosong",
+  info: "Berisik saat kosong, diam saat isi. Menyindir orang yang banyak bicara tapi minim isi."
+},
+{
+  name: "Centong Nyinyir",
+  type: "Khodam Kritik Tak Berguna",
+  info: "Selalu ikut campur meski tak dibutuhkan. Mengingatkan pentingnya tahu waktu dan tempat."
+},
+{
+  name: "TikTok Ketinggalan Jaman",
+  type: "Khodam FOMO Akut",
+  info: "Hadir saat kamu takut tertinggal tren, tapi lupa nikmati hidup nyata."
+},
+{
+  name: "Kipas Ngambek",
+  type: "Khodam Mood Swing",
+  info: "Kadang adem, kadang mati total. Mengajarkan stabilitas dalam hubungan dan pikiran."
+},
+{
+  name: "Sendal Jepit Tersangka",
+  type: "Khodam Kambing Hitam",
+  info: "Selalu disalahkan meski bukan salahnya. Mengingatkan untuk tidak buru-buru menuduh."
+},
+{
+  name: "Kabel Kusut Drama",
+  type: "Khodam Masalah Sepele",
+  info: "Tampak rumit tapi bisa diurai. Ia hadir saat pikiranmu terlalu ribet sendiri."
+},
+{
+  name: "Powerbank Ngegas",
+  type: "Khodam Tenaga Nggak Konsisten",
+  info: "Kelihatan penuh tapi nyatanya lemah. Mengajarkan pentingnya ketulusan, bukan penampilan."
+},
+{
+  name: "Lem Korea Posesif",
+  type: "Khodam Nempel Terus",
+  info: "Sulit lepas, bahkan ketika tak cocok lagi. Simbol hubungan toxic yang menempel erat."
+},
+{
+  name: "Kursi Kantor Nyebelin",
+  type: "Khodam Nyaman Tapi Menyiksa",
+  info: "Enak didudukin, tapi bikin sakit punggung. Menggambarkan zona nyaman yang menyesatkan."
+},
+{
+  name: "Wajan Ngedumel",
+  type: "Khodam Panas Dalam",
+  info: "Mendidih tapi diam. Simbol orang yang memendam marah tanpa ekspresi."
+},
+{
+  name: "Gunting Baper",
+  type: "Khodam Pemutus Hubungan",
+  info: "Cepat potong tanpa mikir. Ia datang saat kamu mudah memutuskan hal penting saat emosi."
+},
+{
+  name: "Sapu Jutek",
+  type: "Khodam Pembersih Toxic",
+  info: "Tak ramah, tapi bersih. Ia hadir untuk mengusir racun dari hidupmu, meski tak lembut caranya."
+},
+{
+  name: "Sabun Licik",
+  type: "Khodam Kebersihan Palsu",
+  info: "Tampak bersih tapi meninggalkan sisa. Mengajarkan untuk tidak tertipu tampilan luar."
+},
+{
+  name: "Rokok Nyala Sendiri",
+  type: "Khodam Godaan Duniawi",
+  info: "Hadir saat niatmu mulai goyah. Mengingatkan untuk tetap waspada pada candu tersembunyi."
+},
+{
+  name: "Mie Gosong",
+  type: "Khodam Rencana Gagal",
+  info: "Niatnya enak, hasilnya pahit. Simbol bahwa tidak semua yang direncanakan berjalan sempurna."
+},
+{
+  name: "Handphone Baperan",
+  type: "Khodam Stres Digital",
+  info: "Suka panas sendiri. Ia mengajarkan untuk tidak terlalu bergantung pada teknologi."
+},
+{
+  name: "Remote Hilang",
+  type: "Khodam Kontrol Diri",
+  info: "Hilang saat dibutuhkan. Menyadarkan bahwa kamu tidak selalu bisa mengontrol segalanya."
+},
+{
+  name: "Jam Dinding Judes",
+  type: "Khodam Pengingat Waktu",
+  info: "Terus bunyiin detik, bikin gelisah. Tapi tetap dibutuhkan agar tidak lupa waktu."
+},
+{
+  name: "Senter Lelah",
+  type: "Khodam Cahaya Harapan",
+  info: "Berkedip saat diperlukan, tapi tetap berusaha menerangi jalanmu."
+}, 
+{
+  name: "Headset PHP",
+  type: "Khodam Harapan Palsu",
+  info: "Janji suaranya surround, tapi nyatanya cempreng. Mengingatkan untuk tidak mudah termakan janji manis."
+},
+{
+  name: "Kulkas Kosong",
+  type: "Khodam Ekspektasi Kecewa",
+  info: "Luar keren, dalam hampa. Ia muncul saat hidup terlihat mewah tapi kosong makna."
+},
+{
+  name: "Timbangan Julid",
+  type: "Khodam Self-Hate",
+  info: "Selalu menunjukkan angka kejam tanpa perasaan. Simbol overthinking dan body shaming dalam diri sendiri."
+},
+{
+  name: "Wifi Putus Nyambung",
+  type: "Khodam Ketergantungan Rapuh",
+  info: "Bikin berharap lalu ditinggal. Seperti hubungan yang nggak jelas arah dan komitmennya."
+},
+{
+  name: "Cermin Sombong",
+  type: "Khodam Kepercayaan Diri Palsu",
+  info: "Memantulkan fisik, bukan isi otak. Mengajarkan bahwa tidak semua kecantikan membawa kualitas."
+},
+{
+  name: "Bantal Teriak",
+  type: "Khodam Penenang Sementara",
+  info: "Tempat semua tangis ditumpahkan tapi nggak bisa jawab apa-apa. Simbol dari curhat ke yang salah."
+},
+{
+  name: "Tisu PHP",
+  type: "Khodam Penghapus Luka",
+  info: "Datang saat kamu nangis, tapi cepat habis. Mengingatkan bahwa pelipur lara itu sementara, bukan solusi."
+},
+{
+  name: "Cangkir Overthinking",
+  type: "Khodam Keresahan Tiada Henti",
+  info: "Diisi kopi, tapi yang muncul malah pikiran negatif. Mengajarkan kamu untuk relax, bukan tenggelam dalam pikiran."
+},
+{
+  name: "Alarm Toxic Positivity",
+  type: "Khodam Palsu-Palsuan",
+  info: "Selalu bunyi 'semangat!' bahkan saat kamu butuh istirahat. Simbol orang yang menutupi luka dengan senyum palsu."
+},
+{
+  name: "Spion Kepo",
+  type: "Khodam Masa Lalu",
+  info: "Selalu melihat ke belakang. Hadir saat kamu sulit move on dari yang sudah lewat."
+},
+{
+  name: "Ranjang Kesepian",
+  type: "Khodam Halu Tengah Malam",
+  info: "Tempat semua skenario cinta berputar. Mengingatkan bahwa kenyataan dan khayalan itu beda tipis tapi fatal."
+},
+{
+  name: "Galon Gak Diangkat",
+  type: "Khodam Beban Hidup",
+  info: "Selalu penuh tekanan tapi nggak pernah dipindah. Simbol dari beban mental yang dipendam."
+},
+{
+  name: "Kunci Nyasar",
+  type: "Khodam Kunci Jawaban Hidup",
+  info: "Selalu kamu cari saat butuh, tapi hilang pas genting. Mengingatkan bahwa jawaban kadang ada dalam dirimu sendiri."
+},
+{
+  name: "Flashdisk Mantan",
+  type: "Khodam Kenangan Toxic",
+  info: "Isinya foto lama, lagu galau, dan chat nggak dibalas. Hadir untuk menampar kamu agar move on."
+},
+{
+  name: "Mic Ga Nyambung",
+  type: "Khodam Komunikasi Gagal",
+  info: "Kamu ngomong, dia diem. Simbol dari hubungan yang cuma satu arah."
+},
+{
+  name: "Kunci Motor Salah Lubang",
+  type: "Khodam Pilihan Hidup",
+  info: "Nekat masuk ke tempat yang bukan miliknya. Mengingatkan bahwa tidak semua tempat pantas kamu perjuangkan."
+},
+{
+  name: "Kipas Bekas Seminar",
+  type: "Khodam Simbol Kepalsuan",
+  info: "Nampak berguna di awal, lalu rusak dalam seminggu. Simbol dari koneksi yang cuma sebentar."
+},
+{
+  name: "Minyak Goreng Gosip",
+  type: "Khodam Penyebar Panas",
+  info: "Dimana dia lewat, gosong hati orang. Mengajarkan untuk jaga lidah dan telinga."
+},
+{
+  name: "Toples Kosong",
+  type: "Khodam Janji Manis Lebaran",
+  info: "Bungkusnya rame, isinya zonk. Kayak mantan yang cuma bikin senang awalnya doang."
+},
+{
+  name: "Powerbank Eks",
+  type: "Khodam Energi Lama",
+  info: "Dulu nyelametin kamu, sekarang bikin kamu stuck. Jangan colok ke masa lalu kalau mau maju."
+}, 
+{
+  name: "Charger Miskin",
+  type: "Khodam Pengharapan Sia-Sia",
+  info: "Dicolok semalaman, persennya cuma nambah 5. Simbol dari hubungan yang kamu perjuangkan sendirian."
+},
+{
+  name: "Wifi Tetangga",
+  type: "Khodam Ketergantungan Sosial",
+  info: "Bisa nyambung tapi dosa. Mengajarkan bahwa tidak semua akses gratis itu berkah."
+},
+{
+  name: "Kasur Bantal Mantan",
+  type: "Khodam Kenyamanan Palsu",
+  info: "Kelihatan empuk, tapi bikin nyesek. Simbol dari zona nyaman yang seharusnya ditinggalin."
+},
+{
+  name: "Stopkontak Meledak",
+  type: "Khodam Ledakan Emosi",
+  info: "Diam-diam penuh tekanan. Sekali salah colok, semua kebakaran. Seperti orang pendiam yang tiba-tiba meledak."
+},
+{
+  name: "Speaker Kresek",
+  type: "Khodam Kejujuran Tersamar",
+  info: "Suaranya pecah tapi keras. Mengingatkan bahwa tidak semua yang lantang itu jelas."
+},
+{
+  name: "Sandal Jepit Bocor",
+  type: "Khodam Ketahanan Palsu",
+  info: "Kelihatan kuat, tapi di tikungan menyerah. Seperti janji-janji yang cuma kuat di awal."
+},
+{
+  name: "Remote Nggak Fungsi",
+  type: "Khodam Kontrol Kosong",
+  info: "Dipencet terus, hasilnya nihil. Seperti memberi saran ke orang yang nggak pernah dengerin."
+},
+{
+  name: "Jam Rusak Tapi Nolak Mati",
+  type: "Khodam Zona Waktu Alternatif",
+  info: "Selalu stuck di satu waktu. Simbol dari orang yang nggak bisa move on."
+},
+{
+  name: "Powerbank Bohongan",
+  type: "Khodam Energi Semu",
+  info: "Ngaku 20.000 mAh, nyatanya 500 mAh. Simbol dari orang yang banyak gaya tapi isi kosong."
+},
+{
+  name: "Motor Kredit Nunggak",
+  type: "Khodam Kejar Target",
+  info: "Selalu dikejar debt collector. Mengingatkan bahwa gaya hidup jangan lebih tinggi dari pendapatan."
+},
+{
+  name: "Keyboard Berkerak",
+  type: "Khodam Ketikan Berdebu",
+  info: "Setiap huruf penuh sejarah dan remah kerupuk. Lambang kerja keras tanpa waktu istirahat."
+},
+{
+  name: "Kipas Bunyi Kayak Mesin Jahit",
+  type: "Khodam Angin Berisik",
+  info: "Bikin adem, tapi bikin stress juga. Seperti teman yang bantu tapi sambil ngegas."
+},
+{
+  name: "TV Tabung Gede",
+  type: "Khodam Masa Lalu",
+  info: "Bentuknya kuno, tapi masih hidup. Simbol dari kenangan yang susah dilupakan."
+},
+{
+  name: "Mouse Ngadat",
+  type: "Khodam Kendali Gagal",
+  info: "Klik kiri doang yang jalan. Seperti cinta yang nggak pernah dibalas."
+},
+{
+  name: "Kasur Tipis Ngeletek",
+  type: "Khodam Rehat Tertunda",
+  info: "Tidur sih bisa, tapi bangun dengan punggung patah. Mengingatkan pentingnya kualitas, bukan sekadar ada."
+},
+{
+  name: "Kabel Gulung Kusut",
+  type: "Khodam Keterikatan Batin",
+  info: "Semakin dilurusin, makin kusut. Seperti hubungan yang dipaksakan terus."
+},
+{
+  name: "Sendok Melengkung",
+  type: "Khodam Pembengkok Realita",
+  info: "Seakan bekas dibakar jin. Padahal cuma kena kuah panas dan drama."
+},
+{
+  name: "Kulkas Kosong",
+  type: "Khodam Harapan Dingin",
+  info: "Luar adem, isinya kering. Mengajarkan jangan tertipu penampilan luar."
+},
+{
+  name: "Pulpen Macet",
+  type: "Khodam Inspirasi Mandek",
+  info: "Niat nulis surat cinta, yang keluar cuma angin. Seperti cinta yang terpendam tak tersampaikan."
+},
+{
+  name: "Alarm Nggak Bunyi",
+  type: "Khodam Kesiangan Hakiki",
+  info: "Disetel jam 6, bangunnya jam 11. Simbol dari niat yang nggak dibarengi aksi."
+},
+{
+  name: "Bantal Bau Ketek",
+  type: "Khodam Kenyamanan Beracun",
+  info: "Empuk tapi beracun. Seperti mantan yang ngajak balikan."
+},
+{
+  name: "Sapu Patah",
+  type: "Khodam Pembersihan Gagal",
+  info: "Disuruh bersihin, malah nyebarin debu. Seperti solusi yang malah jadi masalah."
+},
+{
+  name: "Gunting Bengkok",
+  type: "Khodam Pemotong Tak Presisi",
+  info: "Motong garis lurus jadi patah hati. Simbol dari keputusan yang diambil tanpa pertimbangan."
+},
+{
+  name: "Talenan Retak",
+  type: "Khodam Fondasi Rapuh",
+  info: "Tempat motong penuh luka. Simbol dari hati yang sering dipakai tapi nggak pernah diperbaiki."
+},
+{
+  name: "Senter Mati",
+  type: "Khodam Penerang Galau",
+  info: "Waktu gelap dia nyerah. Seperti teman yang pergi pas kita jatuh."
+},
+{
+  name: "Payung Bolong",
+  type: "Khodam Perlindungan Bohongan",
+  info: "Dipake malah basah kuyup. Seperti hubungan tanpa komitmen."
+},
+{
+  name: "Sendal Hotel Tipis",
+  type: "Khodam Sementara",
+  info: "Bentuknya simple, gunanya sebentar. Simbol dari cinta one-night-stand."
+},
+{
+  name: "Kaca Retak",
+  type: "Khodam Refleksi Terpecah",
+  info: "Lihat wajah sendiri tapi terbelah. Simbol dari identitas yang belum selesai dibentuk."
+},
+{
+  name: "Kipas Manual",
+  type: "Khodam Tenaga Sendiri",
+  info: "Kalau nggak digerakin, ya diem. Seperti hidup, nggak bakal maju kalau nggak usaha."
+},
+{
+  name: "Kabel Nyetrum",
+  type: "Khodam Karma Instan",
+  info: "Dipegang sekali, trauma seminggu. Simbol dari keputusan bodoh yang berakibat panjang."
+},
+{
+  name: "Klakson Motor Nyaring",
+  type: "Khodam Pengganggu Ketentraman",
+  info: "Bunyinya mengagetkan tapi nggak penting. Seperti komentar netizen yang asal komen."
+},
+{
+  name: "Jas Hujan Sobek",
+  type: "Khodam Perlindungan Bocor",
+  info: "Dipake hujan-hujanan, tetap basah. Seperti janji manis yang ternyata penuh kebohongan."
+},
+{
+  name: "Kantong Kresek Bolong",
+  type: "Khodam Penahan Beban Gagal",
+  info: "Baru dibawa, isinya tumpah. Simbol dari harapan yang bocor karena kepercayaan yang rapuh."
+},
+{
+  name: "Botol Air Kosong",
+  type: "Khodam Kekosongan Hati",
+  info: "Dari luar kelihatan penuh. Tapi pas diminum, isinya cuma harapan."
+},
+{
+  name: "Keran Mampet",
+  type: "Khodam Rezeki Tersumbat",
+  info: "Pengen ngalir, tapi seret terus. Seperti usaha yang nggak pernah dihargai."
+},
+{
+  name: "Ember Pecah",
+  type: "Khodam Penampung Air Mata",
+  info: "Bisa nampung sebentar, lalu bocor. Seperti orang yang pura-pura kuat tapi dalamnya rapuh."
+},
+{
+  name: "Gelas Retak",
+  type: "Khodam Persahabatan Renggang",
+  info: "Masih bisa dipakai, tapi hati-hati. Sedikit tekanan bisa pecah total."
+},
+{
+  name: "Toples Kosong",
+  type: "Khodam Lebaran Hampa",
+  info: "Kelihatan mewah, isinya angin. Seperti rumah mantan pas disamperin."
+},
+{
+  name: "Kalkulator Error",
+  type: "Khodam Perhitungan Gagal",
+  info: "Masukkan angka, hasilnya ngawur. Seperti cinta yang tak bisa dihitung logika."
+},
+{
+  name: "Kaset Pita Kusut",
+  type: "Khodam Kenangan Ruwet",
+  info: "Kalau diputar, suaranya loncat-loncat. Seperti kenangan lama yang nggak pernah rapi."
+}, 
+{
+  name: "Meja Goyang",
+  type: "Khodam Ketidakstabilan Emosi",
+  info: "Kelihatan kokoh, tapi gampang oleng. Seperti orang yang terlihat kuat tapi gampang down."
+},
+{
+  name: "Kipas Sangkut Sarung",
+  type: "Khodam Karma Instan",
+  info: "Bikin adem jadi rusuh. Mengajarkan bahwa tindakan ceroboh bisa bikin malapetaka."
+},
+{
+  name: "Selimut Tipis",
+  type: "Khodam Keamanan Bohong",
+  info: "Hangatnya cuma ilusi. Seperti perhatian gebetan yang ke semua orang sama."
+},
+{
+  name: "Sendok Plastik",
+  type: "Khodam Kepalsuan Lembut",
+  info: "Sekali kena panas langsung bengkok. Simbol dari orang yang nggak tahan ujian."
+},
+{
+  name: "Keramik Retak",
+  type: "Khodam Elegan Rapuh",
+  info: "Kelihatan mahal, tapi tinggal nunggu hancur. Seperti harga diri yang dibangun di atas pujian palsu."
+},
+{
+  name: "Gorden Robek",
+  type: "Khodam Privasi Terbuka",
+  info: "Niat nutup pandangan, malah kasih tontonan. Simbol dari rahasia yang bocor sendiri."
+},
+{
+  name: "Plastik Kresek Hitam",
+  type: "Khodam Penutup Rahasia",
+  info: "Selalu dipakai buat nutupin aib. Seperti teman yang selalu jaga rahasia—atau malah bawa gosip."
+},
+{
+  name: "Batre Jam KW",
+  type: "Khodam Waktu Palsu",
+  info: "Jamnya hidup, tapi waktunya ngawur. Seperti orang yang hidupnya ngikutin standar orang lain."
+},
+{
+  name: "Pompa Galon Lemah",
+  type: "Khodam Usaha Lemes",
+  info: "Pencet 10x, keluar setetes. Seperti perjuangan yang nggak dihargai."
+},
+{
+  name: "Cat Dinding Mengelupas",
+  type: "Khodam Topeng Luntur",
+  info: "Kelihatan rapi luar doang. Seperti orang yang capek sok kuat."
+},
+{
+  name: "Hanger Miring",
+  type: "Khodam Penyangga Beban Tak Seimbang",
+  info: "Jaket mahal pun bisa jatuh kalau sandarannya salah. Pesan: cari dukungan yang benar."
+},
+{
+  name: "Kaca Helm Baret",
+  type: "Khodam Pandangan Tergores",
+  info: "Lihat depan buram. Seperti masa depan tanpa rencana."
+},
+{
+  name: "Saringan Mie Patah",
+  type: "Khodam Pemisah Lemah",
+  info: "Nggak bisa bedain air dan mie. Seperti kamu yang nggak bisa bedain cinta dan nyaman."
+},
+{
+  name: "Buku Tulis Kena Hujan",
+  type: "Khodam Harapan Luntur",
+  info: "Tulisan tinggal bayangan. Simbol dari rencana yang dibasahi kenyataan."
+},
+{
+  name: "Kompor Ngadat",
+  type: "Khodam Semangat Redup",
+  info: "Bisa nyala, bisa nggak. Seperti motivasi tiap Senin pagi."
+},
+{
+  name: "Botol Saus Ngejepret",
+  type: "Khodam Emosi Meledak",
+  info: "Sekali pencet, baju kena semua. Seperti orang sabar yang dipancing dikit langsung ngamuk."
+},
+{
+  name: "Wajan Lengket",
+  type: "Khodam Keikhlasan Tersisa",
+  info: "Niat masak, malah lengket semua. Seperti mantan yang nggak bisa dilepas."
+},
+{
+  name: "Teko Bunyi Kenceng",
+  type: "Khodam Teguran Nyaring",
+  info: "Airnya habis, suaranya nyaring. Seperti sahabat yang selalu ngingetin walau nyakitin."
+},
+{
+  name: "Jam Dinding Terbalik",
+  type: "Khodam Waktu Alternatif",
+  info: "Angkanya bener, arahnya salah. Seperti hidup yang jalan terus tapi ke arah yang salah."
+},
+{
+  name: "Baterai Ngeflek",
+  type: "Khodam Umur Pendek",
+  info: "Baru dipake, udah abis. Seperti semangat habis baca komentar netizen."
+},
+{
+  name: "Selotip Bekas",
+  type: "Khodam Ikatan Masa Lalu",
+  info: "Masih nempel, tapi nggak lengket. Seperti kenangan yang nggak bisa diulang."
+},
+{
+  name: "Tombol Rusak",
+  type: "Khodam Akses Terhambat",
+  info: "Dipencet nggak nyala. Seperti chat kamu yang nggak dibalas."
+},
+{
+  name: "Aki Lemah",
+  type: "Khodam Starter Gagal",
+  info: "Kunci udah diputar, nggak nyala. Simbol dari niat besar tapi tenaga kecil."
+},
+{
+  name: "Selang Bocor",
+  type: "Khodam Pemborosan Emosi",
+  info: "Ngisi air, yang penuh malah halaman. Seperti kasih sayang yang salah sasaran."
+},
+{
+  name: "Jam Tangan Palsu",
+  type: "Khodam Gengsi Murahan",
+  info: "Kelihatan mewah, tapi tiap jam harus disetel. Seperti gaya hidup yang pura-pura."
+},
+{
+  name: "Lem Uhu Kering",
+  type: "Khodam Perekat Palsu",
+  info: "Tutupnya keras, isinya beku. Seperti hubungan yang nggak bisa dibuka-buka lagi."
+},
+{
+  name: "Panci Gores",
+  type: "Khodam Luka Lama",
+  info: "Masak jadi nempel. Seperti luka hati yang belum selesai tapi dipaksa jalan."
+},
+{
+  name: "Lemari Bunyi",
+  type: "Khodam Rahasia Terungkap",
+  info: "Tiap dibuka bunyi 'krekk'. Seperti rahasia yang disimpan tapi ketahuan juga."
+},
+{
+  name: "Paku Bengkok",
+  type: "Khodam Tujuan Melenceng",
+  info: "Mau ditancap, malah muter. Seperti cita-cita yang kebanyakan drama."
+},
+{
+  name: "Tas Ritsleting Macet",
+  type: "Khodam Tertutup Setengah",
+  info: "Nggak bisa dibuka atau ditutup. Simbol dari hati yang masih ragu."
+},
+{
+  name: "Sabun Licin",
+  type: "Khodam Lepas Kendali",
+  info: "Baru dipegang, langsung jatuh. Seperti uang habis gajian."
+},
+{
+  name: "Mata Obeng Aus",
+  type: "Khodam Tenaga Sia-sia",
+  info: "Diputer-puter, nggak masuk. Seperti kode ke gebetan yang nggak peka."
+},
+{
+  name: "Ember Berlumut",
+  type: "Khodam Lama Nggak Dipake",
+  info: "Masih bisa nampung, tapi risih. Seperti sahabat yang datang pas butuh doang."
+},
+{
+  name: "Besi Berkarat",
+  type: "Khodam Keteguhan Luntur",
+  info: "Dulu kuat, sekarang keropos. Simbol dari prinsip yang dilupakan demi cinta."
+},
+{
+  name: "Kabel Panjang Nyangkut",
+  type: "Khodam Perjalanan Tertahan",
+  info: "Mau geser, malah nyangkut kaki. Seperti cita-cita yang kehalang realita."
+},
+{
+  name: "Sepatu Bocor",
+  type: "Khodam Perjalanan Berat",
+  info: "Dipakai terus walau tahu basah. Simbol dari perjuangan diam-diam."
+},
+{
+  name: "Gelas Plastik Penyok",
+  type: "Khodam Rentan Tekanan",
+  info: "Sedikit tertekan langsung mleyot. Seperti hati yang nggak kuat kritik."
+},
+{
+  name: "Tali Sepatu Lepas",
+  type: "Khodam Ketidaksiapan",
+  info: "Lari baru mulai, udah nyangkut. Seperti rencana tanpa persiapan."
+},
+{
+  name: "Bantal Ganjel",
+  type: "Khodam Nyaman Terpaksa",
+  info: "Tidur sih bisa, tapi pegel. Simbol dari hubungan yang dipaksakan."
+},
+{
+  name: "Rokok Basah",
+  type: "Khodam Kenikmatan Gagal",
+  info: "Niat ngopi-ngopi jadi kesel. Simbol dari harapan yang dipatahkan tiba-tiba."
+},
+{
+  name: "Spidol Kering",
+  type: "Khodam Suara Tak Terdengar",
+  info: "Nulis di papan, nggak kelihatan. Seperti nasihat yang diabaikan."
+},
+{
+  name: "Kuku Patah",
+  type: "Khodam Perawatan Gagal",
+  info: "Baru aja rapi, udah patah. Simbol dari usaha yang sia-sia karena satu kesalahan kecil."
+},
+{
+  name: "Kunci Lupa Tempat",
+  type: "Khodam Akses Terlupa",
+  info: "Ada pintunya, kuncinya entah di mana. Seperti peluang yang terlewat karena lalai."
+},
+{
+  name: "Kancing Lepas",
+  type: "Khodam Penjaga Terbuka",
+  info: "Bikin celana longgar sendiri. Simbol dari pertahanan diri yang kendor."
+},
+{
+  name: "Lilin Meleleh",
+  type: "Khodam Pengorbanan Diam-diam",
+  info: "Memberi terang dengan hancur perlahan. Seperti kamu yang terlalu baik sampai dilupakan."
+}
+    ];
+
+    document.getElementById('cekBtn').addEventListener('click', () => {
+      const nama = document.getElementById('namaInput').value.trim();
+      if (!nama) return alert("Masukkan nama terlebih dahulu!");
+
+      const randomIndex = Math.floor(Math.random() * khodams.length);
+      const random = khodams[randomIndex];
+
+      document.getElementById('namaOrang').textContent = nama;
+      document.getElementById('khodamName').textContent = random.name;
+      document.getElementById('khodamType').textContent = random.type;
+      document.getElementById('khodamInfo').textContent = random.info;
+
+      document.getElementById('resultBox').classList.remove('hidden');
+    });
+  </script>
+
+</body>
+</html>
