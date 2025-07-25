@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Susun Kata</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .neon-border {
+      border: 2px solid #00ffff;
+      box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff50;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 min-h-screen flex flex-col items-center justify-center px-4 py-8 text-white">
+  <div class="bg-white bg-opacity-10 backdrop-blur-md p-6 rounded-2xl shadow-2xl w-full max-w-md text-center">
+    <h1 class="text-3xl font-extrabold text-cyan-300 mb-2">Game Susun Kata</h1>
+    <p class="text-sm text-gray-200 mb-4">Susun huruf menjadi kata yang benar!</p>
+
+    <div id="question" class="text-lg font-medium text-white mb-2">Huruf Acak:</div>
+    <div id="letter-box" class="flex flex-wrap justify-center gap-2 mb-6"></div>
+
+    <input type="text" id="answer" placeholder="Tulis jawabanmu..." class="w-full text-black text-center py-2 px-4 rounded-lg border-2 border-cyan-300 mb-4 focus:outline-none focus:ring-2 focus:ring-cyan-400" />
+
+    <div class="flex gap-3 mb-3">
+      <button onclick="checkAnswer()" class="flex-1 bg-cyan-500 hover:bg-cyan-600 transition py-2 rounded-lg font-semibold shadow-md">
+        Cek Sekarang
+      </button>
+      <button onclick="setNewWord()" class="flex-1 bg-yellow-500 hover:bg-yellow-600 transition py-2 rounded-lg font-semibold shadow-md">
+        Skip
+      </button>
+    </div>
+
+    <button onclick="showAnswer()" class="w-full bg-orange-500 hover:bg-orange-600 transition py-2 mb-3 rounded-lg font-semibold shadow-md">
+      Menyerah
+    </button>
+
+    <button onclick="location.href='gameseru.html'" class="w-full bg-red-500 hover:bg-red-600 transition py-2 rounded-lg font-semibold mb-4 shadow-md">
+      Kembali ke Menu
+    </button>
+
+    <div id="result" class="text-lg font-bold mt-2 min-h-[24px]"></div>
+
+    <div class="mt-4">
+      <p class="text-sm font-semibold">✅ Benar: <span id="correct">0</span>  | ❌ Salah: <span id="wrong">0</span></p>
+    </div>
+  </div>
+
+  <div class="max-w-md mt-8 text-center text-sm text-gray-200 px-4">
+    <h2 class="font-semibold text-white text-lg mb-2">Tentang Game</h2>
+    <p class="mb-2">Game ini melatih kecerdasan kata dan daya ingat dengan cara seru. Cocok untuk segala usia dan perangkat.</p>
+    <p class="text-cyan-300 font-semibold mt-4">Dibuat oleh <strong>ZeroByteID</strong></p>
+  </div>
+
+  <script>
+    const wordList = [
+  "komputer", "pantai", "pelangi", "bunga", "matahari", "seru", "langit", "meja",
+  "hujan", "angin", "kamera", "kipas", "rumput", "jalan", "belajar", "pintar",
+  "cahaya", "pohon", "senyum", "hewan", "kucing", "anjing", "ikan", "burung",
+  "ular", "pinguin", "gajah", "singa", "macan", "serigala", "kelinci", "hamster",
+  "tikus", "kupu", "lebah", "nyamuk", "semut", "laba", "ayam", "bebek",
+  "sapi", "kerbau", "kuda", "unta", "zebra", "beruang", "monyet", "orangutan",
+  "elang", "rajawali", "kakatua", "murai", "merpati", "cecak", "tokek", "biawak",
+  "komodo", "penyu", "kura", "lumba", "paus", "hiu", "karang", "terumbu",
+  "kapal", "perahu", "layar", "motor", "mobil", "truk", "bis", "sepeda",
+  "roda", "mesin", "bensin", "solar", "listrik", "baterai", "charger", "colokan",
+  "kabel", "lampu", "bola", "raket", "net", "kasti", "golf", "pingpong",
+  "sepak", "basket", "voli", "tenis", "renang", "lari", "maraton", "panjat",
+  "karpet", "kursi", "lemari", "kasur", "selimut", "bantal", "guling", "cermin",
+  "paku", "palang", "palu", "obeng", "bor", "las", "besi", "kayu",
+  "triplek", "cat", "kuas", "semen", "pasir", "batu", "keramik", "ubin",
+  "genteng", "atap", "tiang", "tembok", "jendela", "pintu", "gagang", "kunci",
+  "gembok", "dompet", "uang", "kartu", "atm", "rekening", "cek", "kuitansi",
+  "buku", "pena", "pensil", "penghapus", "penggaris", "pengasah", "kertas", "map",
+  "amplop", "staples", "klip", "gunting", "lem", "isolasi", "printer", "scanner",
+  "proyektor", "kamera", "lensa", "tripod", "mikrofon", "speaker", "headset", "earphone",
+  "telepon", "tablet", "laptop", "keyboard", "mouse", "monitor", "layar", "router",
+  "modem", "wifi", "server", "cloud", "data", "kode", "script", "program",
+  "html", "css", "javascript", "python", "java", "csharp", "golang", "php",
+  "sql", "database", "array", "string", "number", "boolean", "loop", "while",
+  "for", "if", "else", "switch", "case", "break", "return", "function",
+  "class", "object", "variable", "constant", "operator", "error", "debug", "compile",
+  "syntax", "logic", "runtime", "virtual", "framework", "library", "react", "vue",
+  "angular", "node", "express", "api", "rest", "json", "xml", "fetch",
+  "axios", "token", "auth", "login", "logout", "signup", "register", "form",
+  "input", "submit", "button", "label", "checkbox", "radio", "select", "option",
+  "value", "session", "cookie", "cache", "storage", "local", "index", "search",
+  "filter", "sort", "paginate", "grid", "flex", "layout", "padding", "margin",
+  "border", "shadow", "hover", "focus", "active", "disabled", "responsive", "media",
+  "screen", "device", "dpi", "zoom", "scroll", "fixed", "sticky", "absolute",
+  "relative", "zindex", "overflow", "transition", "animation", "keyframe", "ease", "linear",
+  "duration", "delay", "infinite", "looping", "transform", "rotate", "scale", "translate",
+  "skew", "opacity", "blend", "contrast", "brightness", "filter", "blur", "grayscale",
+  "sepia", "invert", "hue", "saturate", "drop", "backdrop", "glass", "frosted",
+  "neon", "glow", "shine", "sparkle", "glitter", "pulse", "bounce", "zoom",
+  "slide", "fade", "pop", "wiggle", "tilt", "vibrate", "shake", "swing",
+  "flip", "spin", "twist", "stretch", "compress", "collapse", "expand", "open",
+  "close", "click", "hovered", "pressed", "drag", "drop", "resize", "move",  "astrografium", "astrokulturil", "astrologial", "astrologios", "astromatikil",
+ "astrotronikos", "cyberformor", "cybergrafial", "cyberkulturum", "cyberlogial",
+ "cybermatikik", "cybernomial", "cyberpediail", "cyberstatikum", "ecograftik",
+ "ecoforman", "ecologios", "economial", "ecopediak", "ecostatikir",
+ "elektroformos", "elektrografik", "elektrologial", "elektromatikor", "elektronomik",
+ "elektropediail", "elektrosintesisan", "elektrostatikan", "geoformik", "geografium",
+ "geologian", "geomatikil", "geonomial", "geopediail", "geosintesisum", "geostatikos",
+ "hyperformil", "hypergrafir", "hyperlogial", "hypermatikum", "hypernomios",
+ "hyperpediaik", "infologios", "infomatikik", "infonomial", "infopediair",
+ "infostatikan", "megalogial", "meganomikos", "megapedian", "megastatikik",
+ "nanocultural", "nanologial", "nanomatikir", "nanonomial", "nanopediaik",
+ "nanostatikan", "bioformir", "biograftik", "biokulturil", "biologial", "biomatikal",
+ "bionomial", "biopediail", "biostatikum", "cyberstatikos", "ecoformor",
+ "ecograftum", "ecokulturik", "ecologial", "ecopediak", "ecostatikik", "elektroformil",
+ "elektrografir", "elektrologik", "elektromatikal", "elektronomia", "elektropediak",
+ "elektrosintesisir", "elektrostatikos", "geoformum", "geokulturik", "geologial",
+ "geomatikir", "geonomikos", "geopedian", "geostatikan", "hyperformum", "hypergrafik",
+ "hyperkulturum", "hyperlogial", "hypermatikos", "hypernomial", "hyperpedian",
+ "hyperstatikik", "infoformil", "infokulturir", "infologios", "infomatikum",
+ "infonomios", "infopedian", "infostatikan", "megakulturik", "megalogik", "megamatikor",
+ "meganomios", "megapediail", "megastatikik", "nanograftik", "nanokulturum",
+ "nanologik", "nanomatikal", "nanonomial", "nanopedian", "nanostatikan",
+ "bioformik", "biograftum", "biokulturil", "biologios", "biomatikal", "bionomial",
+ "biopediair", "biostatikik",
+];
+    let currentWord = "";
+    let correct = 0;
+    let wrong = 0;
+
+    function shuffle(word) {
+      return word.split('').sort(() => Math.random() - 0.5).join('');
+    }
+
+    function setNewWord() {
+      currentWord = wordList[Math.floor(Math.random() * wordList.length)];
+      const shuffled = shuffle(currentWord);
+      const box = document.getElementById("letter-box");
+      box.innerHTML = "";
+      for (let char of shuffled) {
+        const span = document.createElement("span");
+        span.textContent = char.toUpperCase();
+        span.className = "w-10 h-10 bg-white text-black flex items-center justify-center rounded-md font-bold neon-border";
+        box.appendChild(span);
+      }
+      document.getElementById("answer").value = "";
+      document.getElementById("result").textContent = "";
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById("answer").value.toLowerCase().trim();
+      const result = document.getElementById("result");
+
+      if (input === currentWord) {
+        result.textContent = "Benar! 🎉";
+        result.className = "text-green-400 font-bold";
+        correct++;
+        document.getElementById("correct").textContent = correct;
+        setTimeout(setNewWord, 1000);
+      } else {
+        result.textContent = "Salah. Coba lagi!";
+        result.className = "text-red-400 font-bold";
+        wrong++;
+        document.getElementById("wrong").textContent = wrong;
+      }
+    }
+
+    function showAnswer() {
+      const box = document.getElementById("letter-box");
+      box.innerHTML = "";
+      for (let char of currentWord) {
+        const span = document.createElement("span");
+        span.textContent = char.toUpperCase();
+        span.className = "w-10 h-10 bg-green-300 text-black flex items-center justify-center rounded-md font-bold neon-border";
+        box.appendChild(span);
+      }
+      document.getElementById("result").textContent = `Jawaban: ${currentWord}`;
+      document.getElementById("result").className = "text-yellow-300 font-bold";
+    }
+
+    window.onload = setNewWord;
+  </script>
+</body>
+</html>
