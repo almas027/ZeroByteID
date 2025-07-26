@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tebak Lirik Lagu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-800 via-indigo-900 to-black min-h-screen text-white flex flex-col items-center px-4 py-12">
+
+  <!-- Kotak Utama -->
+  <div class="bg-white/10 p-6 rounded-2xl shadow-xl w-full max-w-xl text-center backdrop-blur mb-6">
+    <h1 class="text-3xl font-bold mb-2 text-yellow-300">🎵 Tebak Lirik Lagu 🎵</h1>
+    <p class="mb-6 text-sm text-white">Isi bagian lirik yang kosong berdasarkan petunjuk</p>
+
+    <!-- Pertanyaan -->
+    <div id="lyric" class="text-xl font-semibold mb-2">"Kau begitu _____ di mataku"</div>
+
+    <!-- Clue -->
+    <div id="clueBox" class="text-yellow-300 text-lg font-mono mb-4"></div>
+
+    <!-- Input Jawaban -->
+    <input id="answerInput" type="text" placeholder="Jawaban..." class="w-full p-3 rounded-lg text-black text-xl text-center outline-none border-2 border-yellow-400"/>
+
+    <!-- Tombol -->
+    <div class="flex flex-wrap gap-3 justify-center mt-5">
+      <button onclick="checkAnswer()" class="bg-cyan-400 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg font-semibold shadow">Cek Jawaban</button>
+      <button onclick="showClue()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow">Clue</button>
+      <button onclick="giveUp()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold shadow">Menyerah</button>
+      <button onclick="nextLyric()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold shadow">Main Lagi</button>
+      <a href="gameseru.html" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold shadow">Kembali ke Menu</a>
+    </div>
+
+    <!-- Feedback & Skor -->
+    <p id="feedback" class="mt-4 text-lg font-bold"></p>
+    <p class="mt-4 text-white font-semibold text-lg">Skor: <span id="score">0</span></p>
+
+    <!-- Penjelasan & Pembuat -->
+    <div class="mt-6 text-white/70 text-sm leading-relaxed">
+      <p><strong>Tujuan:</strong> Game ini membantu melatih ingatan dan kecermatan dalam menebak lirik lagu populer. Asah daya ingatmu sambil bermain!</p>
+      <p class="mt-1">Dibuat oleh <strong>ZeroByteID</strong></p>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const lyrics = [
+      { text: "Karena ___ membuatku bahagia", answer: "senyum" },
+{ text: "Kau begitu ___ di mataku", answer: "indah" },
+{ text: "Tak akan ___ dirimu", answer: "lupakan" },
+{ text: "Hidupku tanpa ___ hampa", answer: "cintamu" },
+{ text: "Kau adalah ___ hatiku", answer: "pemilik" },
+{ text: "Aku ___ hanya untukmu", answer: "bernafas" },
+{ text: "Kisah kita tak akan ___", answer: "berakhir" },
+{ text: "Dengarkanlah ___ hatiku", answer: "bisikan" },
+{ text: "Cinta ini terlalu ___ tuk diungkapkan", answer: "dalam" },
+{ text: "Hatiku hanya untuk ___", answer: "kamu" },
+{ text: "Kau bagaikan ___ di malamku", answer: "bulan" },
+{ text: "Tak ada yang bisa ___ dirimu", answer: "gantikan" },
+{ text: "Setiap detik aku ___ kamu", answer: "rindu" },
+{ text: "Cintaku tak akan pernah ___", answer: "padam" },
+{ text: "Aku tak bisa ___ tanpamu", answer: "hidup" },
+{ text: "Kenangan ini terlalu ___ tuk dilupakan", answer: "indah" },
+{ text: "Kau datang membawa ___", answer: "bahagia" },
+{ text: "Hati ini telah ___ olehmu", answer: "tertawan" },
+{ text: "Aku ingin ___ selamanya", answer: "bersama" },
+{ text: "Langit malam jadi ___ tanpamu", answer: "sepi" },
+{ text: "Tak ada yang bisa ___ luka ini", answer: "sembuhkan" },
+{ text: "Hanya kamu yang bisa ___ hatiku", answer: "isi" },
+{ text: "Jangan pernah ___ aku sendiri", answer: "tinggalkan" },
+{ text: "Selalu ada ___ di matamu", answer: "cinta" },
+{ text: "Tangismu adalah ___ hatiku", answer: "derita" },
+{ text: "Kau membuatku ___ setiap hari", answer: "tersenyum" },
+{ text: "Aku ___ dalam kenangan", answer: "tenggelam" },
+{ text: "Biarkan aku ___ dirimu", answer: "miliki" },
+{ text: "Kau adalah ___ dalam hidupku", answer: "anugerah" },
+{ text: "Tak bisa aku ___ rasa ini", answer: "hindari" },
+{ text: "Cinta ini tak akan pernah ___", answer: "mati" },
+{ text: "Biarlah waktu yang ___ segalanya", answer: "jawab" },
+{ text: "Selalu ada ___ saat bersamamu", answer: "damai" },
+{ text: "Jalan ini kita ___ berdua", answer: "lalui" },
+{ text: "Cinta kita seperti ___", answer: "pelangi" },
+{ text: "Saat hujan turun aku ___ kamu", answer: "ingat" },
+{ text: "Tak ada kata yang bisa ___ rasaku", answer: "wakili" },
+{ text: "Aku jatuh cinta ___ padamu", answer: "lagi" },
+{ text: "Kau membuat hari-hariku jadi ___", answer: "berarti" },
+{ text: "Kita akan selalu ___ meski jauh", answer: "bersatu" },
+{ text: "Hanya kamu yang ___ di hatiku", answer: "tinggal" },
+{ text: "Kenangan bersamamu ___ di hati", answer: "abadi" },
+{ text: "Aku ___ setiap senyummu", answer: "rindukan" },
+{ text: "Setiap detik terasa ___ tanpamu", answer: "hampa" },
+{ text: "Duniaku berubah sejak kau ___", answer: "datang" },
+{ text: "Tertawamu seperti ___ di hatiku", answer: "nyanyian" },
+{ text: "Ku relakan segalanya demi ___", answer: "cintamu" },
+{ text: "Kau mengajarkanku arti ___", answer: "kesetiaan" },
+{ text: "Selamat tinggal ___ lamaku", answer: "kenangan" },
+{ text: "Biarkan cinta ini ___ dengan waktu", answer: "tumbuh" },
+{ text: "Aku ingin selalu ___ denganmu", answer: "ada" },
+{ text: "Cintaku padamu tak akan ___", answer: "berubah" },
+{ text: "Janjimu adalah ___ bagiku", answer: "harapan" },
+{ text: "Dalam gelap hanya kau yang ___", answer: "bersinar" },
+{ text: "Semua tentangmu adalah ___", answer: "cerita" },
+{ text: "Aku ingin jadi ___ dalam hidupmu", answer: "pilihan" },
+{ text: "Biarlah lagu ini jadi ___ hatiku", answer: "wakil" },
+{ text: "Dalam diam aku selalu ___", answer: "berdoa" },
+{ text: "Kau beri aku ___ untuk terus hidup", answer: "alasan" },
+{ text: "Jangan pernah lelah untuk ___ aku", answer: "temani" },
+{ text: "Cinta ini bukan hanya ___", answer: "kata" },
+{ text: "Kamu adalah akhir dari semua ___", answer: "pencarian" },
+{ text: "Aku dan kamu adalah ___ yang tak terpisah", answer: "takdir" },
+{ text: "Dalam pelukmu aku merasa ___", answer: "tenang" },
+{ text: "Biarlah semua tahu aku ___ kamu", answer: "sayang" },
+{ text: "Aku akan ___ sampai kau kembali", answer: "menunggu" },
+{ text: "Dulu kita pernah ___ bersama", answer: "tertawa" },
+{ text: "Setiap pagi aku selalu ___ wajahmu", answer: "bayangkan" },
+{ text: "Meski jarak memisah kita tetap ___", answer: "satu" },
+{ text: "Aku jatuh cinta tanpa ___", answer: "alasan" },
+{ text: "Hatiku ___ saat kau pergi", answer: "patah" },
+{ text: "Kau adalah lagu yang selalu aku ___", answer: "nyanyikan" },
+{ text: "Kamu adalah bagian dari ___", answer: "hidupku" },
+{ text: "Biarkan cinta ini ___ dalam hatimu", answer: "bersemi" },
+{ text: "Saat kau tersenyum, aku merasa ___", answer: "lengkap" },
+{ text: "Tak ada yang bisa ___ cinta kita", answer: "pisahkan" },
+{ text: "Aku ingin selalu ___ di sisimu", answer: "tinggal" },
+{ text: "Kenangan ini akan selalu ___", answer: "hidup" },
+{ text: "Jangan pernah ___ cintaku", answer: "ragukan" },
+{ text: "Cinta ini bukan hanya sekedar ___", answer: "janji" },
+{ text: "Dalam diam aku tetap ___ kamu", answer: "perhatikan" },
+{ text: "Setiap malam aku ___ namamu", answer: "sebut" },
+{ text: "Hatiku hanya untuk satu ___", answer: "nama" },
+{ text: "Biarkan dunia tahu aku ___ kamu", answer: "miliki" },
+{ text: "Kau adalah cahaya di tengah ___", answer: "gelap" },
+{ text: "Aku ingin jadi yang terakhir ___ kamu", answer: "temani" },
+{ text: "Tak bisa aku ___ rasa rindu ini", answer: "hapus" },
+{ text: "Cinta sejati tak akan ___", answer: "pergi" },
+{ text: "Pelukmu adalah tempat paling ___", answer: "hangat" },
+{ text: "Dalam hujan aku tetap ___ kamu", answer: "cari" },
+{ text: "Tak ada yang lebih ___ dari mencintaimu", answer: "indah" },
+{ text: "Saat kau bicara dunia terasa ___", answer: "sunyi" },
+{ text: "Senyummu adalah alasan aku ___", answer: "bahagia" },
+{ text: "Aku akan ___ sampai akhir waktu", answer: "menjaga" },
+{ text: "Kau adalah awal dan akhir dari ___", answer: "kisahku" },
+{ text: "Semua tentangmu selalu ___", answer: "menggoda" },
+{ text: "Rasa ini tak bisa aku ___", answer: "pungkiri" },
+{ text: "Aku butuh kamu seperti aku butuh ___", answer: "udara" },
+{ text: "Jangan ___ aku dalam sepi", answer: "biarkan" },
+{ text: "Kau buat hatiku ___ tanpa sebab", answer: "berdebar" },
+{ text: "Kamu adalah alasan aku terus ___", answer: "berjuang" }, 
+{ text: "Kau datang membawa ___ di hatiku", answer: "warna" },
+{ text: "Aku terus ___ dalam kenanganmu", answer: "terjebak" },
+{ text: "Malam ini terasa ___ tanpamu", answer: "sunyi" },
+{ text: "Rasa ini takkan pernah ___", answer: "pudar" },
+{ text: "Semua tentangmu begitu ___", answer: "berarti" },
+{ text: "Biarkan waktu yang ___", answer: "menjawab" },
+{ text: "Kau dan aku seperti ___", answer: "melodi" },
+{ text: "Tak ingin lagi merasa ___", answer: "kecewa" },
+{ text: "Bintang pun tahu isi ___", answer: "hatiku" },
+{ text: "Dunia terasa ___ saat bersamamu", answer: "indah" },
+
+{ text: "Tak bisa aku ___ rasa ini", answer: "sembunyikan" },
+{ text: "Kamu adalah bagian dari ___", answer: "hidupku" },
+{ text: "Setiap malam ku ___ namamu", answer: "bisikkan" },
+{ text: "Langkah kita akan terus ___", answer: "bersama" },
+{ text: "Tak akan ku ___ lagi", answer: "lepaskan" },
+{ text: "Hadirmu ___ luka lama", answer: "sembuhkan" },
+{ text: "Jangan pernah ___ hatiku", answer: "sakiti" },
+{ text: "Ku harap kita tak akan pernah ___", answer: "berpisah" },
+{ text: "Dalam diamku ku tetap ___", answer: "mencintaimu" },
+{ text: "Takkan ada yang bisa ___", answer: "menggantikanmu" },
+
+{ text: "Kisah ini kan terus ___", answer: "berjalan" },
+{ text: "Ku mohon jangan ___ cinta ini", answer: "sia-siakan" },
+{ text: "Senja ini mengingatkanku pada ___", answer: "dirimu" },
+{ text: "Aku akan selalu ___ kamu", answer: "menunggu" },
+{ text: "Tak bisa aku ___ bayangmu", answer: "hapus" },
+{ text: "Kau bagaikan ___ di gurun hati", answer: "oase" },
+{ text: "Tak ingin kubiarkanmu ___", answer: "pergi" },
+{ text: "Semua janji akan ___", answer: "kupegang" },
+{ text: "Jika ini mimpi, ku tak mau ___", answer: "bangun" },
+{ text: "Kau adalah alasan ku terus ___", answer: "berjuang" },
+
+{ text: "Hanya kamu yang mampu buatku ___", answer: "tersenyum" },
+{ text: "Saat hujan turun aku ___ kamu", answer: "ingat" },
+{ text: "Dalam lelahku hanya kamu yang ___", answer: "kuingat" },
+{ text: "Cintamu membuatku terus ___", answer: "hidup" },
+{ text: "Jangan pergi dari ___", answer: "hatiku" },
+{ text: "Ku percaya kita bisa ___", answer: "bersatu" },
+{ text: "Dalam pelukanmu ku merasa ___", answer: "aman" },
+{ text: "Walau dunia tak merestui, aku tetap ___", answer: "berjuang" },
+{ text: "Hanya kamu yang ___ hatiku", answer: "mengerti" },
+{ text: "Senyumanmu adalah ___ terindah", answer: "hadiah" },
+
+{ text: "Kisah ini tak akan pernah ___", answer: "mati" },
+{ text: "Ku peluk bayangmu dalam ___", answer: "mimpi" },
+{ text: "Cintaku tak butuh alasan untuk ___", answer: "tinggal" },
+{ text: "Tak perlu kata, cukup ___", answer: "tatapanmu" },
+{ text: "Bersama senja ku tulis ___", answer: "rinduku" },
+{ text: "Semua rasa ini tak bisa ku ___", answer: "hindari" },
+{ text: "Kau datang membawa ___ di dadaku", answer: "getar" },
+{ text: "Ku tak mampu bila harus ___", answer: "sendiri" },
+{ text: "Jangan biarkan aku dalam ___", answer: "sepi" },
+{ text: "Kita adalah dua jiwa yang ___", answer: "bertemu" },
+
+{ text: "Dengarlah lagu ini, ku tulis dengan ___", answer: "rindu" },
+{ text: "Rasa cinta ini seperti ___", answer: "api" },
+{ text: "Bahkan langit pun tahu ___", answer: "rasaku" },
+{ text: "Biarkan cinta ini ___ selamanya", answer: "hidup" },
+{ text: "Semua luka ini akan ___", answer: "sembuh" },
+{ text: "Kamu tak tergantikan di dalam ___", answer: "jiwa" },
+{ text: "Tak sanggup aku menahan ___", answer: "air mata" },
+{ text: "Dirimu selalu hadir di ___", answer: "mimpiku" },
+{ text: "Langit tahu aku masih ___", answer: "menanti" },
+{ text: "Kau bagai nyanyian yang selalu ___", answer: "terdengar" },
+
+{ text: "Walau berat, ku tetap ___", answer: "bertahan" },
+{ text: "Setiap detik terasa ___ tanpamu", answer: "kosong" },
+{ text: "Tak perlu lagi kau ___", answer: "khawatir" },
+{ text: "Aku jatuh cinta padamu tanpa ___", answer: "alasan" },
+{ text: "Bersamamu adalah ___ terindah", answer: "waktu" },
+{ text: "Kau beri warna di setiap ___", answer: "langkahku" },
+{ text: "Ku titipkan rinduku lewat ___", answer: "angin" },
+{ text: "Cintaku hanya akan ___ padamu", answer: "berlabuh" },
+{ text: "Bahkan waktu tak bisa ___ cintaku", answer: "hapus" },
+{ text: "Meski jauh, cinta kita tetap ___", answer: "kuat" }, 
+{ text: "Tak mampu lagi aku menahan ___", answer: "rasa" },
+{ text: "Hatiku masih terus ___ namamu", answer: "menyebut" },
+{ text: "Cinta ini akan terus ___", answer: "hidup" },
+{ text: "Aku ingin selalu ___ di sisimu", answer: "tinggal" },
+{ text: "Biarkan ku menjadi bagian dari ___", answer: "ceritamu" },
+{ text: "Tak akan pernah ku ___ dirimu", answer: "tinggalkan" },
+{ text: "Bintang malam menyaksikan ___", answer: "doaku" },
+{ text: "Selalu ada kamu di setiap ___", answer: "laguku" },
+{ text: "Jika ini salah, aku tetap akan ___", answer: "mencinta" },
+{ text: "Dunia berhenti saat kau ___", answer: "pergi" },
+
+{ text: "Ku ingin kau tahu betapa aku ___", answer: "sayang" },
+{ text: "Hanya kamu yang bisa ___", answer: "mengobati" },
+{ text: "Kau seperti cahaya dalam ___", answer: "gelapku" },
+{ text: "Tiap detik hanya untuk ___", answer: "memikirkanmu" },
+{ text: "Berharap kau kembali ke ___", answer: "pelukku" },
+{ text: "Hanya bayanganmu yang selalu ___", answer: "menemani" },
+{ text: "Ku percaya cinta tak pernah ___", answer: "bohong" },
+{ text: "Namamu terukir dalam setiap ___", answer: "doaku" },
+{ text: "Tak ingin mengulang kisah yang ___", answer: "lalu" },
+{ text: "Kita bertemu karena takdir yang ___", answer: "indah" },
+
+{ text: "Kau adalah cahaya dalam ___", answer: "hidupku" },
+{ text: "Kau pergi dan tinggalkan ___", answer: "kisah" },
+{ text: "Biar cinta yang ___ semuanya", answer: "menjawab" },
+{ text: "Aku akan tetap ___ walau kau jauh", answer: "menunggu" },
+{ text: "Kita pernah tertawa dalam ___", answer: "pelukan" },
+{ text: "Rinduku tak pernah bisa ___", answer: "berhenti" },
+{ text: "Biarkan ku simpan rindu ini dalam ___", answer: "hati" },
+{ text: "Cinta kita tak akan pernah ___", answer: "padam" },
+{ text: "Langit pun tahu tentang ___", answer: "rindu ini" },
+{ text: "Ku percaya kita akan ___ kembali", answer: "bersatu" },
+
+{ text: "Saat ku menatapmu, aku merasa ___", answer: "tenang" },
+{ text: "Hanya kamu yang membuatku ___", answer: "berbeda" },
+{ text: "Kau hadir di saat aku merasa ___", answer: "sepi" },
+{ text: "Jika kau tahu betapa aku ___", answer: "menyesal" },
+{ text: "Tatapanmu membuatku merasa ___", answer: "bahagia" },
+{ text: "Hari-hariku terasa ___ tanpamu", answer: "kosong" },
+{ text: "Hanya dalam mimpiku aku bisa ___", answer: "memelukmu" },
+{ text: "Wajahmu hadir di setiap ___", answer: "pikiranku" },
+{ text: "Aku ingin kamu tetap di ___", answer: "hatiku" },
+{ text: "Selamanya kamu akan ___ di sini", answer: "tinggal" },
+
+{ text: "Aku butuh kamu seperti aku butuh ___", answer: "udara" },
+{ text: "Aku hanyalah manusia yang penuh ___", answer: "rindu" },
+{ text: "Jangan pernah kau ___ kembali", answer: "berpaling" },
+{ text: "Saat hujan turun aku teringat ___", answer: "senyummu" },
+{ text: "Senyummu adalah alasan aku ___", answer: "bahagia" },
+{ text: "Maafkan aku telah ___ hatimu", answer: "menyakiti" },
+{ text: "Cinta ini takkan pernah ___", answer: "mati" },
+{ text: "Kita pernah memiliki ___ indah", answer: "kenangan" },
+{ text: "Hidupku kini terasa lebih ___", answer: "sunyi" },
+{ text: "Berjanjilah untuk tetap ___", answer: "setia" },
+
+{ text: "Tetes air mata ini karena ___", answer: "kamu" },
+{ text: "Segala tentangmu sulit tuk ___", answer: "lupakan" },
+{ text: "Ku peluk erat bayanganmu dalam ___", answer: "sepi" },
+{ text: "Aku ingin kau bahagia walau bukan ___", answer: "denganku" },
+{ text: "Kau ajarkan aku arti sebuah ___", answer: "kesetiaan" },
+{ text: "Biarkan aku menjadi tempatmu ___", answer: "bersandar" },
+{ text: "Jika kau kembali, ku kan selalu ___", answer: "menunggu" },
+{ text: "Cinta kita telah melewati banyak ___", answer: "rintangan" },
+{ text: "Aku tahu hatimu masih ___", answer: "untukku" },
+{ text: "Sampai akhir aku akan tetap ___", answer: "mencintaimu" },
+    ];
+
+    let score = 0;
+    let currentLyric = {};
+
+    function getRandomLyric() {
+      const randomIndex = Math.floor(Math.random() * lyrics.length);
+      return lyrics[randomIndex];
+    }
+
+    function maskAnswer(word) {
+      return "_".repeat(word.length);
+    }
+
+    function renderLyric() {
+      currentLyric = getRandomLyric();
+      const masked = currentLyric.text.replace("___", maskAnswer(currentLyric.answer));
+      document.getElementById("lyric").textContent = `"${masked}"`;
+      document.getElementById("answerInput").value = "";
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("clueBox").textContent = "";
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById("answerInput").value.trim().toLowerCase();
+      const correct = currentLyric.answer.toLowerCase();
+      const feedback = document.getElementById("feedback");
+
+      if (input === correct) {
+        score++;
+        document.getElementById("score").textContent = score;
+        feedback.textContent = "✅ Benar!";
+        feedback.className = "text-green-400 font-bold mt-4 text-lg";
+
+        setTimeout(() => {
+          renderLyric();
+        }, 2000);
+      } else {
+        feedback.textContent = "❌ Salah, coba lagi.";
+        feedback.className = "text-red-400 font-bold mt-4 text-lg";
+      }
+    }
+
+    function showClue() {
+      const answer = currentLyric.answer;
+      let clue = "";
+
+      for (let i = 0; i < answer.length; i++) {
+        if (i === 0 || i === Math.floor(answer.length / 2) || i === answer.length - 1) {
+          clue += answer[i];
+        } else {
+          clue += "_";
+        }
+      }
+
+      document.getElementById("clueBox").textContent = `Clue: ${clue}`;
+    }
+
+    function giveUp() {
+      document.getElementById("feedback").textContent = `🤔 Jawaban: ${currentLyric.answer}`;
+      document.getElementById("feedback").className = "text-yellow-300 font-bold mt-4 text-lg";
+    }
+
+    function nextLyric() {
+      renderLyric();
+    }
+
+    renderLyric();
+  </script>
+</body>
+</html>
