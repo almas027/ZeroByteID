@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tebak Emoji</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-cyan-900 via-slate-900 to-black min-h-screen flex flex-col items-center px-4 py-10 text-white">
+
+  <!-- Kotak Skor -->
+  <div class="bg-white/10 text-center p-4 rounded-xl shadow mb-6 w-full max-w-md">
+    <p class="text-xl font-semibold mb-1">Skor Kamu</p>
+    <div class="flex justify-center gap-6 text-lg">
+      <span class="text-green-400 font-bold">Benar: <span id="benar">0</span></span>
+      <span class="text-red-400 font-bold">Salah: <span id="salah">0</span></span>
+    </div>
+  </div>
+
+  <!-- Kotak Game -->
+  <div class="bg-white/10 p-6 rounded-xl shadow-xl w-full max-w-md text-center backdrop-blur-md mb-8">
+    <h1 class="text-3xl font-bold text-cyan-300 mb-2">Tebak Emoji</h1>
+    <p class="text-sm mb-4 text-white">Tebak makna atau arti dari emoji yang ditampilkan</p>
+
+    <!-- Jawaban Sebelumnya -->
+    <div id="jawabanSebelumnya" class="mb-2 text-lg font-bold text-green-300"></div>
+
+    <!-- Emoji -->
+    <div id="emoji" class="text-5xl mb-4">🤔</div>
+
+    <!-- Clue -->
+    <p id="clue" class="text-cyan-300 font-mono text-sm mb-4"></p>
+
+    <!-- Input + Tombol Cek -->
+    <div class="flex gap-2 mb-4">
+      <input id="input" type="text" placeholder="Jawabanmu..." class="flex-1 p-2 rounded-lg text-black border-2 border-cyan-400 text-center text-lg"/>
+      <button onclick="cekJawaban()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 rounded-lg font-bold">Cek</button>
+    </div>
+
+    <!-- Tombol-tombol -->
+    <div class="flex flex-wrap justify-center gap-3">
+      <button onclick="tampilkanClue()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg font-semibold">Clue</button>
+      <button onclick="menyerah()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg font-semibold">Menyerah</button>
+      <button onclick="soalBaru()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg font-semibold">Soal Baru</button>
+      <a href="gameseru.html" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg font-semibold">Kembali ke Menu</a>
+    </div>
+  </div>
+
+  <!-- Penjelasan & Pembuat -->
+  <footer class="text-center text-white/70 text-sm max-w-md">
+    <p><strong>Tujuan:</strong> Game ini melatih daya imajinasi dan interpretasi emoji. Seru dan menantang!</p>
+    <p class="mt-1">Dibuat oleh <strong>ZeroByteID</strong></p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const data = [
+        { emoji: "🍔🍟", answer: "makanan cepat saji", clue: "Burger dan kentang" },
+  { emoji: "🚗💨", answer: "ngebut", clue: "Mobil melaju kencang" },
+  { emoji: "🐱🦁", answer: "kucing dan singa", clue: "Hewan imut dan raja hutan" },
+  { emoji: "🎓🏫", answer: "wisuda", clue: "Topi kelulusan" },
+  { emoji: "💤", answer: "tidur", clue: "Zzz..." },
+  { emoji: "📱💬", answer: "chat", clue: "Percakapan online" },
+  { emoji: "🎮🔥", answer: "game seru", clue: "Main dan panas!" },
+  { emoji: "🛫🌏", answer: "pergi traveling", clue: "Naik pesawat keliling dunia" },
+  { emoji: "🏖️☀️", answer: "liburan", clue: "Pantai dan matahari" },
+  { emoji: "🧠🧩", answer: "tebak-tebakan", clue: "Otak dan puzzle" },
+  { emoji: "📸🌄", answer: "fotografi", clue: "Tangkap momen indah" },
+  { emoji: "🐶🐾", answer: "anjing peliharaan", clue: "Hewan berkaki empat setia" },
+  { emoji: "🐱🐾", answer: "kucing peliharaan", clue: "Hewan manja berkaki empat" },
+  { emoji: "📚📖", answer: "membaca buku", clue: "Kegiatan literasi" },
+  { emoji: "🛒🛍️", answer: "belanja", clue: "Aktivitas di mall" },
+  { emoji: "🍕🥤", answer: "makan pizza", clue: "Makanan khas Italia" },
+  { emoji: "🎧🎵", answer: "dengerin musik", clue: "Nada dan ritme" },
+  { emoji: "📷🤳", answer: "selfie", clue: "Foto diri sendiri" },
+  { emoji: "🎁🎈", answer: "pesta ulang tahun", clue: "Perayaan dan hadiah" },
+  { emoji: "💪🏋️", answer: "olahraga", clue: "Latihan otot dan kebugaran" },
+  { emoji: "👨‍🍳🍳", answer: "memasak", clue: "Aktivitas di dapur" },
+  { emoji: "🚴‍♂️⛰️", answer: "bersepeda", clue: "Naik sepeda di alam" },
+  { emoji: "🛏️😴", answer: "tidur nyenyak", clue: "Aktivitas malam" },
+  { emoji: "💻⌨️", answer: "kerja laptop", clue: "Pekerjaan digital" },
+  { emoji: "👗👠", answer: "fashion wanita", clue: "Pakaian dan gaya" },
+  { emoji: "🕶️👕", answer: "fashion pria", clue: "Gaya kasual pria" },
+  { emoji: "🌧️☔", answer: "hujan", clue: "Langit gelap dan basah" },
+  { emoji: "🌞🌤️", answer: "cuaca cerah", clue: "Langit terang" },
+  { emoji: "🍩🍰", answer: "makanan manis", clue: "Cemilan penuh gula" },
+  { emoji: "🎤🎶", answer: "menyanyi", clue: "Suara merdu" },
+  { emoji: "🎨🖌️", answer: "melukis", clue: "Kanvas dan kuas" },
+  { emoji: "🎬📽️", answer: "film", clue: "Di layar lebar" },
+  { emoji: "🕹️👾", answer: "main game", clue: "Kontrol dan tantangan" },
+  { emoji: "🎯🥇", answer: "menang lomba", clue: "Juara satu!" },
+  { emoji: "✈️🏝️", answer: "liburan jauh", clue: "Perjalanan udara" },
+  { emoji: "🛠️🔧", answer: "perbaikan", clue: "Alat dan servis" },
+  { emoji: "🎂🍰", answer: "kue ulang tahun", clue: "Kue dan lilin" },
+  { emoji: "📺🍿", answer: "nonton tv", clue: "Layar kaca dan camilan" },
+  { emoji: "🚿🧼", answer: "mandi", clue: "Bersih dan segar" },
+  { emoji: "😷💉", answer: "periksa ke dokter", clue: "Kesehatan dan suntik" },
+  { emoji: "🎆🎇", answer: "kembang api", clue: "Langit malam meriah" },
+  { emoji: "🛏️📱", answer: "rebahan sambil main hp", clue: "Gaya milenial" },
+  { emoji: "🏃‍♂️💨", answer: "lari cepat", clue: "Sprint!" },
+  { emoji: "🚙🛣️", answer: "pergi jauh", clue: "Perjalanan darat" },
+  { emoji: "🏞️🌲", answer: "jalan-jalan di alam", clue: "Pemandangan hijau" },
+  { emoji: "💘💑", answer: "jatuh cinta", clue: "Hati dan pasangan" },
+  { emoji: "💔😢", answer: "patah hati", clue: "Hati retak dan air mata" },
+  { emoji: "🤑💰", answer: "uang banyak", clue: "Dompet tebal" },
+  { emoji: "🧳🛫", answer: "pergi ke luar negeri", clue: "Koper dan pesawat" },
+  { emoji: "🧁🍬", answer: "cemilan manis", clue: "Gula dan warna-warni" },
+  { emoji: "🍚🍗", answer: "makan nasi", clue: "Makanan sehari-hari" },
+  { emoji: "🌆🌃", answer: "kota malam", clue: "Gedung dan lampu" },
+  { emoji: "👀🔍", answer: "mencari", clue: "Lihat dan fokus" },
+  { emoji: "🌸💐", answer: "bunga", clue: "Harum dan indah" },
+  { emoji: "🐍🦎", answer: "reptil", clue: "Bersisik dan dingin" },
+  { emoji: "🧘‍♀️🕊️", answer: "meditasi", clue: "Tenang dan damai" },
+  { emoji: "👨‍👩‍👧‍👦🏡", answer: "keluarga bahagia", clue: "Bersama di rumah" },
+  { emoji: "🔋⚡", answer: "isi daya", clue: "Baterai habis" },
+  { emoji: "📅⏰", answer: "jadwal padat", clue: "Banyak kegiatan" },
+  { emoji: "🛠️🏚️", answer: "renovasi rumah", clue: "Bangun dan cat ulang" },
+  { emoji: "🧹🧽", answer: "bersih-bersih", clue: "Rapi dan bersih" },
+  { emoji: "🧳✈️", answer: "packing liburan", clue: "Sebelum pergi" },
+  { emoji: "🎿🏔️", answer: "main ski", clue: "Salju dan kecepatan" },
+  { emoji: "👩‍🏫📖", answer: "guru mengajar", clue: "Di depan kelas" },
+  { emoji: "🐠🐟", answer: "ikan", clue: "Hidup di air" },
+  { emoji: "🎭🎫", answer: "nonton teater", clue: "Drama dan panggung" },
+  { emoji: "🧥👖", answer: "pakaian", clue: "Buat menutup tubuh" },
+  { emoji: "👶🍼", answer: "bayi", clue: "Imut dan mungil" },
+  { emoji: "🐇🥕", answer: "kelinci makan wortel", clue: "Hewan cepat dan lucu" },
+  { emoji: "📲🔋", answer: "isi baterai", clue: "Biar gak mati" },
+  { emoji: "👨‍🔧🛠️", answer: "tukang", clue: "Ahli perbaikan" },
+  { emoji: "🧑‍🎓📚", answer: "mahasiswa", clue: "Belajar di kampus" },
+  { emoji: "🌌🚀", answer: "luar angkasa", clue: "Bintang dan planet" },
+  { emoji: "🎯🏆", answer: "tujuan besar", clue: "Ingin dicapai!" },
+  { emoji: "🐴🏇", answer: "balap kuda", clue: "Olahraga berkuda" },
+  { emoji: "🏕️🔥", answer: "kemah", clue: "Tidur di tenda" },
+  { emoji: "🏟️⚽", answer: "stadion bola", clue: "Tempat pertandingan" },
+  { emoji: "📖✍️", answer: "menulis buku", clue: "Ide jadi tulisan" },
+  { emoji: "🗺️🎒", answer: "petualangan", clue: "Jelajah dunia" }, 
+    { emoji: "🎯📈", answer: "target sukses", clue: "Tujuan dan pencapaian" },
+  { emoji: "📦🚚", answer: "pengiriman barang", clue: "Paket dalam perjalanan" },
+  { emoji: "🍜🥢", answer: "makan mie", clue: "Makanan dengan sumpit" },
+  { emoji: "🥋🥊", answer: "beladiri", clue: "Olahraga pertahanan diri" },
+  { emoji: "🏊‍♀️💦", answer: "berenang", clue: "Di kolam atau laut" },
+  { emoji: "🏋️‍♂️💪", answer: "angkat beban", clue: "Latihan kekuatan" },
+  { emoji: "📚🧠", answer: "belajar keras", clue: "Bikin pintar" },
+  { emoji: "📽️🍿", answer: "bioskop", clue: "Tempat nonton film" },
+  { emoji: "🛌😴", answer: "tidur lelap", clue: "Istirahat malam" },
+  { emoji: "👔💼", answer: "kerja kantoran", clue: "Pakai dasi dan rapih" },
+  { emoji: "🎮🧑‍💻", answer: "developer game", clue: "Bikin game" },
+  { emoji: "🚓🚨", answer: "polisi", clue: "Penjaga keamanan" },
+  { emoji: "🧑‍⚕️💉", answer: "dokter", clue: "Menolong pasien" },
+  { emoji: "🧑‍🍳🥘", answer: "chef", clue: "Masak makanan enak" },
+  { emoji: "🧑‍🔬🔬", answer: "ilmuwan", clue: "Eksperimen dan lab" },
+  { emoji: "📖🕯️", answer: "baca malam", clue: "Tenang dan fokus" },
+  { emoji: "🪙💸", answer: "uang receh", clue: "Nilai kecil tapi penting" },
+  { emoji: "🧼🧽", answer: "bersih-bersih rumah", clue: "Tugas akhir pekan" },
+  { emoji: "🖼️🖌️", answer: "galeri seni", clue: "Karya di dinding" },
+  { emoji: "🚀🛰️", answer: "misi luar angkasa", clue: "NASA dan teknologi" },
+  { emoji: "💡📊", answer: "ide bisnis", clue: "Peluang dan perencanaan" },
+  { emoji: "🌊🧜‍♀️", answer: "putri duyung", clue: "Legenda bawah laut" },
+  { emoji: "🍿😆", answer: "komedi", clue: "Film lucu" },
+  { emoji: "🎃👻", answer: "halloween", clue: "Kostum seram" },
+  { emoji: "🥶❄️", answer: "cuaca dingin", clue: "Butuh jaket tebal" },
+  { emoji: "☕📖", answer: "ngopi sambil baca", clue: "Santai di pagi hari" },
+  { emoji: "🥗🍅", answer: "salad", clue: "Makanan sehat" },
+  { emoji: "🛸👽", answer: "alien", clue: "Makhluk luar angkasa" },
+  { emoji: "📸🏝️", answer: "foto liburan", clue: "Kenangan indah" },
+  { emoji: "🚴‍♀️🌳", answer: "bersepeda di taman", clue: "Aktif dan sehat" },
+  { emoji: "🦄🌈", answer: "fantasi", clue: "Imajinasi penuh warna" },
+  { emoji: "🏜️🐫", answer: "padang pasir", clue: "Tempat panas dan tandus" },
+  { emoji: "🗿🏝️", answer: "pulau terpencil", clue: "Jarang orang" },
+  { emoji: "🧛‍♂️🦇", answer: "vampir", clue: "Makhluk malam" },
+  { emoji: "🤖⚙️", answer: "robot", clue: "Teknologi masa depan" },
+  { emoji: "🥁🎷", answer: "alat musik", clue: "Buat konser" },
+  { emoji: "📞☎️", answer: "telepon", clue: "Komunikasi suara" },
+  { emoji: "🚧🏗️", answer: "konstruksi", clue: "Bangunan baru" },
+  { emoji: "🛍️💳", answer: "belanja online", clue: "Klik dan bayar" },
+  { emoji: "📦📬", answer: "paket sampai", clue: "Kurir datang" },
+  { emoji: "📈💼", answer: "investasi", clue: "Uang berkembang" },
+  { emoji: "🧩🕹️", answer: "game puzzle", clue: "Asah otak" },
+  { emoji: "🥇🏆", answer: "juara", clue: "Pemenang terbaik" },
+  { emoji: "🐘🦒", answer: "kebun binatang", clue: "Hewan besar dan unik" },
+  { emoji: "🚣‍♂️🌊", answer: "dayung", clue: "Olahraga air" },
+  { emoji: "🧗‍♂️⛰️", answer: "panjat tebing", clue: "Tantangan tinggi" },
+  { emoji: "🛶🌅", answer: "naik perahu", clue: "Di danau senja" },
+  { emoji: "🎡🎠", answer: "wahana bermain", clue: "Taman hiburan" },
+  { emoji: "📷🎞️", answer: "fotografi analog", clue: "Zaman dulu" },
+  { emoji: "🧃🥪", answer: "bekal makan", clue: "Bawa dari rumah" },
+  { emoji: "📚🧾", answer: "membaca catatan", clue: "Persiapan ujian" },
+  { emoji: "🚦🚗", answer: "lampu merah", clue: "Aturan lalu lintas" },
+  { emoji: "🛑⛔", answer: "berhenti", clue: "Jangan lanjut" },
+  { emoji: "🎮👨‍👩‍👧", answer: "main bareng keluarga", clue: "Seru rame-rame" },
+  { emoji: "🛫🕒", answer: "jadwal penerbangan", clue: "Ke bandara tepat waktu" },
+  { emoji: "🛒📦", answer: "checkout belanja", clue: "Langkah terakhir" },
+  { emoji: "🍞🧈", answer: "roti mentega", clue: "Sarapan simpel" },
+  { emoji: "🧤🧣", answer: "aksesori musim dingin", clue: "Hangatkan tubuh" },
+  { emoji: "🏹🦌", answer: "berburu", clue: "Kegiatan di hutan" },
+  { emoji: "🎤🎧", answer: "podcast", clue: "Ngobrol online" },
+  { emoji: "📦🔑", answer: "kotak rahasia", clue: "Terkunci" },
+  { emoji: "📉💸", answer: "rugi", clue: "Kehilangan uang" },
+  { emoji: "🚽🧻", answer: "ke toilet", clue: "Kebutuhan mendesak" },
+  { emoji: "🧴🪒", answer: "perawatan diri", clue: "Buat tampil bersih" },
+  { emoji: "🦖🌋", answer: "dinosaurus", clue: "Makhluk prasejarah" },
+  { emoji: "🚿🧴", answer: "mandi sore", clue: "Setelah aktivitas" },
+  { emoji: "🧊🥶", answer: "dingin ekstrem", clue: "Beku banget!" },
+  { emoji: "🍀🐞", answer: "keberuntungan", clue: "Simbol hoki" },
+  { emoji: "🏥🩺", answer: "rumah sakit", clue: "Tempat penyembuhan" },
+  { emoji: "🏛️⚖️", answer: "pengadilan", clue: "Tempat hukum berlaku" },
+  { emoji: "📜🏛️", answer: "sejarah", clue: "Kisah masa lalu" },
+  { emoji: "🛷❄️", answer: "main salju", clue: "Sledding time" },
+  { emoji: "📔📝", answer: "menulis jurnal", clue: "Curhat harian" },
+  { emoji: "🛠️🔩", answer: "alat tukang", clue: "Perkakas kerja" }, 
+    { emoji: "🍰🎉", answer: "ulang tahun", clue: "Hari spesial dengan kue" },
+  { emoji: "🪂🌤️", answer: "terjun payung", clue: "Melayang di langit" },
+  { emoji: "🛏️⏰", answer: "bangun pagi", clue: "Mulai hari" },
+  { emoji: "🍫🍩", answer: "makanan manis", clue: "Camilan enak" },
+  { emoji: "👣🕵️", answer: "detektif", clue: "Mencari petunjuk" },
+  { emoji: "🧵🪡", answer: "menjahit", clue: "Benang dan jarum" },
+  { emoji: "💃🎶", answer: "dansa", clue: "Gerakan mengikuti musik" },
+  { emoji: "🍽️🔪", answer: "makan malam", clue: "Waktu makan besar" },
+  { emoji: "👓📖", answer: "baca buku", clue: "Untuk pengetahuan" },
+  { emoji: "🎧🎼", answer: "dengerin musik", clue: "Menikmati lagu" },
+  { emoji: "🥁🎸", answer: "band", clue: "Grup musik" },
+  { emoji: "🧩🧠", answer: "puzzle logika", clue: "Mengasah otak" },
+  { emoji: "🏀⛹️", answer: "basket", clue: "Bola dan keranjang" },
+  { emoji: "⚽🥅", answer: "sepak bola", clue: "Olahraga dunia" },
+  { emoji: "🏐🏃‍♀️", answer: "voli", clue: "Lapangan dan net" },
+  { emoji: "🎯🎮", answer: "game akurasi", clue: "Butuh fokus" },
+  { emoji: "🎲🃏", answer: "permainan meja", clue: "Kartu dan dadu" },
+  { emoji: "🎳🧑‍🤝‍🧑", answer: "main bowling", clue: "Pin dan bola" },
+  { emoji: "🧊🥤", answer: "minuman dingin", clue: "Segar dan manis" },
+  { emoji: "☁️🌧️", answer: "cuaca buruk", clue: "Langit kelabu" },
+  { emoji: "🌪️🌊", answer: "bencana alam", clue: "Kekuatan besar" },
+  { emoji: "🌅🌄", answer: "matahari terbit", clue: "Pagi datang" },
+  { emoji: "🌇🌆", answer: "senja", clue: "Langit jingga" },
+  { emoji: "🎀💌", answer: "hadiah cinta", clue: "Romantis" },
+  { emoji: "🐶🐕", answer: "anjing", clue: "Sahabat manusia" },
+  { emoji: "🐱🐈", answer: "kucing", clue: "Menggemaskan" },
+  { emoji: "🐦🐤", answer: "burung", clue: "Bersuara merdu" },
+  { emoji: "🦋🌸", answer: "kupu-kupu", clue: "Terbang di taman" },
+  { emoji: "🦖🦕", answer: "dinosaurus", clue: "Makhluk purba" },
+  { emoji: "🐝🌼", answer: "lebah", clue: "Pembuat madu" },
+  { emoji: "🛬🛫", answer: "bandara", clue: "Tempat pesawat" },
+  { emoji: "🌌🚀", answer: "perjalanan luar angkasa", clue: "Antariksa" },
+  { emoji: "🏠🔑", answer: "rumah sendiri", clue: "Tempat tinggal" },
+  { emoji: "🚗🧳", answer: "liburan keluarga", clue: "Pergi jauh" },
+  { emoji: "🌻🌼", answer: "taman bunga", clue: "Indah dan harum" },
+  { emoji: "🐢🐇", answer: "lambat dan cepat", clue: "Dongeng terkenal" },
+  { emoji: "🎭🎬", answer: "teater", clue: "Seni panggung" },
+  { emoji: "🖍️📒", answer: "mewarnai", clue: "Aktivitas kreatif" },
+  { emoji: "💻🖥️", answer: "komputer", clue: "Teknologi modern" },
+  { emoji: "📱📶", answer: "sinyal hp", clue: "Buat internet" },
+  { emoji: "🎒🏫", answer: "sekolah", clue: "Belajar bersama" },
+  { emoji: "📓🖊️", answer: "catatan", clue: "Biar nggak lupa" },
+  { emoji: "🔍🔑", answer: "misteri", clue: "Cari jawabannya" },
+  { emoji: "📦🎁", answer: "bungkus hadiah", clue: "Kejutan" },
+  { emoji: "🦷🪥", answer: "sikat gigi", clue: "Jaga kesehatan mulut" },
+  { emoji: "🚿🛁", answer: "mandi", clue: "Biar bersih" },
+  { emoji: "👣🧭", answer: "petualangan", clue: "Menjelajah" },
+  { emoji: "🕰️📆", answer: "jadwal", clue: "Mengatur waktu" },
+  { emoji: "🧯🔥", answer: "pemadam kebakaran", clue: "Mengatasi api" },
+  { emoji: "⚙️🔋", answer: "teknologi", clue: "Mesin dan energi" },
+  { emoji: "🏡🌳", answer: "halaman rumah", clue: "Tempat santai" },
+  { emoji: "🎢🎡", answer: "taman hiburan", clue: "Seru dan tinggi" },
+  { emoji: "👨‍🏫📚", answer: "guru", clue: "Mengajar murid" },
+  { emoji: "👩‍🔧🔧", answer: "montir", clue: "Benerin kendaraan" },
+  { emoji: "🧑‍🎨🎨", answer: "pelukis", clue: "Kanvas dan kuas" },
+  { emoji: "🎤🗣️", answer: "pidato", clue: "Berbicara di depan" },
+  { emoji: "📡🌐", answer: "internet", clue: "Jaringan global" },
+  { emoji: "🖋️✉️", answer: "tulis surat", clue: "Kabar dari jauh" },
+  { emoji: "📀📼", answer: "teknologi jadul", clue: "Media lama" },
+  { emoji: "🧳🌍", answer: "petualangan dunia", clue: "Traveling besar" },
+  { emoji: "📢🎙️", answer: "pengumuman", clue: "Informasi penting" },
+  { emoji: "🧱🧰", answer: "bangunan", clue: "Butuh tukang" },
+  { emoji: "🎓📜", answer: "lulusan", clue: "Selesai belajar" },
+  { emoji: "📂🗃️", answer: "arsip", clue: "Simpan dokumen" },
+  { emoji: "🧊🥶", answer: "es dingin", clue: "Segar banget" },
+  { emoji: "🥵🔥", answer: "panas banget", clue: "Cuaca ekstrem" },
+  { emoji: "🏏🏑", answer: "olahraga stick", clue: "Hoki dan kriket" },
+  { emoji: "🎽🏃", answer: "lari", clue: "Olahraga cepat" },
+  { emoji: "🎙️🎶", answer: "nyanyi", clue: "Bersuara merdu" },
+  { emoji: "🎹🎼", answer: "piano", clue: "Nada klasik" },
+  { emoji: "🧘‍♀️🕯️", answer: "meditasi", clue: "Tenangkan pikiran" },
+  { emoji: "🌈☀️", answer: "hari cerah", clue: "Cuaca indah" }
+    ];
+
+    let benar = 0;
+    let salah = 0;
+    let soalSekarang = {};
+
+    function acakSoal() {
+      const random = data[Math.floor(Math.random() * data.length)];
+      soalSekarang = random;
+      document.getElementById("emoji").textContent = random.emoji;
+      document.getElementById("input").value = "";
+      document.getElementById("clue").textContent = "";
+      document.getElementById("jawabanSebelumnya").textContent = "";
+    }
+
+    function cekJawaban() {
+      const jawaban = document.getElementById("input").value.trim().toLowerCase();
+      const benarJawaban = soalSekarang.answer.toLowerCase();
+
+      if (jawaban === benarJawaban) {
+        benar++;
+        document.getElementById("benar").textContent = benar;
+        document.getElementById("jawabanSebelumnya").textContent = `Jawaban: ${soalSekarang.answer}`;
+        setTimeout(acakSoal, 2000);
+      } else {
+        salah++;
+        document.getElementById("salah").textContent = salah;
+        document.getElementById("jawabanSebelumnya").textContent = "Salah. Coba lagi.";
+      }
+    }
+
+    function tampilkanClue() {
+      document.getElementById("clue").textContent = "Clue: " + soalSekarang.clue;
+    }
+
+    function menyerah() {
+      document.getElementById("jawabanSebelumnya").textContent = `Jawaban: ${soalSekarang.answer}`;
+    }
+
+    function soalBaru() {
+      acakSoal();
+    }
+
+    acakSoal();
+  </script>
+</body>
+      </html>
