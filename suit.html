@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Batu Kertas Gunting</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-900 via-indigo-900 to-black min-h-screen flex flex-col items-center text-white px-4 py-8">
+
+  <!-- Judul -->
+  <div class="bg-white/10 p-6 rounded-2xl shadow-xl max-w-md w-full text-center backdrop-blur mb-6">
+    <h1 class="text-3xl font-bold text-yellow-300 mb-1">Batu Kertas Gunting</h1>
+    <p class="text-sm text-white">Kalahkan komputer dengan pilihan terbaikmu!</p>
+  </div>
+
+  <!-- Kotak Skor -->
+  <div class="bg-white/10 p-4 rounded-xl shadow max-w-md w-full text-center mb-4">
+    <p class="text-lg font-semibold mb-3">Skor:</p>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-green-500/20 p-3 rounded-lg">
+        <p class="font-semibold text-green-300">Menang</p>
+        <p class="text-2xl font-bold text-green-400" id="playerScore">0</p>
+      </div>
+      <div class="bg-red-500/20 p-3 rounded-lg">
+        <p class="font-semibold text-red-300">Kalah</p>
+        <p class="text-2xl font-bold text-red-400" id="computerScore">0</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kotak Pilihan Komputer -->
+  <div class="bg-white/10 p-4 rounded-xl shadow max-w-md w-full text-center mb-4">
+    <p class="text-lg mb-2 font-medium text-yellow-300">Pilihan Komputer:</p>
+    <div class="text-5xl mb-1" id="computerEmoji">❓</div>
+    <div class="text-white font-bold text-lg mb-2" id="computerText">Menunggu...</div>
+
+    <!-- Hasil Pertandingan -->
+    <p id="resultText" class="text-xl font-bold text-white mt-2"></p>
+  </div>
+
+  <!-- Tombol Pilihan Pemain -->
+  <div class="bg-white/10 p-6 rounded-xl shadow-xl max-w-md w-full text-center backdrop-blur">
+    <p class="text-lg font-medium mb-3">Pilih:</p>
+    <div class="flex justify-center gap-4 mb-4">
+      <button onclick="play('batu')" class="bg-cyan-500 hover:bg-cyan-600 px-5 py-2 rounded-xl font-semibold shadow">Batu</button>
+      <button onclick="play('kertas')" class="bg-cyan-500 hover:bg-cyan-600 px-5 py-2 rounded-xl font-semibold shadow">Kertas</button>
+      <button onclick="play('gunting')" class="bg-cyan-500 hover:bg-cyan-600 px-5 py-2 rounded-xl font-semibold shadow">Gunting</button>
+    </div>
+
+    <!-- Tombol Kembali -->
+    <a href="gameseru.html" class="inline-block bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow"> Kembali ke Menu</a>
+  </div>
+
+  <!-- Penjelasan & Pembuat -->
+  <footer class="text-white/70 text-sm text-center max-w-md mt-8">
+    <p><strong>Tujuan:</strong> Game ini mengasah refleks dan strategi melawan komputer. Cocok dimainkan kapan saja!</p>
+    <p class="mt-1">Dibuat oleh <strong>ZeroByteID</strong></p>
+  </footer>
+
+  <!-- Script Game -->
+  <script>
+    const pilihan = {
+      batu: { emoji: "✊", nama: "Batu" },
+      kertas: { emoji: "🖐", nama: "Kertas" },
+      gunting: { emoji: "✌", nama: "Gunting" }
+    };
+
+    let playerScore = 0;
+    let computerScore = 0;
+
+    function play(playerChoice) {
+      const choices = ["batu", "kertas", "gunting"];
+      const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+
+      document.getElementById("computerEmoji").textContent = pilihan[computerChoice].emoji;
+      document.getElementById("computerText").textContent = pilihan[computerChoice].nama;
+
+      let result = "";
+
+      if (playerChoice === computerChoice) {
+        result = "⚖️ Seri!";
+      } else if (
+        (playerChoice === "batu" && computerChoice === "gunting") ||
+        (playerChoice === "kertas" && computerChoice === "batu") ||
+        (playerChoice === "gunting" && computerChoice === "kertas")
+      ) {
+        result = "✅ Kamu Menang!";
+        playerScore++;
+      } else {
+        result = "❌ Kamu Kalah!";
+        computerScore++;
+      }
+
+      document.getElementById("resultText").textContent = result;
+      document.getElementById("playerScore").textContent = playerScore;
+      document.getElementById("computerScore").textContent = computerScore;
+
+      // Jeda 4 detik, lalu reset hasil dan pilihan komputer
+      setTimeout(() => {
+        document.getElementById("resultText").textContent = "";
+        document.getElementById("computerEmoji").textContent = "❓";
+        document.getElementById("computerText").textContent = "Menunggu...";
+      }, 4000);
+    }
+  </script>
+</body>
+      </html>
