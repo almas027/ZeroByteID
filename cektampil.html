@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cek Ganteng / Cantik</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-pink-800 via-purple-800 to-indigo-900 text-white min-h-screen flex items-center justify-center p-6">
+
+  <div class="bg-white/10 p-6 rounded-2xl shadow-lg w-full max-w-md text-center backdrop-blur-md">
+    <!-- Judul -->
+    <h1 class="text-3xl font-bold text-yellow-300 mb-2">💖 Cek Ganteng / Cantik 💖</h1>
+    <p class="text-white text-sm mb-4">Masukkan namamu, lalu klik tombol cek untuk melihat hasilnya!</p>
+
+    <!-- Input Nama -->
+    <input type="text" id="nameInput" placeholder="Masukkan namamu..." class="w-full p-3 rounded-lg text-black text-center text-lg border-2 border-yellow-400 mb-4"/>
+
+    <!-- Tombol -->
+    <div class="flex flex-wrap justify-center gap-4 mb-4">
+      <button onclick="cek('ganteng')" class="bg-cyan-400 hover:bg-cyan-500 px-5 py-2 rounded-lg font-semibold text-black">Cek Ganteng 😎</button>
+      <button onclick="cek('cantik')" class="bg-pink-400 hover:bg-pink-500 px-5 py-2 rounded-lg font-semibold text-black">Cek Cantik 💃</button>
+      <a href="gameseru.html" class="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-lg font-semibold text-white">🔙 Kembali</a>
+    </div>
+
+    <!-- Hasil -->
+    <div id="result" class="text-xl font-bold mt-2"></div>
+    <div id="advice" class="text-sm text-white/80 mt-2"></div>
+
+    <!-- Penjelasan & Pembuat -->
+    <div class="mt-6 text-white/70 text-sm">
+      <p><strong>Tujuan:</strong> Game ini dibuat untuk hiburan dan meningkatkan kepercayaan diri. Semua orang punya daya tariknya masing-masing!</p>
+      <p class="mt-1">Dibuat oleh <strong>ZeroByteID</strong></p>
+    </div>
+  </div>
+
+  <script>
+    function getRandomPercent() {
+      return Math.floor(Math.random() * 101); // 0-100
+    }
+
+    function cek(tipe) {
+      const nama = document.getElementById("nameInput").value.trim();
+      const resultEl = document.getElementById("result");
+      const adviceEl = document.getElementById("advice");
+
+      if (!nama) {
+        resultEl.textContent = "⚠️ Masukkan nama dulu!";
+        adviceEl.textContent = "";
+        return;
+      }
+
+      const nilai = getRandomPercent();
+      const label = tipe === "ganteng" ? "kegantengan" : "kecantikan";
+      resultEl.textContent = `🔍 ${nama}, tingkat ${label}-mu adalah ${nilai}%`;
+
+      let advice = "";
+
+      if (tipe === "ganteng") {
+        if (nilai === 100) {
+          advice = "🔥 Ganteng maksimal! Bikin cowok lain insecure.";
+        } else if (nilai >= 75) {
+          advice = "😎 Kamu stylish dan berkarisma! Jangan lupa tetap rendah hati ya bro.";
+        } else if (nilai >= 40) {
+          advice = "😉 Kamu lumayan oke, coba rapikan gaya rambut & fashionmu.";
+        } else if (nilai >= 25) {
+          advice = "🤔 Mungkin kamu perlu skincare cowok dan sedikit grooming.";
+        } else {
+          advice = "🤡 Waduh bro... kayaknya perlu upgrade wajah dan attitude. Tapi tetap semangat ya!";
+        }
+      } else {
+        if (nilai === 100) {
+          advice = "💃 Cantik banget! Kamu seperti karakter anime favorit semua orang!";
+        } else if (nilai >= 75) {
+          advice = "✨ Kamu cantik alami. Tetap rawat dirimu dan pancarkan aura positif.";
+        } else if (nilai >= 40) {
+          advice = "😊 Ada pesona di dirimu. Coba tambahkan sentuhan makeup dan outfit kece!";
+        } else if (nilai >= 25) {
+          advice = "💅 Rawat kulitmu, senyumlah lebih sering, dan percaya diri ya!";
+        } else {
+          advice = "😬 Hmm... mungkin kamu cantik dari dalam. Tapi jangan lupa glow-up luar juga ya sis!";
+        }
+      }
+
+      adviceEl.textContent = advice;
+    }
+  </script>
+</body>
+</html>
