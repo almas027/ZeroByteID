@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Labirin Mini Responsive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .grid-container {
+      display: grid;
+      justify-content: center;
+      aspect-ratio: 1 / 1;
+      width: 90vmin;
+      max-width: 500px;
+      margin-bottom: 1rem;
+    }
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 to-black min-h-screen text-white flex flex-col items-center px-4 py-6">
+
+  <h1 class="text-3xl font-bold text-yellow-300 mb-2">🧭 Labirin Mini</h1>
+  <p class="mb-4 text-white/70 text-center text-sm">Gerakkan pemain ke 🏁 dan lanjutkan ke level berikutnya!</p>
+
+  <div class="bg-white/10 p-3 rounded-xl backdrop-blur mb-4 text-sm">
+    <p class="text-white/80">Level: <span id="level">1</span></p>
+  </div>
+
+  <div id="maze" class="grid-container"></div>
+
+  <!-- Tombol Arah -->
+  <div class="grid grid-cols-3 gap-2 mb-4">
+    <div></div>
+    <button onclick="move('up')" class="bg-cyan-500 p-3 rounded shadow text-xl">🔼</button>
+    <div></div>
+    <button onclick="move('left')" class="bg-cyan-500 p-3 rounded shadow text-xl">◀️</button>
+    <div></div>
+    <button onclick="move('right')" class="bg-cyan-500 p-3 rounded shadow text-xl">▶️</button>
+    <div></div>
+    <button onclick="move('down')" class="bg-cyan-500 p-3 rounded shadow text-xl">🔽</button>
+    <div></div>
+  </div>
+
+  <!-- Navigasi Level -->
+  <div class="flex flex-wrap gap-3 mb-4 justify-center">
+    <button onclick="prevLevel()" id="prevBtn" class="bg-yellow-500 px-4 py-2 rounded shadow hidden">⬅️ Kembali</button>
+    <button onclick="nextLevel()" id="nextBtn" class="bg-green-500 px-4 py-2 rounded shadow hidden">➡️ Lanjut</button>
+    <a href="gameseru.html" class="bg-red-500 px-4 py-2 rounded shadow">🔙 Keluar</a>
+  </div>
+
+  <!-- Status -->
+  <div id="status" class="text-lg font-bold text-green-400 mb-4 text-center"></div>
+
+  <footer class="text-center text-white/60 text-sm max-w-md mt-auto pb-6">
+    <p><strong>Tujuan:</strong> Melatih strategi dan logika dengan menyelesaikan labirin dari level mudah hingga sulit.</p>
+    <p>Dibuat oleh <strong>ZeroByteID</strong></p>
+  </footer>
+
+  <script>
+    let level = parseInt(localStorage.getItem("labirinLevel")) || 1;
+    let player = { x: 0, y: 0 };
+    let maze = [], rows = 0, cols = 0, end = {};
+
+    function getMazeSize(level) {
+      if (level <= 30) return 8 + Math.floor(level / 10);     // 8–11
+      if (level <= 40) return 11 + Math.floor((level - 30) / 2); // 12–16
+      if (level <= 49) return 17 + (level - 40);              // 17–26
+      return 26; // max size from level 50
+    }
+
+    function getWallChance(level) {
+      if (level <= 30) return 0.25 + level * 0.005;           // max ~0.4
+      if (level <= 40) return 0.4 + (level - 30) * 0.015;      // max ~0.55
+      if (level <= 49) return 0.55 + (level - 40) * 0.02;      // max ~0.73
+      return 0.75; // max chance from level 50+
+    }
+
+    function generateMazeWithPath() {
+      const size = getMazeSize(level);
+      const wallChance = Math.min(getWallChance(level), 0.85);
+      rows = cols = size;
+
+      do {
+        maze = Array.from({ length: rows }, () =>
+          Array.from({ length: cols }, () => Math.random() < wallChance ? 1 : 0)
+        );
+        maze[0][0] = 0;
+        maze[rows - 1][cols - 1] = 0;
+        end = { x: cols - 1, y: rows - 1 };
+      } while (!isSolvable(maze, { x: 0, y: 0 }, end));
+    }
+
+    function isSolvable(maze, start, end) {
+      const visited = Array.from({ length: rows }, () => Array(cols).fill(false));
+      const queue = [start];
+      const dirs = [[0,1],[1,0],[-1,0],[0,-1]];
+
+      while (queue.length) {
+        const { x, y } = queue.shift();
+        if (x === end.x && y === end.y) return true;
+        for (let [dx, dy] of dirs) {
+          let nx = x + dx, ny = y + dy;
+          if (nx >= 0 && ny >= 0 && nx < cols && ny < rows && !visited[ny][nx] && maze[ny][nx] === 0) {
+            visited[ny][nx] = true;
+            queue.push({ x: nx, y: ny });
+          }
+        }
+      }
+      return false;
+    }
+
+    function drawMaze() {
+      const mazeEl = document.getElementById("maze");
+      mazeEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      mazeEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+      mazeEl.innerHTML = "";
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          if (player.x === x && player.y === y) {
+            cell.textContent = "🚶";
+            cell.classList.add("bg-cyan-500");
+          } else if (x === end.x && y === end.y) {
+            cell.textContent = "🏁";
+            cell.classList.add("bg-green-600");
+          } else if (maze[y][x] === 1) {
+            cell.classList.add("bg-green-700");
+          } else {
+            cell.classList.add("bg-white/10");
+          }
+          mazeEl.appendChild(cell);
+        }
+      }
+      document.getElementById("level").textContent = level;
+    }
+
+    function move(dir) {
+      let { x, y } = player;
+      if (dir === 'up') y--;
+      else if (dir === 'down') y++;
+      else if (dir === 'left') x--;
+      else if (dir === 'right') x++;
+
+      if (x >= 0 && y >= 0 && x < cols && y < rows && maze[y][x] === 0) {
+        player.x = x;
+        player.y = y;
+        drawMaze();
+        checkWin();
+      }
+    }
+
+    function checkWin() {
+      if (player.x === end.x && player.y === end.y) {
+        document.getElementById("status").textContent = "🎉 Kamu berhasil!";
+        document.getElementById("nextBtn").classList.remove("hidden");
+        if (level > 1) document.getElementById("prevBtn").classList.remove("hidden");
+      }
+    }
+
+    function nextLevel() {
+      level++;
+      localStorage.setItem("labirinLevel", level);
+      resetLevel();
+    }
+
+    function prevLevel() {
+      if (level > 1) {
+        level--;
+        localStorage.setItem("labirinLevel", level);
+        resetLevel();
+      }
+    }
+
+    function resetLevel() {
+      player = { x: 0, y: 0 };
+      document.getElementById("status").textContent = "";
+      document.getElementById("nextBtn").classList.add("hidden");
+      document.getElementById("prevBtn").classList.add("hidden");
+      generateMazeWithPath();
+      drawMaze();
+    }
+
+    generateMazeWithPath();
+    drawMaze();
+  </script>
+</body>
+</html>
