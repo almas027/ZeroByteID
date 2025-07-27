@@ -1,0 +1,111 @@
+ <!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cek Kecocokan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .heart-container {
+      position: relative;
+      width: 120px;
+      height: 100px;
+      margin: 0 auto 16px auto;
+    }
+
+    .heart {
+      width: 120px;
+      height: 100px;
+      background: url('https://cdn-icons-png.flaticon.com/512/833/833472.png') no-repeat center;
+      background-size: contain;
+      position: relative;
+      z-index: 1;
+    }
+
+    .fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: red;
+      z-index: 0;
+      border-radius: 0 0 100px 100px;
+      transition: height 1s ease, background-color 1s ease;
+      clip-path: polygon(50% 0%, 100% 35%, 100% 100%, 0% 100%, 0% 35%);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-pink-700 via-purple-800 to-indigo-900 min-h-screen text-white flex items-center justify-center p-6">
+
+  <div class="bg-white/10 p-6 rounded-2xl shadow-lg w-full max-w-md text-center backdrop-blur-md">
+    <!-- Judul -->
+    <h1 class="text-3xl font-bold text-yellow-300 mb-2">💘 Cek Kecocokan 💘</h1>
+    <p class="text-sm mb-4">Masukkan dua nama dan lihat seberapa cocok hati kalian!</p>
+
+    <!-- Input Nama -->
+    <input type="text" id="name1" placeholder="Nama Pertama..." class="w-full p-3 mb-3 rounded-lg text-black text-center text-lg border-2 border-yellow-400" />
+    <input type="text" id="name2" placeholder="Nama Kedua..." class="w-full p-3 mb-4 rounded-lg text-black text-center text-lg border-2 border-yellow-400" />
+
+    <!-- Tombol -->
+    <div class="flex flex-wrap justify-center gap-4 mb-4">
+      <button onclick="cekCocok()" class="bg-cyan-400 hover:bg-cyan-500 px-5 py-2 rounded-lg font-semibold text-black">Cek Kecocokan</button>
+      <a href="gameseru.html" class="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-lg font-semibold text-white"> Kembali</a>
+    </div>
+
+    <!-- Hati dan Hasil -->
+    <div class="heart-container">
+      <div id="heartFill" class="fill" style="height: 0%"></div>
+      <div class="heart"></div>
+    </div>
+
+    <div id="hasil" class="text-xl font-bold mt-2"></div>
+    <div id="komentar" class="text-sm text-white/80 mt-2"></div>
+
+    <!-- Penjelasan -->
+    <div class="mt-6 text-white/70 text-sm">
+      <p><strong>Tujuan:</strong> Game ini untuk hiburan dan seru-seruan! Cocok dimainkan bareng teman, gebetan, atau pasangan 💌</p>
+      <p class="mt-1">Dibuat oleh <strong>ZeroByteID</strong></p>
+    </div>
+  </div>
+
+  <script>
+    function getKomentar(persen) {
+      if (persen === 100) return "❤️ Kalian jodoh dari langit. Cinta kalian abadi!";
+      if (persen >= 85) return "💞 Cinta sejati sedang tumbuh! Jangan dilepas ya!";
+      if (persen >= 60) return "💑 Ada potensi hubungan indah, tinggal dirawat dengan baik!";
+      if (persen >= 40) return "💬 Komunikasi kuncinya. Cinta butuh kerja sama.";
+      if (persen >= 20) return "🤔 Mungkin hanya teman, atau butuh waktu mengenal lebih dalam.";
+      return "💔 Sepertinya bukan takdir, tapi siapa tahu esok berbeda.";
+    }
+
+    function getColor(percent) {
+      if (percent >= 80) return "#ff0000";
+      if (percent >= 60) return "#ff4d4d";
+      if (percent >= 40) return "#ff8080";
+      return "#ffb3b3";
+    }
+
+    function cekCocok() {
+      const n1 = document.getElementById("name1").value.trim();
+      const n2 = document.getElementById("name2").value.trim();
+      const hasil = document.getElementById("hasil");
+      const komentar = document.getElementById("komentar");
+      const heartFill = document.getElementById("heartFill");
+
+      if (!n1 || !n2) {
+        hasil.textContent = "⚠️ Masukkan kedua nama dulu!";
+        komentar.textContent = "";
+        heartFill.style.height = "0%";
+        return;
+      }
+
+      const percent = Math.floor(Math.random() * 101);
+      hasil.textContent = `💘 Tingkat kecocokan ${n1} & ${n2}: ${percent}%`;
+      komentar.textContent = getKomentar(percent);
+
+      heartFill.style.height = `${percent}%`;
+      heartFill.style.backgroundColor = getColor(percent);
+    }
+  </script>
+</body>
+</html>
