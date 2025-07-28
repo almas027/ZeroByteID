@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roda Keberuntungan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #wheelCanvas {
+      border-radius: 50%;
+      background: white;
+      transition: transform 1s ease-out;
+    }
+
+    .pointer {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      color: #facc15;
+      z-index: 10;
+      filter: drop-shadow(0 0 4px rgba(255,255,255,0.6));
+    }
+
+    .container-canvas {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white min-h-screen flex flex-col items-center px-4 py-6">
+
+  <h1 class="text-3xl font-bold text-yellow-300 mb-3">🎡 Roda Keberuntungan</h1>
+  <p class="text-white/80 text-center mb-3">Masukkan nama peserta (pisahkan dengan koma)</p>
+
+  <textarea id="nameInput" placeholder="Contoh: cici, budi, siti" class="w-full max-w-md p-3 rounded border border-cyan-300 text-black mb-4"></textarea>
+
+  <div class="flex gap-3 mb-5">
+    <button onclick="buatRoda()" class="bg-cyan-500 hover:bg-cyan-600 px-4 py-2 rounded font-semibold"> Buat Roda</button>
+    <button onclick="putarRoda()" class="bg-pink-500 hover:bg-pink-600 px-4 py-2 rounded font-semibold"> Putar</button>
+    <a href="gameseru.html" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded font-semibold"> Kembali</a>
+  </div>
+
+  <div class="container-canvas mb-4">
+    <div class="pointer">🔻</div>
+    <canvas id="wheelCanvas" width="300" height="300"></canvas>
+  </div>
+
+  <p class="text-xl fade-in">🎉 Hasil: <span id="hasil" class="font-bold text-lime-300">-</span></p>
+
+  <footer class="mt-auto text-white/60 text-sm text-center pt-6 max-w-md">
+    <p><strong>Tujuan:</strong> Untuk game arisan, random nama, dan hiburan seru lainnya.</p>
+    <p class="mt-1">Dibuat oleh <strong>ZeroByteID</strong></p>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = centerX;
+    let data = [], colors = [], angleOffset = 0, isSpinning = false;
+
+    function buatRoda() {
+      const input = document.getElementById("nameInput").value.trim();
+      data = input.split(",").map(n => n.trim()).filter(n => n);
+      if (data.length < 2) return alert("Masukkan minimal 2 nama!");
+
+      colors = data.map((_, i) => `hsl(${i * 360 / data.length}, 80%, 60%)`);
+      angleOffset = 0;
+      gambarRoda();
+      document.getElementById("hasil").textContent = "-";
+    }
+
+    function gambarRoda() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const angle = (2 * Math.PI) / data.length;
+
+      data.forEach((name, i) => {
+        const start = angle * i + angleOffset;
+        const end = start + angle;
+
+        // warna sektor
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, start, end);
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+        ctx.stroke();
+
+        // teks
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(start + angle / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#222";
+        ctx.font = "bold 14px sans-serif";
+        ctx.fillText(name, radius - 10, 5);
+        ctx.restore();
+      });
+    }
+
+    function easeOutQuart(t) {
+      return 1 - Math.pow(1 - t, 4);
+    }
+
+    function putarRoda() {
+      if (data.length < 2 || isSpinning) return;
+      isSpinning = true;
+
+      const durasi = 6000; // 6 detik
+      const putaran = 1440 + Math.random() * 360; // 4+ putaran acak
+      const steps = durasi / 10;
+      let current = 0;
+      const awal = angleOffset;
+
+      const interval = setInterval(() => {
+        current++;
+        const progress = current / steps;
+        const eased = easeOutQuart(progress);
+        const rotasi = awal + (putaran * eased) * Math.PI / 180;
+        angleOffset = rotasi % (2 * Math.PI);
+        gambarRoda();
+        if (current >= steps) {
+          clearInterval(interval);
+          isSpinning = false;
+          tampilkanHasil();
+        }
+      }, 10);
+    }
+
+    function tampilkanHasil() {
+      const anglePerSlice = 2 * Math.PI / data.length;
+      const pointerAngle = (3 * Math.PI / 2 - angleOffset + 2 * Math.PI) % (2 * Math.PI);
+      const index = Math.floor(pointerAngle / anglePerSlice) % data.length;
+      const hasil = data[index];
+      document.getElementById("hasil").textContent = hasil;
+    }
+  </script>
+</body>
+                                        </html>
