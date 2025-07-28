@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kalkulator Rumus & Sains</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2em;
+      color: #00ffff;
+      margin-bottom: 20px;
+    }
+    select, input, button {
+      font-size: 1em;
+      padding: 10px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+    }
+    select, input {
+      width: 280px;
+      max-width: 90vw;
+    }
+    button {
+      background-color: #00ffff;
+      color: #000;
+      cursor: pointer;
+      width: 280px;
+      max-width: 90vw;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #00ff88;
+    }
+    .back {
+      margin-top: 30px;
+    }
+    .back a {
+      color: #ffcc00;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>📐 Kalkulator Rumus & Ilmu Pengetahuan</h1>
+  <p>Hitung cepat berbagai rumus Matematika, Fisika, dan lainnya.</p>
+
+  <select id="rumus" onchange="tampilkanInput()">
+    <option disabled selected>Pilih Rumus</option>
+    <option value="persegi">Luas Persegi</option>
+    <option value="ppanjang">Luas Persegi Panjang</option>
+    <option value="segitiga">Luas Segitiga</option>
+    <option value="lingkaran">Luas Lingkaran</option>
+    <option value="kllingkaran">Keliling Lingkaran</option>
+    <option value="kubus">Volume Kubus</option>
+    <option value="balok">Volume Balok</option>
+    <option value="tabung">Volume Tabung</option>
+    <option value="trapesium">Luas Trapesium</option>
+    <option value="jajargenjang">Luas Jajar Genjang</option>
+    <option value="kecepatan">Kecepatan</option>
+    <option value="suhu">Konversi Suhu</option>
+    <option value="pythagoras">Pythagoras</option>
+    <option value="kelpersegi">Keliling Persegi</option>
+    <option value="kelpp">Keliling Persegi Panjang</option>
+    <option value="kelsegitiga">Keliling Segitiga</option>
+    <option value="limas">Volume Limas</option>
+    <option value="kerucut">Volume Kerucut</option>
+    <option value="lp_kubus">Luas Permukaan Kubus</option>
+    <option value="lp_balok">Luas Permukaan Balok</option>
+    <option value="lp_tabung">Luas Permukaan Tabung</option>
+    <option value="lp_kerucut">Luas Permukaan Kerucut</option>
+    <option value="energi_kinetik">Energi Kinetik</option>
+    <option value="energi_potensial">Energi Potensial</option>
+    <option value="massa_jenis">Massa Jenis</option>
+    <option value="gaya">Gaya (F = m × a)</option>
+    <option value="tekanan">Tekanan</option>
+    <option value="usaha">Usaha</option>
+    <option value="daya">Daya</option>
+    <option value="frekuensi">Frekuensi</option>
+    <option value="waktu">Waktu Getaran</option>
+    <option value="hambatan">Hambatan Listrik</option>
+    <option value="tegangan">Tegangan (V)</option>
+    <option value="arus">Kuat Arus</option>
+    <option value="energi_listrik">Energi Listrik</option>
+    <option value="massa_mol">Massa Mol</option>
+    <option value="mol">Mol (n = m/Mr)</option>
+    <option value="reaksi">Reaksi Netralisasi</option>
+    <option value="pH">pH</option>
+    <option value="aritmetika">Rata-rata Aritmetika</option>
+<option value="geometri">Rumus Barisan Geometri</option>
+<option value="aljabar_kuadrat">Rumus Kuadrat</option>
+<option value="aljabar_akar">Persamaan Akar</option>
+<option value="diskriminan">Diskriminan</option>
+<option value="gradien">Gradien Garis Lurus</option>
+<option value="pers_garis">Persamaan Garis Lurus</option>
+<option value="luas_belahketupat">Luas Belah Ketupat</option>
+<option value="luas_layang">Luas Layang-Layang</option>
+<option value="volume_prisma">Volume Prisma</option>
+<option value="lp_prisma">Luas Permukaan Prisma</option>
+<option value="volume_bola">Volume Bola</option>
+<option value="lp_bola">Luas Permukaan Bola</option>
+<option value="aritmetika_sn">Jumlah Deret Aritmetika</option>
+<option value="geometri_sn">Jumlah Deret Geometri</option>
+<option value="kombinasi">Kombinasi (C)</option>
+<option value="permutasi">Permutasi (P)</option>
+<option value="faktorial">Faktorial (n!)</option>
+<option value="persamaan_linear">Sistem Persamaan Linear</option>
+<option value="teorema_sinus">Teorema Sinus</option>
+<option value="teorema_cosinus">Teorema Cosinus</option>
+<option value="luas_sektor">Luas Sektor Lingkaran</option>
+<option value="panjang_busur">Panjang Busur Lingkaran</option>
+<option value="transformasi_dilatasi">Transformasi: Dilatasi</option>
+<option value="transformasi_rotasi">Transformasi: Rotasi</option>
+<option value="sudut_kemiringan">Sudut Kemiringan</option>
+<option value="sudut_pusat">Sudut Pusat Lingkaran</option>
+<option value="sudut_keliling">Sudut Keliling Lingkaran</option>
+<option value="konversi_waktu">Konversi Waktu</option>
+<option value="konversi_panjang">Konversi Panjang</option>
+<option value="konversi_berat">Konversi Berat</option>
+<option value="panjang_diagonal">Panjang Diagonal</option>
+<option value="skala">Skala Peta</option>
+<option value="nilai_tengah">Median</option>
+<option value="modus">Modus</option>
+<option value="simpangan_baku">Simpangan Baku</option>
+<option value="varians">Varians</option>
+<option value="korelasi">Koefisien Korelasi</option>
+<option value="persentase">Persentase (%)</option>
+<option value="bunga_bank">Bunga Bank</option>
+<option value="bunga_majemuk">Bunga Majemuk</option>
+<option value="laju_pertumbuhan">Laju Pertumbuhan</option>
+<option value="nilai_masa_depan">Nilai Masa Depan (FV)</option>
+<option value="nilai_sekarang">Nilai Sekarang (PV)</option>
+<option value="pembagian_pol">Pembagian Polinomial</option>
+<option value="limit">Limit Fungsi</option>
+<option value="turunan">Turunan Fungsi</option>
+<option value="integral">Integral Tak Tentu</option>
+<option value="logaritma">Logaritma</option>
+<option value="eksponen">Eksponen</option>
+<option value="persamaan_trigonometri">Persamaan Trigonometri</option>
+<option value="nilai_max_min">Nilai Maksimum/Minimum</option>
+<option value="statistika">Statistika Deskriptif</option>
+<option value="matriks_determinan">Determinan Matriks</option>
+<option value="matriks_invers">Invers Matriks</option>
+<option value="vektor_magnitude">Magnitude Vektor</option>
+<option value="vektor_dot">Dot Product</option>
+<option value="vektor_cross">Cross Product</option>
+<option value="turunan_parsial">Turunan Parsial</option>
+<option value="integral_tentu">Integral Tentu</option>
+<option value="limit_takhingga">Limit Tak Hingga</option>
+<option value="barisan_rekursif">Barisan Rekursif</option>
+  </select>
+
+  <div id="inputArea"></div>
+  <button onclick="hitung()">Hitung</button>
+  <div class="result" id="hasil"></div>
+
+  <div class="back">
+    <a href="gameseru.html">⬅️ Kembali ke Game Seru</a>
+  </div>
+
+  <footer>
+    Dibuat oleh <strong>ZeroByteID</strong><br>
+    Tujuan: Mempermudah pelajar dalam menyelesaikan rumus Matematika dan Sains dengan cepat dan akurat.
+  </footer>
+
+  <script>
+    function tampilkanInput() {
+      const rumus = document.getElementById("rumus").value;
+      const inputArea = document.getElementById("inputArea");
+      inputArea.innerHTML = ""; 
+      const inputs = {
+        persegi: ["Sisi"],
+        ppanjang: ["Panjang", "Lebar"],
+        segitiga: ["Alas", "Tinggi"],
+        lingkaran: ["Jari-jari"],
+        kllingkaran: ["Jari-jari"],
+        kubus: ["Sisi"],
+        balok: ["Panjang", "Lebar", "Tinggi"],
+        tabung: ["Jari-jari", "Tinggi"],
+        trapesium: ["Sisi Atas", "Sisi Bawah", "Tinggi"],
+        jajargenjang: ["Alas", "Tinggi"],
+        kecepatan: ["Jarak", "Waktu"],
+        suhu: ["Celsius"],
+        pythagoras: ["Sisi A", "Sisi B"],
+        kelpersegi: ["Sisi"],
+        kelpp: ["Panjang", "Lebar"],
+        kelsegitiga: ["Sisi A", "Sisi B", "Sisi C"],
+        limas: ["Luas Alas", "Tinggi"],
+        kerucut: ["Jari-jari", "Tinggi"],
+        lp_kubus: ["Sisi"],
+        lp_balok: ["Panjang", "Lebar", "Tinggi"],
+        lp_tabung: ["Jari-jari", "Tinggi"],
+        lp_kerucut: ["Jari-jari", "Garis Pelukis"],
+        energi_kinetik: ["Massa", "Kecepatan"],
+        energi_potensial: ["Massa", "Gravitasi", "Ketinggian"],
+        massa_jenis: ["Massa", "Volume"],
+        gaya: ["Massa", "Percepatan"],
+        tekanan: ["Gaya", "Luas"],
+        usaha: ["Gaya", "Jarak"],
+        daya: ["Usaha", "Waktu"],
+        frekuensi: ["Jumlah Getaran", "Waktu"],
+        waktu: ["Jumlah Getaran", "Frekuensi"],
+        hambatan: ["Tegangan", "Arus"],
+        tegangan: ["Arus", "Hambatan"],
+        arus: ["Tegangan", "Hambatan"],
+        energi_listrik: ["Tegangan", "Arus", "Waktu"],
+        massa_mol: ["Mol", "Mr"],
+        mol: ["Massa", "Mr"],
+        reaksi: ["Asam (mol)", "Basa (mol)"],
+        pH: ["[H⁺] (mol/L)"], 
+  aritmetika: ["Jumlah", "Banyak Data"],
+  geometri: ["Suku Pertama", "Rasio", "Suku ke-n"],
+  aljabar_kuadrat: ["a", "b", "c"],
+  aljabar_akar: ["a", "b", "c"],
+  diskriminan: ["a", "b", "c"],
+  gradien: ["y2", "y1", "x2", "x1"],
+  pers_garis: ["Gradien", "Titik (x, y)"],
+  luas_belahketupat: ["Diagonal 1", "Diagonal 2"],
+  luas_layang: ["Diagonal 1", "Diagonal 2"],
+  volume_prisma: ["Luas Alas", "Tinggi"],
+  lp_prisma: ["Keliling Alas", "Tinggi", "Luas Alas"],
+  volume_bola: ["Jari-jari"],
+  lp_bola: ["Jari-jari"],
+  aritmetika_sn: ["Suku Pertama", "Suku ke-n", "n"],
+  geometri_sn: ["Suku Pertama", "Rasio", "n"],
+  kombinasi: ["n", "r"],
+  permutasi: ["n", "r"],
+  faktorial: ["n"],
+  persamaan_linear: ["a1", "b1", "c1", "a2", "b2", "c2"],
+  teorema_sinus: ["a", "b", "Sudut A", "Sudut B"],
+  teorema_cosinus: ["a", "b", "Sudut C"],
+  luas_sektor: ["Jari-jari", "Sudut (°)"],
+  panjang_busur: ["Jari-jari", "Sudut (°)"],
+  transformasi_dilatasi: ["Titik X", "Titik Y", "Skala"],
+  transformasi_rotasi: ["Titik X", "Titik Y", "Sudut"],
+  sudut_kemiringan: ["Gradien"],
+  sudut_pusat: ["Sudut Keliling"],
+  sudut_keliling: ["Sudut Pusat"],
+  konversi_waktu: ["Jumlah", "Dari", "Ke"],
+  konversi_panjang: ["Jumlah", "Dari", "Ke"],
+  konversi_berat: ["Jumlah", "Dari", "Ke"],
+  panjang_diagonal: ["Panjang", "Lebar"],
+  skala: ["Jarak Peta", "Skala"],
+  nilai_tengah: ["Data (pisahkan dengan koma)"],
+  modus: ["Data (pisahkan dengan koma)"],
+  simpangan_baku: ["Data (pisahkan dengan koma)"],
+  varians: ["Data (pisahkan dengan koma)"],
+  korelasi: ["x (pisahkan koma)", "y (pisahkan koma)"],
+  persentase: ["Bagian", "Total"],
+  bunga_bank: ["Pokok", "Suku Bunga (%)", "Waktu (tahun)"],
+  bunga_majemuk: ["Pokok", "Suku Bunga (%)", "Waktu (tahun)"],
+  laju_pertumbuhan: ["Nilai Awal", "Nilai Akhir"],
+  nilai_masa_depan: ["PV", "Bunga (%)", "n (periode)"],
+  nilai_sekarang: ["FV", "Bunga (%)", "n (periode)"],
+  pembagian_pol: ["Pembilang", "Penyebut"],
+  limit: ["f(x)", "x → a"],
+  turunan: ["f(x)"],
+  integral: ["f(x)"],
+  logaritma: ["Bilangan", "Basis"],
+  eksponen: ["a", "b"], // a^b
+  persamaan_trigonometri: ["a", "b", "c"], // ax + b = c
+  nilai_max_min: ["f(x)"],
+  statistika: ["Data (pisahkan koma)"],
+  matriks_determinan: ["a11", "a12", "a21", "a22"],
+  matriks_invers: ["a11", "a12", "a21", "a22"],
+  vektor_magnitude: ["x", "y", "z"],
+  vektor_dot: ["x1", "y1", "z1", "x2", "y2", "z2"],
+  vektor_cross: ["x1", "y1", "z1", "x2", "y2", "z2"],
+  turunan_parsial: ["f(x, y)", "∂x atau ∂y"],
+  integral_tentu: ["f(x)", "a", "b"],
+  limit_takhingga: ["f(x)"],
+  barisan_rekursif: ["Un-1", "Rasio atau Tambahan"]
+      };
+
+      if (inputs[rumus]) {
+        inputs[rumus].forEach(label => {
+          inputArea.innerHTML += `<input type="number" id="${label.replace(/[^a-zA-Z]/g, '')}" placeholder="${label}" /> <br>`;
+        });
+      }
+    }
+
+    function hitung() {
+      const v = id => parseFloat(document.getElementById(id)?.value) || 0;
+      const rumus = document.getElementById("rumus").value;
+      let hasil = "";
+
+      switch(rumus) {
+        case "persegi": hasil = v("Sisi")**2; break;
+        case "ppanjang": hasil = v("Panjang") * v("Lebar"); break;
+        case "segitiga": hasil = 0.5 * v("Alas") * v("Tinggi"); break;
+        case "lingkaran": hasil = Math.PI * v("Jarijari")**2; break;
+        case "kllingkaran": hasil = 2 * Math.PI * v("Jarijari"); break;
+        case "kubus": hasil = v("Sisi")**3; break;
+        case "balok": hasil = v("Panjang") * v("Lebar") * v("Tinggi"); break;
+        case "tabung": hasil = Math.PI * v("Jarijari")**2 * v("Tinggi"); break;
+        case "trapesium": hasil = 0.5 * (v("SisiAtas") + v("SisiBawah")) * v("Tinggi"); break;
+        case "jajargenjang": hasil = v("Alas") * v("Tinggi"); break;
+        case "kecepatan": hasil = v("Jarak") / v("Waktu"); break;
+        case "suhu": hasil = (v("Celsius") * 9/5) + 32 + " °F"; break;
+        case "pythagoras": hasil = Math.sqrt(v("SisiA")**2 + v("SisiB")**2); break;
+        case "kelpersegi": hasil = 4 * v("Sisi"); break;
+        case "kelpp": hasil = 2 * (v("Panjang") + v("Lebar")); break;
+        case "kelsegitiga": hasil = v("SisiA") + v("SisiB") + v("SisiC"); break;
+        case "limas": hasil = 1/3 * v("LuasAlas") * v("Tinggi"); break;
+        case "kerucut": hasil = 1/3 * Math.PI * v("Jarijari")**2 * v("Tinggi"); break;
+        case "lp_kubus": hasil = 6 * v("Sisi")**2; break;
+        case "lp_balok": hasil = 2 * (v("Panjang")*v("Lebar") + v("Panjang")*v("Tinggi") + v("Lebar")*v("Tinggi")); break;
+        case "lp_tabung": hasil = 2 * Math.PI * v("Jarijari") * (v("Jarijari") + v("Tinggi")); break;
+        case "lp_kerucut": hasil = Math.PI * v("Jarijari") * (v("Jarijari") + v("GarisPelukis")); break;
+        case "energi_kinetik": hasil = 0.5 * v("Massa") * v("Kecepatan")**2; break;
+        case "energi_potensial": hasil = v("Massa") * v("Gravitasi") * v("Ketinggian"); break;
+        case "massa_jenis": hasil = v("Massa") / v("Volume"); break;
+        case "gaya": hasil = v("Massa") * v("Percepatan"); break;
+        case "tekanan": hasil = v("Gaya") / v("Luas"); break;
+        case "usaha": hasil = v("Gaya") * v("Jarak"); break;
+        case "daya": hasil = v("Usaha") / v("Waktu"); break;
+        case "frekuensi": hasil = v("JumlahGetaran") / v("Waktu"); break;
+        case "waktu": hasil = v("JumlahGetaran") / v("Frekuensi"); break;
+        case "hambatan": hasil = v("Tegangan") / v("Arus"); break;
+        case "tegangan": hasil = v("Arus") * v("Hambatan"); break;
+        case "arus": hasil = v("Tegangan") / v("Hambatan"); break;
+        case "energi_listrik": hasil = v("Tegangan") * v("Arus") * v("Waktu"); break;
+        case "massa_mol": hasil = v("Mol") * v("Mr"); break;
+        case "mol": hasil = v("Massa") / v("Mr"); break;
+        case "reaksi": hasil = v("Asammol") === v("Basamol") ? "Netral" : "Tidak Netral"; break;
+        case "pH": hasil = -Math.log10(v("H")); break;
+        case "aritmetika": hasil = (v("Jumlah Nilai") / v("Banyak Data")); break;
+    case "geometri": hasil = v("Suku Pertama") * v("Rasio")**(v("n") - 1); break;
+    case "aljabar_kuadrat": hasil = v("a") * v("x")**2 + v("b") * v("x") + v("c"); break;
+    case "aljabar_akar": hasil = Math.sqrt(v("Nilai")); break;
+    case "diskriminan": hasil = v("b")**2 - 4*v("a")*v("c"); break;
+    case "gradien": hasil = (v("y2") - v("y1")) / (v("x2") - v("x1")); break;
+    case "pers_garis": hasil = "y = " + v("m") + "x + " + v("c"); break;
+    case "luas_belahketupat": hasil = 0.5 * v("Diagonal1") * v("Diagonal2"); break;
+    case "luas_layang": hasil = 0.5 * v("Diagonal1") * v("Diagonal2"); break;
+    case "volume_prisma": hasil = v("Luas Alas") * v("Tinggi"); break;
+    case "lp_prisma": hasil = (2 * v("Luas Alas")) + (v("Keliling Alas") * v("Tinggi")); break;
+    case "volume_bola": hasil = (4/3) * Math.PI * v("Jari-jari")**3; break;
+    case "lp_bola": hasil = 4 * Math.PI * v("Jari-jari")**2; break;
+    case "aritmetika_sn": hasil = (v("n") / 2) * (2 * v("a") + (v("n") - 1) * v("d")); break;
+    case "geometri_sn": hasil = v("a") * (1 - v("r")**v("n")) / (1 - v("r")); break;
+    case "kombinasi": hasil = faktorial(v("n")) / (faktorial(v("r")) * faktorial(v("n") - v("r"))); break;
+    case "permutasi": hasil = faktorial(v("n")) / faktorial(v("n") - v("r")); break;
+    case "faktorial": hasil = faktorial(v("n")); break;
+    case "teorema_sinus": hasil = "a/sin A = b/sin B = c/sin C (gunakan sesuai kebutuhan)"; break;
+    case "teorema_cosinus": hasil = Math.sqrt(v("a")**2 + v("b")**2 - 2 * v("a") * v("b") * Math.cos(v("C"))); break;
+    case "luas_sektor": hasil = (v("Sudut") / 360) * Math.PI * v("Jari-jari")**2; break;
+    case "panjang_busur": hasil = (v("Sudut") / 360) * 2 * Math.PI * v("Jari-jari"); break;
+    case "transformasi_dilatasi": hasil = v("Skala") * v("Koordinat"); break;
+    case "transformasi_rotasi": hasil = "Gunakan matriks rotasi tergantung sudut (bisa lanjut dikembangkan)"; break;
+    case "sudut_kemiringan": hasil = Math.atan(v("Gradien")) * (180/Math.PI); break;
+    case "sudut_pusat": hasil = v("Panjang Busur") / v("Jari-jari"); break;
+    case "sudut_keliling": hasil = 0.5 * v("Sudut Pusat"); break;
+    case "konversi_waktu": hasil = v("Jam") * 3600; break;
+    case "konversi_panjang": hasil = v("Meter") * 100; break;
+    case "konversi_berat": hasil = v("Kilogram") * 1000; break;
+    case "panjang_diagonal": hasil = Math.sqrt(v("Panjang")**2 + v("Lebar")**2); break;
+    case "skala": hasil = v("Jarak pada Peta") / v("Jarak Sebenarnya"); break;
+    case "nilai_tengah": hasil = v("Urutkan Data")[Math.floor(v("n")/2)]; break;
+    case "modus": hasil = "Hitung data paling sering muncul (dapat dikembangkan dengan array)"; break;
+    case "simpangan_baku": hasil = Math.sqrt(v("Varians")); break;
+    case "varians": hasil = v("Jumlah Kuadrat Selisih") / v("n"); break;
+    case "korelasi": hasil = "Gunakan rumus Pearson: r = Σ(xy)/√(Σx² * Σy²)"; break;
+    case "persentase": hasil = (v("Nilai Bagian") / v("Nilai Total")) * 100 + " %"; break;
+    case "bunga_bank": hasil = (v("Modal") * v("Suku Bunga") * v("Waktu")) / 100; break;
+    case "bunga_majemuk": hasil = v("Modal") * (1 + v("Bunga") / 100)**v("Waktu") - v("Modal"); break;
+    case "laju_pertumbuhan": hasil = ((v("Populasi Akhir") - v("Populasi Awal")) / v("Populasi Awal")) * 100 + " %"; break;
+    case "nilai_masa_depan": hasil = v("PV") * (1 + v("r"))**v("n"); break;
+    case "nilai_sekarang": hasil = v("FV") / ((1 + v("r"))**v("n")); break;
+    case "pembagian_pol": hasil = "Gunakan algoritma horner atau bagi manual (fitur kompleks)"; break;
+    case "limit": hasil = "Hitung limit dengan pendekatan nilai x (butuh ekspresi)"; break;
+    case "turunan": hasil = "Gunakan aturan turunan (fitur simbolik - pengembangan lanjutan)"; break;
+    case "integral": hasil = "Gunakan aturan integral dasar (fitur simbolik - lanjutan)"; break;
+    case "logaritma": hasil = Math.log10(v("x")); break;
+    case "eksponen": hasil = Math.exp(v("x")); break;
+    case "persamaan_trigonometri": hasil = "Gunakan sin/cos/tan dan identitas (fitur kompleks)"; break;
+    case "nilai_max_min": hasil = "Gunakan turunan pertama dan uji (fitur lanjut)"; break;
+    case "matriks_determinan": hasil = "Gunakan rumus determinan matriks 2x2/3x3"; break;
+    case "matriks_invers": hasil = "Gunakan adjoin dan determinan (fitur lanjut)"; break;
+    case "vektor_magnitude": hasil = Math.sqrt(v("x")**2 + v("y")**2 + v("z")**2); break;
+    case "vektor_dot": hasil = v("x1")*v("x2") + v("y1")*v("y2") + v("z1")*v("z2"); break;
+    case "vektor_cross": hasil = "Gunakan matriks silang (fitur simbolik lanjut)"; break;
+    case "turunan_parsial": hasil = "Turunan sebagian terhadap x/y/z (fitur lanjut)"; break;
+    case "integral_tentu": hasil = "Gunakan ∫a^b f(x)dx (fitur simbolik)"; break;
+    case "limit_takhingga": hasil = "Analisis limit saat x → ∞ atau -∞"; break;
+    case "barisan_rekursif": hasil = "Gunakan rumus rekursif Un = f(Un-1)"; break;
+        default: hasil = "Pilih rumus dan isi input!";
+      }
+
+      document.getElementById("hasil").innerText = "Hasil: " + hasil;
+    }
+  </script>
+</body>
+</html>
