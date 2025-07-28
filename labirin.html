@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Labirin Mini Responsive</title>
+  <title>Labirin Mini</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    body {
+      background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
+    }
     .grid-container {
       display: grid;
       justify-content: center;
@@ -19,12 +22,12 @@
       align-items: center;
       justify-content: center;
       font-size: 0.9rem;
-      border-radius: 3px;
+      border-radius: 4px;
+      transition: background 0.2s ease;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 to-black min-h-screen text-white flex flex-col items-center px-4 py-6">
-
+<body class="min-h-screen text-white flex flex-col items-center px-4 py-6">
   <h1 class="text-3xl font-bold text-yellow-300 mb-2">🧭 Labirin Mini</h1>
   <p class="mb-4 text-white/70 text-center text-sm">Gerakkan pemain ke 🏁 dan lanjutkan ke level berikutnya!</p>
 
@@ -54,7 +57,6 @@
     <a href="gameseru.html" class="bg-red-500 px-4 py-2 rounded shadow">🔙 Keluar</a>
   </div>
 
-  <!-- Status -->
   <div id="status" class="text-lg font-bold text-green-400 mb-4 text-center"></div>
 
   <footer class="text-center text-white/60 text-sm max-w-md mt-auto pb-6">
@@ -68,22 +70,22 @@
     let maze = [], rows = 0, cols = 0, end = {};
 
     function getMazeSize(level) {
-      if (level <= 30) return 8 + Math.floor(level / 10);     // 8–11
-      if (level <= 40) return 11 + Math.floor((level - 30) / 2); // 12–16
-      if (level <= 49) return 17 + (level - 40);              // 17–26
-      return 26; // max size from level 50
+      let base = 8;
+      if (level < 40) base += Math.floor(level / 20);
+      else if (level < 120) base += Math.floor((level - 40) / 40) + 2;
+      else base += Math.floor((level - 120) / 120) + 4;
+      return Math.min(base, 30); // Batas maksimal ukuran 30x30
     }
 
-    function getWallChance(level) {
-      if (level <= 30) return 0.25 + level * 0.005;           // max ~0.4
-      if (level <= 40) return 0.4 + (level - 30) * 0.015;      // max ~0.55
-      if (level <= 49) return 0.55 + (level - 40) * 0.02;      // max ~0.73
-      return 0.75; // max chance from level 50+
+    function getWallChance(level, size) {
+      // Tambahkan wall chance besar sejak awal
+      let base = 0.55 + (size - 8) * 0.015;
+      return Math.min(base, 0.88); // Semakin besar ukuran, makin sulit
     }
 
     function generateMazeWithPath() {
       const size = getMazeSize(level);
-      const wallChance = Math.min(getWallChance(level), 0.85);
+      const wallChance = getWallChance(level, size);
       rows = cols = size;
 
       do {
