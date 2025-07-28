@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetris Modern</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(10, 28px);
+      grid-template-rows: repeat(20, 28px);
+      gap: 2px;
+      margin-bottom: 1rem;
+    }
+    .cell {
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    .filled {
+      background: currentColor;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center p-6">
+  <h1 class="text-3xl font-bold text-cyan-400 mb-2">🧱 Tetris Modern</h1>
+  <p class="text-white/70 mb-4 text-center">Susun balok untuk mendapatkan skor tertinggi!</p>
+
+  <!-- Tombol Mulai Awal -->
+  <div id="start-screen" class="flex flex-col items-center">
+    <button onclick="handleStart()" class="bg-green-500 px-6 py-3 rounded text-xl">▶️ Mulai</button>
+  </div>
+
+  <!-- Area Game -->
+  <div id="game-area" class="hidden flex flex-col items-center w-full">
+    <div id="scores" class="mb-4 flex flex-col items-center">
+      <div class="bg-black/30 px-4 py-2 rounded text-sm">Skor: <span id="score">0</span></div>
+      <div class="bg-black/30 px-4 py-2 rounded text-sm mt-1">Highscore: <span id="highscore">0</span></div>
+    </div>
+
+    <div id="board"></div>
+
+    <!-- Tombol Kontrol -->
+    <div class="grid grid-cols-3 gap-3 mt-4 text-xl">
+      <div></div>
+      <button onclick="rotate()" class="bg-cyan-600 px-4 py-2 rounded">⟳</button>
+      <div></div>
+      <button onclick="move(-1)" class="bg-cyan-600 px-4 py-2 rounded">◀️</button>
+      <div></div>
+      <button onclick="move(1)" class="bg-cyan-600 px-4 py-2 rounded">▶️</button>
+      <div></div>
+      <button onclick="drop()" class="bg-cyan-600 px-4 py-2 rounded">🔽</button>
+      <div></div>
+    </div>
+
+    <div class="flex gap-4 mt-4">
+      <button onclick="startGame()" class="bg-yellow-500 px-5 py-2 rounded">🔄 Mulai Lagi</button>
+      <a href="gameseru.html" class="bg-red-500 px-5 py-2 rounded">🔙 Kembali</a>
+    </div>
+  </div>
+
+  <footer class="text-white/60 text-sm text-center mt-6">
+    <p><strong>Tujuan:</strong> Melatih strategi, kecepatan, dan koordinasi visual.</p>
+    <p>Dibuat oleh <strong>ZeroByteID</strong></p>
+  </footer>
+
+  <script>
+    const board = document.getElementById("board");
+    const rows = 20, cols = 10;
+    let score = 0;
+    let highscore = parseInt(localStorage.getItem("highscoreTetris") || "0");
+    document.getElementById("highscore").textContent = highscore;
+
+    let boardState, current, interval;
+    const shapes = [
+      [[1, 1, 1, 1]],
+      [[1, 1], [1, 1]],
+      [[0, 1, 0], [1, 1, 1]],
+      [[1, 1, 0], [0, 1, 1]],
+      [[0, 1, 1], [1, 1, 0]],
+      [[1, 0, 0], [1, 1, 1]],
+      [[0, 0, 1], [1, 1, 1]]
+    ];
+
+    function drawBoard() {
+      board.innerHTML = "";
+      boardState.flat().forEach((val, i) => {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        if (val) {
+          cell.classList.add("filled");
+          cell.style.color = val;
+        }
+        board.appendChild(cell);
+      });
+    }
+
+    function newPiece() {
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      const colors = ["#06b6d4", "#fbbf24", "#ef4444", "#8b5cf6", "#22c55e"];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      return { x: 3, y: 0, shape, color };
+    }
+
+    function merge() {
+      current.shape.forEach((row, y) => row.forEach((v, x) => {
+        if (v) boardState[current.y + y][current.x + x] = current.color;
+      }));
+    }
+
+    function collide() {
+      return current.shape.some((row, y) => row.some((v, x) => {
+        return v && (
+          current.y + y >= rows ||
+          current.x + x < 0 ||
+          current.x + x >= cols ||
+          boardState[current.y + y][current.x + x]
+        );
+      }));
+    }
+
+    function rotate() {
+      const rotated = current.shape[0].map((_, i) => current.shape.map(r => r[i]).reverse());
+      const prev = current.shape;
+      current.shape = rotated;
+      if (collide()) current.shape = prev;
+      drawBoardWithPiece();
+    }
+
+    function drawBoardWithPiece() {
+      drawBoard();
+      current.shape.forEach((row, y) => row.forEach((v, x) => {
+        if (v) {
+          const index = (current.y + y) * cols + (current.x + x);
+          board.children[index].classList.add("filled");
+          board.children[index].style.color = current.color;
+        }
+      }));
+    }
+
+    function drop() {
+      current.y++;
+      if (collide()) {
+        current.y--;
+        merge();
+        clearLines();
+        current = newPiece();
+        if (collide()) return gameOver();
+      }
+      drawBoardWithPiece();
+    }
+
+    function move(dir) {
+      current.x += dir;
+      if (collide()) current.x -= dir;
+      drawBoardWithPiece();
+    }
+
+    function clearLines() {
+      let cleared = 0;
+      boardState = boardState.filter(row => {
+        if (row.every(v => v)) {
+          cleared++;
+          return false;
+        }
+        return true;
+      });
+      while (boardState.length < rows) boardState.unshift(Array(cols).fill(0));
+      if (cleared > 0) {
+        score += cleared * 10;
+        document.getElementById("score").textContent = score;
+      }
+    }
+
+    function gameOver() {
+      clearInterval(interval);
+      if (score > highscore) {
+        localStorage.setItem("highscoreTetris", score);
+      }
+      alert("Game Over!");
+    }
+
+    function startGame() {
+      boardState = Array.from({ length: rows }, () => Array(cols).fill(0));
+      current = newPiece();
+      score = 0;
+      document.getElementById("score").textContent = score;
+      clearInterval(interval);
+      interval = setInterval(drop, 600);
+      drawBoardWithPiece();
+    }
+
+    function handleStart() {
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("game-area").classList.remove("hidden");
+      startGame();
+    }
+  </script>
+</body>
+  </html>
