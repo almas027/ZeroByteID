@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>cek Seberapa Pintar/Tolol?</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #001f3f, #003366);
+      color: #00ffff;
+      font-style: italic;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 30px 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px #00ffff;
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
+    }
+
+    .container h1 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      color: #00ffff;
+    }
+
+    .desc {
+      font-size: 0.85rem;
+      color: #b2fefa;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      width: 90%;
+      margin: 10px 0;
+      font-size: 1em;
+      text-align: center;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .btn {
+      background: #00ffff;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      font-style: italic;
+    }
+
+    .btn:hover {
+      background: #00e0e0;
+    }
+
+    .result-box {
+      background-color: rgba(0, 0, 0, 0.5);
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #ffffff;
+      border: 1px solid #00ffff;
+      max-height: 250px;
+      overflow-y: auto;
+      font-style: italic;
+    }
+
+    .back-btn {
+      margin-top: 15px;
+      display: inline-block;
+      background: #00ffff;
+      color: #000;
+      padding: 8px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+      font-style: italic;
+    }
+
+    .back-btn:hover {
+      background: #00e0e0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.75rem;
+      color: #66ffff;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="container">
+      <h1>cek Seberapa Pintar/Tolol?</h1>
+      <div class="desc">
+        Dengan hanya memasukkan nama kamu, sistem akan secara acak meramal tingkat kepintaran atau ketololan kamu. Semua hasil ini tidak ilmiah dan hanya dibuat untuk bahan ketawa-ketiwi bareng teman.
+        Kalau hasilnya bilang kamu pintar, syukuri dan lanjut belajar. Tapi kalau hasilnya tolol... ya tertawakan aja dan jangan baper 😆
+      </div>
+      <input type="text" id="nama" placeholder="Masukkan Nama">
+      <div>
+        <button class="btn" onclick="cekPintar()">🧠 Cek Pintar</button>
+        <button class="btn" onclick="cekTolol()">💀 Cek Tolol</button>
+      </div>
+      <div class="result-box" id="hasil"></div>
+      <a href="gameseru.html" class="back-btn"> Kembali</a>
+    </div>
+  </main>
+
+  <footer>
+    <p><em>Dibuat sepenuh hati oleh <strong>ZeroByteID</strong> <br> untuk hiburan ringan dan ngakak bareng teman.<br>Game ini 100% ngawur, tidak ada kaitan dengan IQ, <br> logika, maupun prestasi 😄</em></p>
+  </footer>
+
+  <script>
+    const pintarList = [
+      "Kamu punya potensi luar biasa! Jangan berhenti belajar.",
+      "Kamu adalah kombinasi pintar dan rendah hati. Teruskan!",
+      "Kepintaranmu terpancar dari sikap dan ucapanmu.",
+      "Kamu punya nalar kuat dan logika tajam, luar biasa!",
+      "Kamu termasuk orang yang sangat cerdas secara emosional.",
+      "Kamu mampu memahami hal rumit dengan cepat.",
+      "Kamu bukan hanya pintar, tapi juga bijak dalam bertindak.",
+      "Orang-orang di sekitarmu belajar banyak darimu.",
+      "Cara berpikirmu out of the box dan inspiratif.",
+      "Kamu punya semangat belajar yang jarang dimiliki orang lain."
+    ];
+
+    const tololList = [
+      "Wah kamu sangat tolol, kadang aku bingung kok bisa segoblok ini.",
+      "Kamu kayaknya pas lahir otaknya ketinggalan di rahim.",
+      "Tingkat ketololanmu nyaris menyentuh level legenda.",
+      "IQ kamu kayaknya minus, bukan rendah lagi.",
+      "Kamu belajar keras, tapi tetap aja hasilnya bikin malu.",
+      "Orang tolol biasanya tidak sadar kalau dia tolol. Seperti kamu.",
+      "Kamu terlalu sering mikir pake dengkul, bukan otak.",
+      "Sekolahmu gagal total, kamu contoh nyata kenapa sistem pendidikan perlu evaluasi.",
+      "Kalau ada lomba tolol, kamu pasti juara bertahan 3 tahun berturut-turut.",
+      "Kamu beneran unik, bahkan dalam hal ketololan."
+    ];
+
+    function getRandomItem(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function getRandomPercent(min = 60, max = 100) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function cekPintar() {
+      const nama = document.getElementById("nama").value.trim();
+      const hasilBox = document.getElementById("hasil");
+
+      if (!nama) {
+        hasilBox.innerHTML = `<span style="color: #FFFFFF;"><em>Masukkan Nama Dulu Yaa</em></span>`;
+        return;
+      }
+
+      const persen = getRandomPercent();
+      const result = `<strong>${nama}</strong> memiliki <strong>${persen}% kepintaran</strong>.<br><br><em>${getRandomItem(pintarList)}</em>`;
+      hasilBox.innerHTML = result;
+    }
+
+    function cekTolol() {
+      const nama = document.getElementById("nama").value.trim();
+      const hasilBox = document.getElementById("hasil");
+
+      if (!nama) {
+        hasilBox.innerHTML = `<span style="color: #FFFFFF;"><em>Masukkan Nama Dulu Yaa </em></span>`;
+        return;
+      }
+
+      const persen = getRandomPercent();
+      const result = `<strong>${nama}</strong> memiliki <strong>${persen}% ketololan</strong>.<br><br><em>${getRandomItem(tololList)}</em>`;
+      hasilBox.innerHTML = result;
+    }
+  </script>
+</body>
+</html>
