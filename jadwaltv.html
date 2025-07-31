@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jadwal TV Indonesia</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1c1c3c, #2a2a72);
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #00cfff66;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      backdrop-filter: blur(6px);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.8rem;
+    }
+
+    input {
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      width: 93%;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+      background: #fff;
+      color: #000;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .btn {
+      padding: 12px;
+      border-radius: 10px;
+      background-color: #00ffff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #00dddd;
+    }
+
+    .result {
+      margin-top: 20px;
+      text-align: left;
+      background-color: rgba(0,0,0,0.3);
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 15px;
+      white-space: pre-wrap;
+    }
+
+    .footer {
+      font-style: italic;
+      margin-top: 25px;
+      color: #ccc;
+      font-size: 0.9em;
+    }
+
+    .description {
+      font-style: italic;
+      margin-top: 30px;
+      font-size: 0.95em;
+      color: #e0e0e0;
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2> Jadwal Acara TV Indonesia</h2>
+    <p>Masukkan nama channel (misal: <b>SCTV</b>, <b>RCTI</b>, <b>NET</b>, dll):</p>
+    <input type="text" id="channelInput" placeholder="Contoh: TRANS7" />
+    <button class="btn" onclick="getTVSchedule()"> Cek Jadwal</button>
+    <button class="btn" onclick="window.location.href='gameseru.html'"> Kembali</button>
+
+    <div id="output" class="result"></div>
+
+    <div class="description">
+      Halaman ini membantu Anda melihat jadwal acara dari berbagai channel TV nasional Indonesia.  
+      Data ditampilkan secara otomatis berdasarkan tanggal dan waktu saat ini.
+    </div>
+
+    <div class="footer">ZeroByteID © 2025</div>
+  </div>
+
+  <script>
+    async function getTVSchedule() {
+      const channel = document.getElementById('channelInput').value.trim().toUpperCase();
+      const output = document.getElementById('output');
+      output.textContent = '⏳ Mengambil data...';
+
+      if (!channel) {
+        output.textContent = '❗ Masukkan nama channel TV!';
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://api.siputzx.my.id/api/info/jadwaltv?channel=${channel}`);
+        const json = await res.json();
+
+        if (!json.status || !json.data) {
+          output.textContent = '❌ Jadwal tidak ditemukan atau channel tidak valid.';
+          return;
+        }
+
+        const schedule = json.data;
+        const now = new Date();
+        const tanggal = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        let teks = `JADWAL ACARA ${channel}\n\n ${tanggal}\n\n`;
+
+        const sections = {
+          "⛅ PAGI ⛅": [4, 12],
+          "☀️ SIANG ☀️": [12, 18],
+          "🌙 MALAM 🌙": [18, 24],
+          "🌜 DINI HARI 🌛": [0, 4]
+        };
+
+        for (const [label, [start, end]] of Object.entries(sections)) {
+          const items = schedule.filter(item => {
+            const hour = parseInt(item.jam.split(':')[0]);
+            return hour >= start && hour < end;
+          });
+
+          if (items.length > 0) {
+            teks += `${label}\n`;
+            items.forEach(item => {
+              teks += `${item.jam.padEnd(8)} - ${item.acara}\n`;
+            });
+            teks += `\n`;
+          }
+        }
+
+        teks += `Data diperbarui: ${now.toLocaleString('id-ID')}`;
+
+        output.textContent = teks;
+      } catch (err) {
+        output.textContent = '❌ Terjadi kesalahan saat mengambil data.';
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
