@@ -12,25 +12,20 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(#35A9FF, #1a1a1a);
+      background: linear-gradient(to bottom right, #35A9FF, #1a1a1a);
+      background-attachment: fixed;
       color: #fff;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
-      padding: 20px;
+      padding: 40px 30px;
       animation: fadeIn 1.2s ease;
     }
 
     @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     .container {
@@ -46,10 +41,16 @@
 
     .container h1 {
       font-size: 32px;
-      margin-bottom: 35px;
+      margin-bottom: 15px;
       margin-top: 0;
       color: #00ffff;
       text-shadow: 0 0 10px #00ffff;
+    }
+
+    .total-games {
+      font-size: 16px;
+      margin-bottom: 30px;
+      color: #ccc;
     }
 
     .button {
@@ -57,7 +58,7 @@
       background-color: #0f0f0f;
       color: #fff;
       padding: 18px 25px;
-      margin: 16px auto;
+      margin: 14px auto;
       font-size: 19px;
       font-weight: bold;
       border: 2px solid #00ffff;
@@ -79,13 +80,13 @@
 
     .info {
       font-size: 17px;
-      margin-top: 40px;
+      margin-top: 35px;
       color: #ccc;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     footer {
-      margin-top: 20px;
+      margin-top: 30px;
       font-size: 14px;
       color: #aaa;
     }
@@ -113,7 +114,8 @@
 <body>
 
   <div class="container">
-    <h1>ZeroByteID Game<br>LIST GAME</h1>
+    <h1><em><strong>ZeroByteID <br>Pusat Game Seru </strong></em></h1>
+    <div class="total-games">Total Game: <span id="game-count">0</span></div>
 
     <a href="tts.html" class="button">🎥 TIKTOK SEARCH</a>
     <a href="jadwaltv.html" class="button">📺 JADWAL TV</a>
@@ -124,24 +126,24 @@
     <a href="labirin.html" class="button">🚶‍♂️ LABIRIN MINIMAL</a>
     <a href="tebakangka.html" class="button">🧠 TEBAK ANGKA AJAIB</a>
     <a href="cektampil.html" class="button">💖 CEK GANTENG / CANTIK</a>
-    <a href="suit.html" class="button">✊ BARU KERTAS GUNTING</a>
-    <a href="susunkata.html" class="button">🧠 SUSUN KATA </a>
+    <a href="suit.html" class="button">✊ SUIT GUNTING BATU</a>
+    <a href="susunkata.html" class="button">🔤 SUSUN KATA</a>
     <a href="spin.html" class="button">🎯 RODA SPIN</a>
     <a href="matematik.html" class="button">🧠 MATEMATIKA</a>
     <a href="tebakemoji.html" class="button">😁 TEBAK EMOJI</a>
-    <a href="calculator.html" class="button">🧮 CALKULATOR</a>
+    <a href="calculator.html" class="button">🧮 CALCULATOR</a>
     <a href="calendar.html" class="button">📅 CALENDAR</a>
     <a href="kecocokan.html" class="button">💝 TES KECOCOKAN</a>
     <a href="memorycard.html" class="button">🧠 MEMORY CARD</a>
-    <a href="tebakbendera.html" class="button">🏳TEBAK BENDERA<a>
-    <a href="tebakkata.html" class="button">🧠 TEBAK KATA </a>
+    <a href="tebakbendera.html" class="button">🏳 TEBAK BENDERA</a>
+    <a href="tebakkata.html" class="button">🧠 TEBAK KATA</a>
     <a href="cekhodam.html" class="button">🧿 CEK KHODAM</a>
-    <a href="tebaklirik.html" class="button">🧠 TEBAK LIRIK</a>
+    <a href="tebaklirik.html" class="button">🎶 TEBAK LIRIK</a>
     <a href="index.html" class="button">⬅️ KEMBALI KE MENU</a>
 
     <div class="info">
-      Perhatian jika terjadi error atau bug, silakan hubungi admin kami via Telegram.<br>
-       Telegram: <a href="https://t.me/ZeroByteID" style="color:#0ff;">@zerobyteid</a>
+      <i>Di dalamnya terdapat berbagai hiburan mulai dari game logika, permainan klasik, ramalan, hingga tes interaktif. Semua game dirancang agar ringan, cepat, dan menyenangkan dimainkan baik di HP maupun desktop.  
+      Kami akan terus menambahkan game baru secara berkala, jadi pastikan kamu sering mampir untuk mencoba fitur terbaru. Jika kamu menemukan error, bug, atau ingin mengusulkan ide, silakan hubungi kami melalui <strong>Telegram kami : </strong></i><a href="https://t.me/ZeroByteID" style="color:#0ff;">@ZeroByteID</a>
     </div>
 
     <footer>
@@ -149,5 +151,11 @@
     </footer>
   </div>
 
+  <script>
+    // Hitung otomatis total game berdasarkan jumlah tombol (kecuali tombol kembali)
+    const totalGame = document.querySelectorAll('.button').length - 1;
+    document.getElementById('game-count').textContent = totalGame;
+  </script>
+
 </body>
-</html>
+ </html>
