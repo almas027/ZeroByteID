@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timer Mundur</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e1e2f, #2a2a4f);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.07);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #00ffff80;
+      text-align: center;
+      width: 90%;
+      max-width: 420px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+
+    .inputs {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+      margin: 15px 0;
+    }
+
+    .inputs input {
+      width: 32%;
+      padding: 6px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      text-align: center;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      margin: 6px 3px;
+      border-radius: 8px;
+      background: #00ffff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      background: #00dddd;
+    }
+
+    .countdown {
+      font-size: 2rem;
+      margin-top: 15px;
+    }
+
+    .back-btn {
+      background: #fff;
+      color: #000;
+      margin-top: 15px;
+    }
+
+    .description-box {
+      background-color: rgba(255, 255, 255, 0.08);
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 10px;
+      font-style: italic;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .creator {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>⏳ Timer Hitung Mundur</h2>
+    <p>Masukkan waktu (jam, menit, detik):</p>
+
+    <div class="inputs">
+      <input type="number" id="jam" placeholder="Jam" min="0">
+      <input type="number" id="menit" placeholder="Menit" min="0">
+      <input type="number" id="detik" placeholder="Detik" min="0">
+    </div>
+
+    <div>
+      <button class="btn" onclick="startCountdown()">Mulai</button>
+      <button class="btn" onclick="pauseCountdown()">Berhenti</button>
+      <button class="btn" onclick="resumeCountdown()">Lanjut</button>
+    </div>
+
+    <div class="countdown" id="display">00:00:00</div>
+
+    <button class="btn back-btn" onclick="window.location.href='gameseru.html'">Kembali</button>
+
+    <div class="description-box">
+      Gunakan timer ini untuk berbagai keperluan seperti belajar, olahraga, istirahat, atau bermain game.  
+      Timer akan tetap berjalan meskipun kamu menutup halaman ini dan membukanya kembali di browser yang sama.
+      <div class="creator">ZeroByteID © 2025</div>
+    </div>
+  </div>
+
+  <script>
+    let countdownInterval;
+    let remainingSeconds = 0;
+
+    function startCountdown() {
+      clearInterval(countdownInterval);
+      const jam = parseInt(document.getElementById('jam').value) || 0;
+      const menit = parseInt(document.getElementById('menit').value) || 0;
+      const detik = parseInt(document.getElementById('detik').value) || 0;
+      remainingSeconds = (jam * 3600) + (menit * 60) + detik;
+
+      if (remainingSeconds <= 0) {
+        document.getElementById('display').textContent = "❗ Waktu tidak valid";
+        return;
+      }
+
+      const endTime = Date.now() + remainingSeconds * 1000;
+      localStorage.setItem("timerEnd", endTime);
+      runCountdown(endTime);
+    }
+
+    function runCountdown(endTime) {
+      countdownInterval = setInterval(() => {
+        const now = Date.now();
+        remainingSeconds = Math.floor((endTime - now) / 1000);
+
+        if (remainingSeconds <= 0) {
+          clearInterval(countdownInterval);
+          localStorage.removeItem("timerEnd");
+          document.getElementById('display').textContent = "⏰ Waktu Habis!";
+        } else {
+          updateDisplay(remainingSeconds);
+        }
+      }, 1000);
+    }
+
+    function pauseCountdown() {
+      clearInterval(countdownInterval);
+      localStorage.setItem("timerPaused", remainingSeconds);
+      localStorage.removeItem("timerEnd");
+    }
+
+    function resumeCountdown() {
+      const paused = parseInt(localStorage.getItem("timerPaused"));
+      if (paused && paused > 0) {
+        const endTime = Date.now() + paused * 1000;
+        localStorage.setItem("timerEnd", endTime);
+        localStorage.removeItem("timerPaused");
+        runCountdown(endTime);
+      }
+    }
+
+    function updateDisplay(seconds) {
+      const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      document.getElementById('display').textContent = `${h}:${m}:${s}`;
+    }
+
+    window.onload = () => {
+      const savedEndTime = localStorage.getItem("timerEnd");
+      if (savedEndTime) {
+        const endTime = parseInt(savedEndTime);
+        const now = Date.now();
+        const remaining = Math.floor((endTime - now) / 1000);
+        if (remaining > 0) {
+          remainingSeconds = remaining;
+          runCountdown(endTime);
+        } else {
+          localStorage.removeItem("timerEnd");
+        }
+      }
+    };
+  </script>
+</body>
+</html>
