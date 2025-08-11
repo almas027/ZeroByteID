@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Daftar Pekerjaan Harian</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #5A6DFF, #A6AFF9, #5A6DFF);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #FFFFFF;
+      margin-bottom: 20px;
+    }
+
+    .top-box {
+      background: #e6f3ff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #ccc;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .input-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    input[type="text"], input[type="time"] {
+      padding: 10px;
+      width: 180px;
+      border: 2px solid #0077cc;
+      border-radius: 8px;
+      font-size: 15px;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .top-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 16px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    .main-box {
+      background: #e6f3ff;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 0 12px #ccc;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    th {
+      background-color: #e0f0ff;
+    }
+
+    .done {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .action-btn {
+      cursor: pointer;
+      padding: 6px 10px;
+      margin: 0 4px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .check-btn { background-color: #4caf50; }
+    .delete-btn { background-color: #f44336; }
+
+    .center-actions {
+      text-align: center;
+    }
+
+    .bottom-control {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .info-box {
+      background: #ADD0F2;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 25px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #1C1E1F;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    @media(max-width: 600px) {
+      input[type="text"], input[type="time"] {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📋 Daftar Pekerjaan Harian</h1>
+
+  <div class="top-box">
+    <div class="input-area">
+      <input type="text" id="taskInput" placeholder="Tugas..." />
+      <input type="time" id="timeInput" />
+    </div>
+    <div class="top-buttons">
+      <button onclick="addTask()">Tambah</button>
+      <a href="index.html"><button style="background:#999;">Kembali</button></a>
+    </div>
+  </div>
+
+  <div class="main-box">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Pekerjaan</th>
+          <th>Waktu</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="taskTable"></tbody>
+    </table>
+
+    <div class="bottom-control">
+      <button onclick="resetTasks()" style="background-color:#ff6600;">🔄 Reset Semua</button>
+    </div>
+
+    <div class="info-box">
+      Halaman ini digunakan untuk mencatat dan mengatur kegiatan harianmu secara efisien.  
+      Kamu bisa menambahkan tugas beserta jam pelaksanaannya dengan mudah.  
+      Tugas yang sudah disimpan tidak akan hilang meski halaman ditutup atau direfresh.  
+      Gunakan tombol centang untuk menandai tugas selesai dan silang untuk menghapusnya dari daftar.  
+    </div>
+  </div>
+
+  <footer>
+    Dibuat oleh <strong>ZeroByteID</strong> | Data tersimpan otomatis
+  </footer>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      const table = document.getElementById('taskTable');
+      table.innerHTML = '';
+      tasks.forEach((task, i) => {
+        table.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td class="${task.done ? 'done' : ''}">${task.text}</td>
+            <td>${task.time}</td>
+            <td>${task.done ? 'Selesai' : 'Belum'}</td>
+            <td class="center-actions">
+              <button class="action-btn check-btn" onclick="toggleDone(${i})">✓</button>
+              <button class="action-btn delete-btn" onclick="deleteTask(${i})">✕</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function addTask() {
+      const text = document.getElementById('taskInput').value.trim();
+      const time = document.getElementById('timeInput').value;
+      if (!text || !time) return alert('Masukkan tugas dan waktu terlebih dahulu!');
+      tasks.push({ text, time, done: false });
+      document.getElementById('taskInput').value = '';
+      document.getElementById('timeInput').value = '';
+      saveTasks();
+      renderTasks();
+    }
+
+    function toggleDone(index) {
+      tasks[index].done = !tasks[index].done;
+      saveTasks();
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      if (confirm('Hapus tugas ini?')) {
+        tasks.splice(index, 1);
+        saveTasks();
+        renderTasks();
+      }
+    }
+
+    function resetTasks() {
+      if (confirm('Yakin ingin menghapus semua tugas?')) {
+        tasks = [];
+        saveTasks();
+        renderTasks();
+      }
+    }
+
+    renderTasks();
+  </script>
+</body>
+</html>
