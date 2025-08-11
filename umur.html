@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cek Usia & Info Lahir</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow: 0 0 8px #00f7ff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    input, select {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    button {
+      background: #00f7ff;
+      color: #000;
+      font-weight: bold;
+      margin-top: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00c4cc;
+      transform: scale(1.03);
+    }
+
+    #hasil {
+      margin-top: 25px;
+      line-height: 1.6;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 247, 255, 0.2);
+    }
+
+    .btn-kembali {
+      margin-top: 20px;
+      background: transparent;
+      border: 2px solid #00f7ff;
+      color: #00f7ff;
+      font-weight: bold;
+    }
+
+    .btn-kembali:hover {
+      background: #00f7ff;
+      color: #000;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #ccc;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Cek Usia, Zodiak, dan Hari Lahir</h1>
+  <div class="container">
+    <p style="text-align: center; margin-bottom: 20px;">
+      Masukkan tanggal lahirmu untuk mengetahui umur, hari lahir, zodiak, jumlah hari hidupmu, dan berapa hari lagi ulang tahunmu berikutnya!
+    </p>
+
+    <label for="nama">Nama:</label>
+    <input type="text" id="nama" placeholder="Masukkan namamu">
+
+    <label for="tahun">Tahun:</label>
+    <select id="tahun"></select>
+
+    <label for="bulan">Bulan:</label>
+    <select id="bulan">
+      <option value="">Pilih Bulan</option>
+      <option value="1">Januari</option>
+      <option value="2">Februari</option>
+      <option value="3">Maret</option>
+      <option value="4">April</option>
+      <option value="5">Mei</option>
+      <option value="6">Juni</option>
+      <option value="7">Juli</option>
+      <option value="8">Agustus</option>
+      <option value="9">September</option>
+      <option value="10">Oktober</option>
+      <option value="11">November</option>
+      <option value="12">Desember</option>
+    </select>
+
+    <label for="tanggal">Tanggal:</label>
+    <select id="tanggal"></select>
+
+    <button onclick="cekInfo()">✨ Cek Sekarang</button>
+    <button class="btn-kembali" onclick="window.location.href='index.html'"> Kembali</button>
+
+    <div id="hasil"></div>
+  </div>
+
+  <div class="footer">
+    Dibuat oleh <strong>ZeroByteID</strong> • Versi 1.0
+  </div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tahunSelect = document.getElementById("tahun");
+    const tanggalSelect = document.getElementById("tanggal");
+    const currentYear = new Date().getFullYear();
+
+    if (tahunSelect && tanggalSelect) {
+      for (let y = currentYear; y >= 1900; y--) {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = y;
+        tahunSelect.appendChild(opt);
+      }
+
+      for (let d = 1; d <= 31; d++) {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        tanggalSelect.appendChild(opt);
+      }
+    }
+
+    window.cekInfo = function () {
+      const nama = document.getElementById("nama").value.trim();
+      const tahun = +document.getElementById("tahun").value;
+      const bulan = +document.getElementById("bulan").value - 1;
+      const tanggal = +document.getElementById("tanggal").value;
+
+      if (!nama || !tahun || (!bulan && bulan !== 0) || !tanggal) {
+        alert("Harap lengkapi semua input terlebih dahulu.");
+        return;
+      }
+
+      const lahir = new Date(tahun, bulan, tanggal);
+      const now = new Date();
+      const umur = now.getFullYear() - tahun - ((now.getMonth() < bulan || (now.getMonth() === bulan && now.getDate() < tanggal)) ? 1 : 0);
+
+      const hari = lahir.toLocaleDateString('id-ID', { weekday: 'long' });
+      const zodiak = getZodiak(tanggal, bulan + 1);
+
+      const ulangTahunSelanjutnya = new Date(now.getFullYear(), bulan, tanggal);
+      if (ulangTahunSelanjutnya < now) {
+        ulangTahunSelanjutnya.setFullYear(now.getFullYear() + 1);
+      }
+
+      const bedaHari = Math.ceil((ulangTahunSelanjutnya - now) / (1000 * 60 * 60 * 24));
+      const hariLahirTotal = Math.floor((now - lahir) / (1000 * 60 * 60 * 24));
+
+      const hasil = document.getElementById("hasil");
+      if (hasil) {
+        hasil.innerHTML = `
+          <strong>Hai, ${nama}!</strong><br>
+          Umur kamu: <strong>${umur} tahun</strong><br>
+          Usia hari: <strong>${hariLahirTotal.toLocaleString()}</strong><br>
+          Hari lahirmu: <strong>${hari}</strong><br>
+          Zodiak kamu: <strong>${zodiak}</strong><br>
+          Ultah berikutnya: <strong>${bedaHari} hari lagi</strong><br>
+        `;
+      }
+    };
+
+    function getZodiak(day, month) {
+      const zodiak = [
+        ["Capricorn", 19], ["Aquarius", 18], ["Pisces", 20], ["Aries", 19],
+        ["Taurus", 20], ["Gemini", 20], ["Cancer", 22], ["Leo", 22],
+        ["Virgo", 22], ["Libra", 22], ["Scorpio", 21], ["Sagitarius", 21], ["Capricorn", 31]
+      ];
+      return (day <= zodiak[month - 1][1]) ? zodiak[month - 1][0] : zodiak[month][0];
+    }
+  });
+</script>
+</body>
+</html>
